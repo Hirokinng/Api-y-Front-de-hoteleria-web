@@ -1,8 +1,21 @@
+using HoteleriaApp.Core.Application.Services;
+using HoteleriaApp.Core.Domain.Interfaces;
+
+using HoteleriaApp.Infrastructure.Persistence.Contexts;
+using HoteleriaApp.Infrastructure.Persistence.Contexts;
+using HoteleriaApp.Infrastructure.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IPisoService, PisoService>();
+builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -13,6 +26,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
 
