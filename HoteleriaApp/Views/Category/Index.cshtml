@@ -1,0 +1,32 @@
+﻿@model List<HoteleriaApp.Core.Application.DTOs.Category.CategoryDto>
+
+<h2>Categorías</h2>
+
+<a asp-action="Create" class="btn btn-primary">Nueva Categoría</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio/Noche</th>
+            <th>Características</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Description</td>
+                <td>@item.PricePerNight</td>
+                <td>@item.Characteristics</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

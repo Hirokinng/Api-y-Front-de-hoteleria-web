@@ -9,9 +9,10 @@
   <ItemGroup>
     <Folder Include="ViewModels\" />
     <Folder Include="Mappings\" />
-    <Folder Include="Services\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.13" />
   </ItemGroup>
 
   <ItemGroup>
