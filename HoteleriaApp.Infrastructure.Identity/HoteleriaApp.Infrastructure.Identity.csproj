@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\HoteleriaApp.Core.Application\HoteleriaApp.Core.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HoteleriaApp.Core.Application\HoteleriaApp.Core.Application.csproj" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
