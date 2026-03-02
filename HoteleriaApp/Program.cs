@@ -1,23 +1,28 @@
 using HoteleriaApp.Infrastructure.Persistence.Contexto;
 using Microsoft.EntityFrameworkCore;
+using HoteleriaApp.Core.Application.Services;
+using HoteleriaApp.Core.Domain.Interfaces;
+using HoteleriaApp.Infrastructure.Persistence.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IPisoService, PisoService>();
+builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddScoped<HoteleriaApp.Core.Application.Interfaces.IClienteRepositorio,
-                          HoteleriaApp.Infrastructure.Persistence.Repositories.ClienteRepositorio>();
+builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
+builder.Services.AddSingleton<IEmailServicio, EmailServicio>();
 
-builder.Services.AddScoped<HoteleriaApp.Core.Application.Interfaces.IClienteServicio,
-                          HoteleriaApp.Core.Application.Services.ClienteServicio>();
-
-builder.Services.AddSingleton<HoteleriaApp.Core.Application.Interfaces.IEmailServicio,
-                             HoteleriaApp.Infrastructure.Shared.Services.EmailServicio>();
 
 builder.Services.AddDbContext<HoteleriaDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -29,6 +34,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseRouting();
 
