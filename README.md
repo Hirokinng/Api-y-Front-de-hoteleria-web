@@ -16,7 +16,7 @@ Extraer la carpeta.
 Abrir la carpeta del proyecto.
 
 Opción 2: Clonar con Git
-git clone https://github.com/tu-usuario/nombre-repositorio.git
+git clone https://github.com/Hirokinng/Api-y-Front-de-hoteleria-web
 
 Luego entrar a la carpeta del proyecto.
 
