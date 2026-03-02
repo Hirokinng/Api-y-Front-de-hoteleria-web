@@ -1,3 +1,10 @@
--dotnet run
+Descripción
+Sistema web para gestión hotelera.
 
-Actualmente sin frontend, colocar /swagger delante de la pagina emergente para utiliar la API.
+Tecnologías
+.NET 8
+JavaScript - HTML - CSS
+SQL Server
+Cómo correr el proyecto
+Backend
+dotnet run Añadir /swagger al final de la url.
