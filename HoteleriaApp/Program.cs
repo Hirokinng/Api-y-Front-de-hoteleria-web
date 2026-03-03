@@ -1,21 +1,37 @@
+using HoteleriaApp.Infrastructure.Persistence.Contexto;
+using HoteleriaApp.Infrastructure.Persistence.Repositories;
+using HoteleriaApp.Infrastructure.Shared.Services;
+using HoteleriaApp.Core.Application.Interfaces;
 using HoteleriaApp.Core.Application.Services;
 using HoteleriaApp.Core.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using HoteleriaApp.Infrastructure.Persistence.Contexts;
 
-using HoteleriaApp.Infrastructure.Persistence.Contexts;
-using HoteleriaApp.Infrastructure.Persistence.Contexts;
-using HoteleriaApp.Infrastructure.Persistence.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
-builder.Services.AddControllersWithViews();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+
+
+builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
+builder.Services.AddSingleton<IEmailServicio, EmailServicio>();
+
+
+builder.Services.AddDbContext<HoteleriaDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

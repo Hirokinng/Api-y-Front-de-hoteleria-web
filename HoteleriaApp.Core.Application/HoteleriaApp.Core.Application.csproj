@@ -16,4 +16,8 @@
     <ProjectReference Include="..\HoteleriaApp.Core.Domain\HoteleriaApp.Core.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+  </ItemGroup>
+
 </Project>
