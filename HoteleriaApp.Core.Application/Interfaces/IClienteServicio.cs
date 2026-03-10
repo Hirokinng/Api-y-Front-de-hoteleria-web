@@ -12,5 +12,6 @@ namespace HoteleriaApp.Core.Application.Interfaces
         ClienteAuthResultDto Registrar(ClienteRegisterDto dto);
         ClienteAuthResultDto Login(ClienteLoginDto dto);
         ClienteAuthResultDto ActualizarPerfil(ClienteUpdateDto dto);
+        ClienteAuthResultDto ObtenerPerfil(int idCliente);
     }
 }

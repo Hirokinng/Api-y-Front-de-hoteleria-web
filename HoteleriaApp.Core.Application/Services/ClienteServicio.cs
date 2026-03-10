@@ -46,7 +46,7 @@ namespace HoteleriaApp.Core.Application.Services
             _repo.Crear(cliente);
             _repo.Guardar();
 
-            // Notificación (por ahora tu EmailServicio lo imprime en consola; luego se pone SMTP real)
+            
             _email.Enviar(cliente.email, "Bienvenido a SGHR", $"Hola {cliente.nombre}, tu registro fue exitoso.");
 
             return new ClienteAuthResultDto
@@ -71,8 +71,7 @@ namespace HoteleriaApp.Core.Application.Services
             if (cliente == null || !cliente.activo)
                 return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
 
-            // Compatibilidad: si es BCrypt, verificamos con Verify.
-            // Si NO parece BCrypt (data vieja), comparamos texto plano para que no se rompa.
+            
             bool okPass;
             if (!string.IsNullOrWhiteSpace(cliente.password_hash) && cliente.password_hash.StartsWith("$2"))
                 okPass = BCrypt.Net.BCrypt.Verify(password, cliente.password_hash);
@@ -118,6 +117,22 @@ namespace HoteleriaApp.Core.Application.Services
             {
                 ok = true,
                 message = "Perfil actualizado.",
+                id_cliente = cliente.id_cliente,
+                email = cliente.email
+            };
+        }
+
+        public ClienteAuthResultDto ObtenerPerfil(int idCliente)
+        {
+            var cliente = _repo.GetClientePorId(idCliente);
+
+            if (cliente == null || !cliente.activo)
+                return new ClienteAuthResultDto { ok = false, message = "Cliente no encontrado." };
+
+            return new ClienteAuthResultDto
+            {
+                ok = true,
+                message = "Perfil obtenido.",
                 id_cliente = cliente.id_cliente,
                 email = cliente.email
             };
