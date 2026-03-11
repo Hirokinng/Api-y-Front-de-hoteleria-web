@@ -7,9 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappings\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="Mappings\" />
+    <Folder Include="Services\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="DTOs\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,10 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HoteleriaApp.Core.Domain\HoteleriaApp.Core.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
   </ItemGroup>
 
 </Project>
