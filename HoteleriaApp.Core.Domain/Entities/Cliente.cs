@@ -1,13 +1,15 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class Cliente : BaseEntity
+namespace HoteleriaApp.Core.Domain.Entities;
+
+public class Cliente
 {
-    public string Nombre { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string? Telefono { get; set; }
-    public string PasswordHash { get; set; } = string.Empty;
-    public DateOnly FechaRegistro { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-    public bool Activo { get; set; } = true;
-
-    public ICollection<Reserva> Reservas { get; set; } = [];
+    [Key]
+    public int id_cliente { get; set; }
+    public string nombre { get; set; } = string.Empty;
+    public string email { get; set; } = string.Empty;
+    public string? telefono { get; set; }
+    public string password_hash { get; set; } = string.Empty;
+    public DateTime fecha_registro { get; set; }
+    public bool activo { get; set; } = true;
 }
