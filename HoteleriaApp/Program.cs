@@ -1,9 +1,24 @@
+using HoteleriaApp.Core.Application.Interfaces;
+using HoteleriaApp.Core.Application.Services;
+using HoteleriaApp.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<HotelDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IApplicationDbContext>(sp =>
+    sp.GetRequiredService<HotelDbContext>());
+
+builder.Services.AddScoped<IHabitacionesService, HabitacionesService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -30,10 +45,10 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

@@ -1,15 +1,21 @@
-﻿using System;
+using HoteleriaApp.Core.Domain.Enums;
 
-public class Habitacion : BaseEntity
+namespace HoteleriaApp.Core.Domain.Entities
 {
-    public string NumeroHabitacion { get; set; } = string.Empty;
-    public int IdPiso { get; set; }
-    public int IdCategoria { get; set; }
-    public EstadoHabitacion Estado { get; set; } = EstadoHabitacion.Disponible;
-    public string? DescripcionAdicional { get; set; }
-    public DateTime FechaUltimaActualizacion { get; set; } = DateTime.UtcNow;
+    public class Habitacion
+    {
+        public int Id { get; set; }
+        public string Numero { get; set; } = null!;
+        public int Piso { get; set; }
 
-    public Piso Piso { get; set; } = null!;
-    public Categoria Categoria { get; set; } = null!;
-    public ICollection<DetalleReserva> DetallesReserva { get; set; } = [];
+        public int TipoHabitacionId { get; set; }
+        public TipoHabitacion TipoHabitacion { get; set; } = null!;
+
+        public int Capacidad { get; set; }
+        public HabitacionEstado Estado { get; set; } = HabitacionEstado.Disponible;
+
+        public ICollection<HabitacionAmenity> Amenities { get; set; } = new List<HabitacionAmenity>();
+        public ICollection<BloqueoHabitacion> Bloqueos { get; set; } = new List<BloqueoHabitacion>();
+        public ICollection<ReservaHabitacion> Reservas { get; set; } = new List<ReservaHabitacion>();
+    }
 }
