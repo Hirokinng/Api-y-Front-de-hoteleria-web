@@ -1,0 +1,24 @@
+﻿@model HoteleriaApp.Core.Application.DTOs.Category.CreateCategoryDto
+
+<h2>Nueva Categoría</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Descripción</label>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Precio por Noche</label>
+        <input asp-for="PricePerNight" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Características</label>
+        <input asp-for="Characteristics" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

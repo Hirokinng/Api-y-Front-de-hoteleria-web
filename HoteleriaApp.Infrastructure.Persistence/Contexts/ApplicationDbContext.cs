@@ -1,11 +1,5 @@
 ﻿using HoteleriaApp.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HoteleriaApp.Infrastructure.Persistence.Contexts
 {
@@ -16,6 +10,15 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
         {
         }
 
+        public DbSet<Category> Categories { get; set; }
         public DbSet<Piso> Pisos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                typeof(ApplicationDbContext).Assembly
+            );
+        }
     }
 }
