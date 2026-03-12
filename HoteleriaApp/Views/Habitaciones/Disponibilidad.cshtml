@@ -1,0 +1,109 @@
+@{
+    ViewData["Title"] = "Disponibilidad";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Buscar Habitaciones Disponibles</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al Inventario</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="frmDisponibilidad" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">Fecha Check-in</label>
+                <input type="date" class="form-control" id="fechaInicio" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Fecha Check-out</label>
+                <input type="date" class="form-control" id="fechaFin" required />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tipo de habitación</label>
+                <select class="form-select" id="tipoHabitacionId">
+                    <option value="">Todos</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Capacidad mín.</label>
+                <input type="number" class="form-control" id="capacidadMinima" min="1" placeholder="Ej. 2" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Buscar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover" id="tablaDisponibles">
+        <thead class="table-light">
+            <tr>
+                <th>Número</th>
+                <th>Piso</th>
+                <th>Tipo</th>
+                <th>Capacidad</th>
+                <th>Amenities</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="text-muted small" id="mensajeDisponibles"></div>
+<div class="alert alert-danger d-none" id="mensajeErrorDisp" role="alert"></div>
+
+@section Scripts {
+    <script>
+        // Cargar tipos
+        (async function () {
+            try {
+                const res = await fetch('/api/habitaciones/tipos');
+                const tipos = await res.json();
+                const sel = document.getElementById('tipoHabitacionId');
+                tipos.forEach(t => {
+                    sel.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
+                });
+            } catch (e) { console.error(e); }
+        })();
+
+        document.getElementById('frmDisponibilidad').addEventListener('submit', async e => {
+            e.preventDefault();
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+            const tipoId = document.getElementById('tipoHabitacionId').value;
+            const capacidad = document.getElementById('capacidadMinima').value;
+
+            let url = `/api/habitaciones/disponibles?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
+            if (tipoId) url += `&tipoHabitacionId=${tipoId}`;
+            if (capacidad) url += `&capacidadMinima=${capacidad}`;
+
+            try {
+                const res = await fetch(url);
+                const habitaciones = await res.json();
+                const tbody = document.querySelector('#tablaDisponibles tbody');
+                tbody.innerHTML = '';
+                document.getElementById('mensajeErrorDisp').classList.add('d-none');
+
+                if (habitaciones.length === 0) {
+                    document.getElementById('mensajeDisponibles').textContent = 'No hay habitaciones disponibles para las fechas seleccionadas.';
+                } else {
+                    document.getElementById('mensajeDisponibles').textContent = habitaciones.length + ' habitación(es) disponible(s).';
+                    habitaciones.forEach(h => {
+                        const amenities = (h.amenities || []).map(a => a.amenity?.nombre || '').filter(Boolean).join(', ') || '-';
+                        tbody.innerHTML += `<tr>
+                            <td>${h.numero}</td>
+                            <td>${h.piso}</td>
+                            <td>${h.tipoHabitacion?.nombre || '-'}</td>
+                            <td>${h.capacidad}</td>
+                            <td>${amenities}</td>
+                        </tr>`;
+                    });
+                }
+            } catch (e) {
+                document.getElementById('mensajeErrorDisp').classList.remove('d-none');
+                document.getElementById('mensajeErrorDisp').textContent = 'Error: ' + e.message;
+            }
+        });
+    </script>
+}
