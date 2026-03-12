@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HoteleriaApp.Core.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 
 public class HabitacionRepository : GenericRepository<Habitacion>, IHabitacionRepository
