@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -8,10 +8,22 @@
 		<Folder Include="Mappings\" />
 		<Folder Include="ViewModels\" />
 		<Folder Include="Interfaces\" />
+		<Folder Include="Services\" />
+		<Folder Include="DTOs\" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="16.0.0" />
 		<PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.13">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.13" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.13">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\HoteleriaApp.Core.Domain\HoteleriaApp.Core.Domain.csproj" />

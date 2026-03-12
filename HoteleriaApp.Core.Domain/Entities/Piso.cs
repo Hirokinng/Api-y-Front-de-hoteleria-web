@@ -1,39 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HoteleriaApp.Core.Domain.Entities
+public class Piso : BaseEntity
 {
-    public class Piso
-    {
-        public Guid Id { get; private set; }
-        public string Nombre { get; private set; } = string.Empty;
-        public string Descripcion { get; private set; } = string.Empty;
+    public short NumeroPiso { get; set; }
+    public string? Descripcion { get; set; }
+    public bool Activo { get; set; } = true;
 
-        private Piso() { }
-
-        public Piso(string nombre, string descripcion)
-        {
-            Id = Guid.NewGuid();
-            Nombre = nombre;
-            Descripcion = descripcion;
-        }
-
-        public void Actualizar(string nombre, string descripcion)
-        {
-            Nombre = nombre;
-            Descripcion = descripcion;
-        }
-       
-        public void Update(string nombre, string descripcion)
-        {
-            if (string.IsNullOrWhiteSpace(nombre))
-                throw new ArgumentException("El nombre no puede estar vacío");
-
-            Nombre = nombre;
-            Descripcion = descripcion ?? string.Empty;
-        }
-    }
+    public ICollection<Habitacion> Habitaciones { get; set; } = [];
 }
