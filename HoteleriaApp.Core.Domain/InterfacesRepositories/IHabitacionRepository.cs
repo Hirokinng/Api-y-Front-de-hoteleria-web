@@ -1,4 +1,5 @@
 ﻿using System;
+using HoteleriaApp.Core.Domain.Entities;
 
 public interface IHabitacionRepository : IGenericRepository<Habitacion>
 {

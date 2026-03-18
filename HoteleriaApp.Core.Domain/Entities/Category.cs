@@ -14,5 +14,9 @@ namespace HoteleriaApp.Core.Domain.Entities
         public decimal PricePerNight { get; set; }
         public string? Characteristics { get; set; }
         public bool IsActive { get; set; }
+        public int Capacidad { get; set; }
+
+        public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
+        public ICollection<Habitacion> Habitaciones { get; set; } = new List<Habitacion>();
     }
 }

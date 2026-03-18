@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using HoteleriaApp.Core.Domain.Entities;
 using System;
 
 public class HistorialEstadoReservaConfiguration : IEntityTypeConfiguration<HistorialEstadoReserva>
@@ -31,7 +32,7 @@ public class HistorialEstadoReservaConfiguration : IEntityTypeConfiguration<Hist
                .HasMaxLength(300);
 
         builder.HasOne(h => h.Reserva)
-               .WithMany(r => r.Historiales)
+               .WithMany(r => r.Historial)
                .HasForeignKey(h => h.IdReserva)
                .OnDelete(DeleteBehavior.Cascade);
 

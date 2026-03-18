@@ -1,3 +1,4 @@
+
 namespace HoteleriaApp.Core.Domain.Entities
 {
     public class ReservaHabitacion
@@ -12,4 +13,5 @@ namespace HoteleriaApp.Core.Domain.Entities
 
         public bool EsPrincipal { get; set; }
     }
+
 }

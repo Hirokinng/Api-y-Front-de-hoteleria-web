@@ -1,33 +1,31 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
+using HoteleriaApp.Core.Domain.Entities;
 
-public class CategoriaConfiguration : IEntityTypeConfiguration<Categoria>
+public class CategoriaConfiguration : IEntityTypeConfiguration<Category>
 {
-    public void Configure(EntityTypeBuilder<Categoria> builder)
+    public void Configure(EntityTypeBuilder<Category> builder)
     {
-        builder.ToTable("Categoria");
+        builder.ToTable("Category");
 
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id).HasColumnName("id_categoria");
 
-        builder.Property(c => c.Nombre)
+        builder.Property(c => c.Name)
                .HasColumnName("nombre")
                .HasMaxLength(80)
                .IsRequired();
 
-        builder.Property(c => c.Descripcion)
+        builder.Property(c => c.Description)
                .HasColumnName("descripcion")
                .HasMaxLength(500);
 
-        builder.Property(c => c.CapacidadMax)
-               .HasColumnName("capacidad_max")
-               .IsRequired();
+        
 
-        builder.Property(c => c.Activo)
+        builder.Property(c => c.IsActive)
                .HasColumnName("activo")
                .HasDefaultValue(true);
 
-        builder.HasIndex(c => c.Nombre).IsUnique();
+        builder.HasIndex(c => c.Name).IsUnique();
     }
 }

@@ -1,65 +1,65 @@
-﻿@model IReadOnlyList<HabitacionDisponibleDto>
+﻿@model List<HabitacionDisponibleDto>
 
-    <h2>Consultar Disponibilidad</h2>
+<h2>Consultar Disponibilidad</h2>
 
-    <form asp-action="Disponibilidad" method="post" class="mb-4">
-        @Html.AntiForgeryToken()
-        <div class="mb-3">
-            <label>ID Categoría</label>
-            <input type="number" name="idCategoria" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label>Fecha de Entrada</label>
-            <input type="date" name="fechaEntrada" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label>Fecha de Salida</label>
-            <input type="date" name="fechaSalida" class="form-control" required />
-        </div>
-        <div class="mb-3">
-            <label>Número de Huéspedes</label>
-            <input type="number" name="numHuespedes" class="form-control" min="1" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        <a asp-action="Index" class="btn btn-secondary">Volver</a>
-    </form>
+<form asp-action="Disponibilidad" method="post" class="mb-4">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label>ID Categoría</label>
+        <input type="number" name="idCategoria" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Fecha de Entrada</label>
+        <input type="date" name="fechaEntrada" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Fecha de Salida</label>
+        <input type="date" name="fechaSalida" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Número de Huéspedes</label>
+        <input type="number" name="numHuespedes" class="form-control" min="1" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>
 
-    @if (Model != null)
+@if (Model != null)
 {
     if (!Model.Any())
     {
-    <div class="alert alert-warning">No hay habitaciones disponibles para los criterios seleccionados.</div>
+<div class="alert alert-warning">No hay habitaciones disponibles para los criterios seleccionados.</div>
     }
     else
     {
-    <h4>Habitaciones Disponibles</h4>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Habitación</th>
-                <th>Categoría</th>
-                <th>Piso</th>
-                <th>Capacidad</th>
-                <th>Precio/Noche</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var habitacion in Model)
-                {
-            <tr>
-                <td>@habitacion.NumeroHabitacion</td>
-                <td>@habitacion.NombreCategoria</td>
-                <td>@habitacion.NumeroPiso</td>
-                <td>@habitacion.CapacidadMax personas</td>
-                <td>RD$@habitacion.PrecioNoche.ToString("N2")</td>
-                <td>
-                    <a asp-action="Crear" asp-route-idHabitacion="@habitacion.Id"
-                       class="btn btn-sm btn-primary">Reservar</a>
-                </td>
-            </tr>
-                }
-        </tbody>
-    </table>
+<h4>Habitaciones Disponibles</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Habitación</th>
+            <th>Categoría</th>
+            <th>Piso</th>
+            <th>Capacidad</th>
+            <th>Precio/Noche</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var habitacion in Model)
+{
+        <tr>
+            <td>@habitacion.NumeroHabitacion</td>
+            <td>@habitacion.NombreCategoria</td>
+            <td>@habitacion.NumeroPiso</td>
+            <td>@habitacion.CapacidadMax personas</td>
+            <td>RD$@habitacion.PrecioNoche.ToString("N2")</td>
+            <td>
+                <a asp-action="Crear" asp-route-idHabitacion="@habitacion.Id"
+                   class="btn btn-sm btn-primary">Reservar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
     }
 }

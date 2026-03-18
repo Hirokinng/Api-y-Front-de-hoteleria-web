@@ -1,10 +1,14 @@
 ﻿using System;
 
-public class DetalleReserva : BaseEntity
+namespace HoteleriaApp.Core.Domain.Entities
 {
-    public int IdReserva { get; set; }
-    public int IdHabitacion { get; set; }
+    public class DetalleReserva : BaseEntity
+    {
+        public int IdReserva { get; set; }
+        public int IdHabitacion { get; set; }
 
-    public Reserva Reserva { get; set; } = null!;
-    public Habitacion Habitacion { get; set; } = null!;
+        public Reserva Reserva { get; set; } = null!;
+        public Habitacion Habitacion { get; set; } = null!;
+    }
+
 }

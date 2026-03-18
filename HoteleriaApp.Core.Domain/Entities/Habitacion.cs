@@ -14,8 +14,12 @@ namespace HoteleriaApp.Core.Domain.Entities
         public int Capacidad { get; set; }
         public HabitacionEstado Estado { get; set; } = HabitacionEstado.Disponible;
 
+        public int IdCategoria { get; set; }
+        public Category Categoria { get; set; } = null!;
+
         public ICollection<HabitacionAmenity> Amenities { get; set; } = new List<HabitacionAmenity>();
         public ICollection<BloqueoHabitacion> Bloqueos { get; set; } = new List<BloqueoHabitacion>();
         public ICollection<ReservaHabitacion> Reservas { get; set; } = new List<ReservaHabitacion>();
+        public ICollection<DetalleReserva> DetallesReserva { get; set; } = new List<DetalleReserva>();
     }
 }
