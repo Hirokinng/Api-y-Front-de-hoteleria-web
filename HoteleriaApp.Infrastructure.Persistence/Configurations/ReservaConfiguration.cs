@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using HoteleriaApp.Core.Domain.Entities;
 using System;
 
 public class ReservaConfiguration : IEntityTypeConfiguration<Reserva>
@@ -69,7 +70,7 @@ public class ReservaConfiguration : IEntityTypeConfiguration<Reserva>
                .IsRequired(false)
                .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(r => r.Categoria)
+        builder.HasOne(r => r.Category)
                .WithMany(c => c.Reservas)
                .HasForeignKey(r => r.IdCategoria)
                .OnDelete(DeleteBehavior.Restrict);

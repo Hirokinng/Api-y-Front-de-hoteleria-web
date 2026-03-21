@@ -1,6 +1,11 @@
 ﻿using System;
 
-public abstract class BaseEntity
+namespace HoteleriaApp.Core.Domain.Entities
 {
-    public int Id { get; set; }
+
+    public abstract class BaseEntity
+    {
+        public int Id { get; set; }
+    }
+
 }

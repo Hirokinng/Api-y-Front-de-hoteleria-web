@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using HoteleriaApp.Core.Domain.Entities;
 using System;
 
 public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>

@@ -1,11 +1,17 @@
-﻿using System;
+﻿using HoteleriaApp.Core.Domain.Entities;
+using System.Threading.Tasks;
+using HoteleriaApp.Core.Application.DTOs.Reservas;
 
-public interface IReservaService
+namespace HoteleriaApp.Core.Application.Interfaces
 {
-    Task<ReservaDto?> GetByIdAsync(int id);
-    Task<ReservaDto?> GetByNumeroReservaAsync(string numeroReserva);
-    Task<IReadOnlyList<ReservaDto>> GetByClienteAsync(int idCliente);
-    Task<ReservaDto> CrearAsync(CrearReservaDto dto);
-    Task<ReservaDto> ActualizarAsync(ActualizarReservaDto dto);
-    Task CancelarAsync(int id, int? idUsuario, string? observacion);
+    public interface IReservaService
+    {
+        Task<IReadOnlyList<ReservaDto>> GetAllAsync();
+        Task<ReservaDto?> GetByIdAsync(int id);
+        Task<IReadOnlyList<HabitacionDisponibleDto>> BuscarDisponibilidadAsync(
+            int idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes);
+        Task<(bool Ok, string? Error, ReservaDto? Reserva)> CrearAsync(CrearReservaDto dto);
+        Task<(bool Ok, string? Error)> EditarAsync(EditarReservaDto dto);
+        Task<(bool Ok, string? Error)> CancelarAsync(int id);
+    }
 }

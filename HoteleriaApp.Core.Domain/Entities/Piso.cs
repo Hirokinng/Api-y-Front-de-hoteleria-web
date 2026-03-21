@@ -1,10 +1,15 @@
 ﻿using System;
 
-public class Piso : BaseEntity
+namespace HoteleriaApp.Core.Domain.Entities
 {
-    public short NumeroPiso { get; set; }
-    public string? Descripcion { get; set; }
-    public bool Activo { get; set; } = true;
 
-    public ICollection<Habitacion> Habitaciones { get; set; } = [];
+    public class Piso : BaseEntity
+    {
+        public short NumeroPiso { get; set; }
+        public string? Descripcion { get; set; }
+        public bool Activo { get; set; } = true;
+
+        public ICollection<Habitacion> Habitaciones { get; set; } = [];
+    }
+
 }

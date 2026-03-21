@@ -21,5 +21,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\HoteleriaApp.Core.Domain\HoteleriaApp.Core.Domain.csproj" />
+		
+		
 	</ItemGroup>
 </Project>

@@ -22,9 +22,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\HoteleriaApp.Core.Application\HoteleriaApp.Core.Application.csproj" />
-		<ProjectReference Include="..\HoteleriaApp.Core.Domain\HoteleriaApp.Core.Domain.csproj" />
-		<ProjectReference Include="..\HoteleriaApp.Infrastructure.Identity\HoteleriaApp.Infrastructure.Identity.csproj" />
 		<ProjectReference Include="..\HoteleriaApp.Infrastructure.Persistence\HoteleriaApp.Infrastructure.Persistence.csproj" />
-		<ProjectReference Include="..\HoteleriaApp.Infrastructure.Shared\HoteleriaApp.Infrastructure.Shared.csproj" />
+		
 	</ItemGroup>
 </Project>

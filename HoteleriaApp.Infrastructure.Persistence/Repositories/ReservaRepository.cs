@@ -1,43 +1,75 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using HoteleriaApp.Core.Domain.Entities;
+using HoteleriaApp.Infrastructure.Persistence.Contexts;
+using HoteleriaApp.Core.Domain.Enums;
+using HoteleriaApp.Core.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-public class ReservaRepository : GenericRepository<Reserva>, IReservaRepository
+namespace HoteleriaApp.Infrastructure.Persistence.Repositories
 {
-    public ReservaRepository(ApplicationDbContext context) : base(context) { }
+    public class ReservaRepository : GenericRepository<Reserva>, IReservaRepository
+    {
+        public ReservaRepository(ApplicationDbContext context) : base(context) { }
 
-    public async Task<Reserva?> GetByNumeroReservaAsync(string numeroReserva) =>
-        await _dbSet
-            .AsNoTracking()
-            .Include(r => r.Cliente)
-            .Include(r => r.Categoria)
-            .Include(r => r.DetallesReserva).ThenInclude(d => d.Habitacion)
-            .Include(r => r.ReservaServicios).ThenInclude(rs => rs.Servicio)
-            .FirstOrDefaultAsync(r => r.NumeroReserva == numeroReserva);
+        public async Task<IReadOnlyList<Reserva>> GetAllWithDetailsAsync()
+        {
+            return await _dbSet
+                .AsNoTracking()
+                .Include(r => r.Cliente)
+                .Include(r => r.Category)
+                .Include(r => r.DetallesReserva)
+                    .ThenInclude(d => d.Habitacion)
+                .Include(r => r.ReservaServicios)
+                    .ThenInclude(rs => rs.Servicio)
+                .OrderByDescending(r => r.FechaCreacion)
+                .ToListAsync();
+        }
 
-    public async Task<IReadOnlyList<Reserva>> GetByClienteAsync(int idCliente) =>
-        await _dbSet
-            .AsNoTracking()
-            .Where(r => r.IdCliente == idCliente)
-            .Include(r => r.Categoria)
-            .Include(r => r.ReservaServicios).ThenInclude(rs => rs.Servicio)
-            .OrderByDescending(r => r.FechaCreacion)
-            .ToListAsync();
+        public async Task<Reserva?> GetByIdWithDetailsAsync(int id)
+        {
+            return await _dbSet
+                .Include(r => r.Cliente)
+                .Include(r => r.Category)
+                .Include(r => r.DetallesReserva)
+                    .ThenInclude(d => d.Habitacion)
+                .Include(r => r.ReservaServicios)
+                    .ThenInclude(rs => rs.Servicio)
+                .Include(r => r.Pagos)
+                .Include(r => r.Historial)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
 
-    public async Task<IReadOnlyList<Reserva>> GetByEstadoAsync(EstadoReserva estado) =>
-        await _dbSet
-            .AsNoTracking()
-            .Where(r => r.Estado == estado)
-            .Include(r => r.Cliente)
-            .Include(r => r.Categoria)
-            .OrderByDescending(r => r.FechaEntrada)
-            .ToListAsync();
+        public async Task<IReadOnlyList<Habitacion>> GetHabitacionesDisponiblesAsync(
+            int idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
+        {
+            return await _context.Habitaciones
+                .AsNoTracking()
+                .Include(h => h.TipoHabitacion)
+                .Include(h => h.Piso)
+                .Where(h =>
+                    h.TipoHabitacionId == idCategoria &&
+                    h.Estado == HabitacionEstado.Disponible &&
+                    h.Capacidad >= numHuespedes &&
+                    !h.DetallesReserva.Any(d =>
+                        d.Reserva.Estado != EstadoReserva.Cancelada &&
+                        d.Reserva.Estado != EstadoReserva.CheckOut &&
+                        d.Reserva.FechaEntrada < fechaSalida &&
+                        d.Reserva.FechaSalida > fechaEntrada))
+                .ToListAsync();
+        }
 
-    public async Task<bool> TieneConflictoFechasAsync(
-        int idHabitacion, DateOnly fechaEntrada, DateOnly fechaSalida) =>
-        await _context.DetallesReserva
-            .AnyAsync(d => d.IdHabitacion == idHabitacion
-                        && d.Reserva.Estado != EstadoReserva.Cancelada
-                        && d.Reserva.Estado != EstadoReserva.CheckOut
-                        && d.Reserva.FechaEntrada < fechaSalida
-                        && d.Reserva.FechaSalida > fechaEntrada);
+        public async Task<bool> ExisteSolapamientoAsync(
+            int idHabitacion, DateOnly fechaEntrada, DateOnly fechaSalida, int? excludeReservaId = null)
+        {
+            return await _context.DetallesReserva
+                .AnyAsync(d =>
+                    d.IdHabitacion == idHabitacion &&
+                    (excludeReservaId == null || d.IdReserva != excludeReservaId) &&
+                    d.Reserva.Estado != EstadoReserva.Cancelada &&
+                    d.Reserva.Estado != EstadoReserva.CheckOut &&
+                    d.Reserva.FechaEntrada < fechaSalida &&
+                    d.Reserva.FechaSalida > fechaEntrada);
+        }
+    }
+
 }

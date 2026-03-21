@@ -57,8 +57,8 @@ namespace HoteleriaApp.Core.Application.Services
 
             query = query.Where(h =>
                 !h.Reservas.Any(rh =>
-                    rh.Reserva.FechaCheckIn < fechaFin &&
-                    fechaInicio < rh.Reserva.FechaCheckOut) &&
+                    rh.Reserva.FechaEntrada < fechaFin &&
+                    fechaInicio < rh.Reserva.FechaSalida) &&
                 !h.Bloqueos.Any(b =>
                     b.FechaInicio < fechaFin &&
                     fechaInicio < b.FechaFin));
@@ -88,18 +88,18 @@ namespace HoteleriaApp.Core.Application.Services
             {
                 return false;
             }
-
-            if (habitacion.Capacidad < reserva.CantidadHuespedes)
+            
+            if (habitacion.Capacidad < reserva.NumeroHuespedes)
             {
                 return false;
             }
 
-            var fechaInicio = reserva.FechaCheckIn;
-            var fechaFin = reserva.FechaCheckOut;
+            var fechaInicio = reserva.FechaEntrada;
+            var fechaFin = reserva.FechaSalida;
 
             var tieneReservaSolapada = habitacion.Reservas.Any(rh =>
-                rh.Reserva.FechaCheckIn < fechaFin &&
-                fechaInicio < rh.Reserva.FechaCheckOut);
+                rh.Reserva.FechaEntrada < fechaFin &&
+                fechaInicio < rh.Reserva.FechaSalida);
 
             if (tieneReservaSolapada)
             {
@@ -152,8 +152,8 @@ namespace HoteleriaApp.Core.Application.Services
             }
 
             var tieneReservaSolapada = habitacion.Reservas.Any(rh =>
-                rh.Reserva.FechaCheckIn < fechaFin &&
-                fechaInicio < rh.Reserva.FechaCheckOut);
+                rh.Reserva.FechaEntrada < fechaFin &&
+                fechaInicio < rh.Reserva.FechaSalida);
 
             if (tieneReservaSolapada)
             {
