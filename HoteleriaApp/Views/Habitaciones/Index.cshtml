@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Inventario de Habitaciones";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Inventario de Habitaciones</h2>
+    <a asp-action="Disponibilidad" class="btn btn-outline-primary">Buscar Disponibilidad</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover" id="tablaInventario">
+        <thead class="table-light">
+            <tr>
+                <th>Número</th>
+                <th>Piso</th>
+                <th>Tipo</th>
+                <th>Capacidad</th>
+                <th>Estado</th>
+                <th>Amenities</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div class="text-muted small" id="mensajeCarga">Cargando inventario...</div>
+<div class="alert alert-danger d-none" id="mensajeError" role="alert"></div>
+
+@section Scripts {
+    <script>
+        (async function () {
+            try {
+                const res = await fetch('/api/habitaciones');
+                const habitaciones = await res.json();
+                const tbody = document.querySelector('#tablaInventario tbody');
+                const msg = document.getElementById('mensajeCarga');
+                msg.textContent = habitaciones.length === 0 ? 'No hay habitaciones registradas.' : '';
+
+                habitaciones.forEach(h => {
+                    const amenities = (h.amenities || []).map(a => a.amenity?.nombre || '').filter(Boolean).join(', ') || '-';
+                    const estado = h.estado === 0 ? 'Disponible' : h.estado === 1 ? 'Ocupada' : 'Fuera de servicio';
+                    tbody.innerHTML += `<tr>
+                        <td>${h.numero}</td>
+                        <td>${h.piso}</td>
+                        <td>${h.tipoHabitacion?.nombre || '-'}</td>
+                        <td>${h.capacidad}</td>
+                        <td><span class="badge bg-${h.estado === 0 ? 'success' : h.estado === 1 ? 'warning' : 'secondary'}">${estado}</span></td>
+                        <td>${amenities}</td>
+                    </tr>`;
+                });
+            } catch (e) {
+                document.getElementById('mensajeError').classList.remove('d-none');
+                document.getElementById('mensajeError').textContent = 'Error al cargar inventario: ' + e.message;
+                document.getElementById('mensajeCarga').textContent = '';
+            }
+        })();
+    </script>
+}

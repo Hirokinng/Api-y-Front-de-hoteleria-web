@@ -26,7 +26,7 @@ namespace HoteleriaApp.Core.Domain.Entities
             Nombre = nombre;
             Descripcion = descripcion;
         }
-       
+
         public void Update(string nombre, string descripcion)
         {
             if (string.IsNullOrWhiteSpace(nombre))

@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Bloquear Habitación";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Bloquear Habitación</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al Inventario</a>
+</div>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <form id="frmBloquear">
+            <div class="mb-3">
+                <label class="form-label">Habitación</label>
+                <select class="form-select" id="habitacionId" required></select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fecha inicio</label>
+                <input type="date" class="form-control" id="fechaInicio" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Fecha fin</label>
+                <input type="date" class="form-control" id="fechaFin" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Motivo</label>
+                <input type="text" class="form-control" id="motivo" placeholder="Ej. Mantenimiento eléctrico" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tipo de bloqueo</label>
+                <select class="form-select" id="tipo">
+                    <option value="0">Mantenimiento</option>
+                    <option value="1">Evento especial</option>
+                    <option value="2">Otro</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-warning">Bloquear</button>
+        </form>
+    </div>
+</div>
+
+<div class="alert alert-success d-none mt-3" id="mensajeOk" role="alert"></div>
+<div class="alert alert-danger d-none mt-3" id="mensajeErr" role="alert"></div>
+
+@section Scripts {
+    <script>
+        (async function () {
+            try {
+                const habitaciones = await fetch('/api/habitaciones').then(r => r.json());
+                const sel = document.getElementById('habitacionId');
+                habitaciones.forEach(h => {
+                    sel.innerHTML += `<option value="${h.id}">${h.numero} - ${h.tipoHabitacion?.nombre || '-'}</option>`;
+                });
+            } catch (e) {
+                document.getElementById('mensajeErr').classList.remove('d-none');
+                document.getElementById('mensajeErr').textContent = 'Error al cargar habitaciones: ' + e.message;
+            }
+        })();
+
+        document.getElementById('frmBloquear').addEventListener('submit', async e => {
+            e.preventDefault();
+            const habitacionId = parseInt(document.getElementById('habitacionId').value);
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+            const motivo = document.getElementById('motivo').value;
+            const tipo = parseInt(document.getElementById('tipo').value);
+            document.getElementById('mensajeOk').classList.add('d-none');
+            document.getElementById('mensajeErr').classList.add('d-none');
+
+            try {
+                const res = await fetch('/api/habitaciones/bloquear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ habitacionId, fechaInicio, fechaFin, motivo, tipo })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok) {
+                    document.getElementById('mensajeOk').classList.remove('d-none');
+                    document.getElementById('mensajeOk').textContent = 'Habitación bloqueada correctamente.';
+                } else {
+                    document.getElementById('mensajeErr').classList.remove('d-none');
+                    document.getElementById('mensajeErr').textContent = typeof data === 'string' ? data : (data.message || data.detail || data.title || 'No se pudo bloquear.');
+                }
+            } catch (e) {
+                document.getElementById('mensajeErr').classList.remove('d-none');
+                document.getElementById('mensajeErr').textContent = 'Error: ' + e.message;
+            }
+        });
+    </script>
+}
