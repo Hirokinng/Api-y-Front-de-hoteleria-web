@@ -11,7 +11,8 @@ namespace HoteleriaApp.Core.Domain.Entities
         public Guid Id { get; private set; }
         public string Nombre { get; private set; } = string.Empty;
         public string Descripcion { get; private set; } = string.Empty;
-
+        public int NumeroPiso { get; private set; }
+        public bool Activo { get; private set; }
         private Piso() { }
 
         public Piso(string nombre, string descripcion)

@@ -1,8 +1,9 @@
-using HoteleriaApp.Infrastructure.Persistence.Repositories;
 using HoteleriaApp.Core.Application.Interfaces;
 using HoteleriaApp.Core.Application.Services;
-using Microsoft.EntityFrameworkCore;
+using HoteleriaApp.Core.Domain.Interfaces;
 using HoteleriaApp.Infrastructure.Persistence.Contexts;
+using HoteleriaApp.Infrastructure.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
@@ -22,7 +23,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IApplicationDbContext>(provider =>
     provider.GetRequiredService<ApplicationDbContext>());
-
+builder.Services.AddScoped<IPisoService, PisoService>();
+builder.Services.AddScoped<IPisoRepository, PisoRepository>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 builder.Services.AddEndpointsApiExplorer();
