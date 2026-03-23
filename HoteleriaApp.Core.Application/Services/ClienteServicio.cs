@@ -2,6 +2,11 @@
 using HoteleriaApp.Core.Application.DTOs;
 using HoteleriaApp.Core.Application.Interfaces;
 using HoteleriaApp.Core.Domain.Entities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 
 namespace HoteleriaApp.Core.Application.Services
@@ -10,11 +15,13 @@ namespace HoteleriaApp.Core.Application.Services
     {
         private readonly IClienteRepositorio _repo;
         private readonly IEmailServicio _email;
+        private readonly IConfiguration _configuration;
 
-        public ClienteServicio(IClienteRepositorio repo, IEmailServicio email)
+        public ClienteServicio(IClienteRepositorio repo, IEmailServicio email, IConfiguration configuration)
         {
             _repo = repo;
             _email = email;
+            _configuration = configuration;
         }
 
         public ClienteAuthResultDto Registrar(ClienteRegisterDto dto)
@@ -71,8 +78,6 @@ namespace HoteleriaApp.Core.Application.Services
             if (cliente == null || !cliente.Activo)
                 return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
 
-            // Compatibilidad: si es BCrypt, verificamos con Verify.
-            // Si NO parece BCrypt (data vieja), comparamos texto plano para que no se rompa.
             bool okPass;
             if (!string.IsNullOrWhiteSpace(cliente.PasswordHash) && cliente.PasswordHash.StartsWith("$2"))
                 okPass = BCrypt.Net.BCrypt.Verify(password, cliente.PasswordHash);
@@ -82,19 +87,47 @@ namespace HoteleriaApp.Core.Application.Services
             if (!okPass)
                 return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
 
+            var key = _configuration["Jwt:Key"];
+            var issuer = _configuration["Jwt:Issuer"];
+            var audience = _configuration["Jwt:Audience"];
+
+            if (string.IsNullOrWhiteSpace(key))
+                return new ClienteAuthResultDto { ok = false, message = "JWT Key no configurada." };
+
+            var claims = new[]
+            {
+              new Claim(ClaimTypes.NameIdentifier, cliente.Id.ToString()),
+              new Claim(ClaimTypes.Name, cliente.Nombre),
+              new Claim(ClaimTypes.Email, cliente.Email)
+            };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var tokenDescriptor = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: credentials
+            );
+
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+
             return new ClienteAuthResultDto
             {
                 ok = true,
                 message = "Login correcto.",
                 id_cliente = cliente.Id,
-                email = cliente.Email
+                email = cliente.Email,
+                token = token
             };
         }
 
-        public ClienteAuthResultDto ActualizarPerfil(ClienteUpdateDto dto)
+        public ClienteAuthResultDto ActualizarPerfil(int clienteId, ClienteUpdateDto dto)
         {
-            if (dto.id_cliente <= 0)
-                return new ClienteAuthResultDto { ok = false, message = "id_cliente inválido." };
+            if (clienteId <= 0)
+                return new ClienteAuthResultDto { ok = false, message = "Cliente inválido." };
 
             var nombre = (dto.nombre ?? "").Trim();
             var telefono = dto.telefono?.Trim();
@@ -102,12 +135,12 @@ namespace HoteleriaApp.Core.Application.Services
             if (string.IsNullOrWhiteSpace(nombre))
                 return new ClienteAuthResultDto { ok = false, message = "El nombre es obligatorio." };
 
-            var cliente = _repo.GetClientePorId(dto.id_cliente);
+            var cliente = _repo.GetClientePorId(clienteId);
 
             if (cliente == null || !cliente.Activo)
                 return new ClienteAuthResultDto { ok = false, message = "Cliente no encontrado o inactivo." };
 
-            cliente. Nombre = nombre;
+            cliente.Nombre = nombre;
             cliente.Telefono = string.IsNullOrWhiteSpace(telefono) ? null : telefono;
 
             _repo.Guardar();
@@ -122,5 +155,70 @@ namespace HoteleriaApp.Core.Application.Services
                 email = cliente.Email
             };
         }
+
+        public ClienteAuthResultDto CambiarPassword(int clienteId, ClienteCambiarPasswordDto dto)
+        {
+            if (clienteId <= 0)
+                return new ClienteAuthResultDto { ok = false, message = "Cliente inválido." };
+
+            var passwordActual = dto.passwordActual ?? "";
+            var passwordNueva = dto.passwordNueva ?? "";
+
+            if (string.IsNullOrWhiteSpace(passwordActual) || string.IsNullOrWhiteSpace(passwordNueva))
+                return new ClienteAuthResultDto { ok = false, message = "La contraseña actual y la nueva son obligatorias." };
+
+            if (passwordNueva.Length < 6)
+                return new ClienteAuthResultDto { ok = false, message = "La nueva contraseña debe tener al menos 6 caracteres." };
+
+            var cliente = _repo.GetClientePorId(clienteId);
+
+            if (cliente == null || !cliente.Activo)
+                return new ClienteAuthResultDto { ok = false, message = "Cliente no encontrado o inactivo." };
+
+            bool okPass;
+            if (!string.IsNullOrWhiteSpace(cliente.PasswordHash) && cliente.PasswordHash.StartsWith("$2"))
+                okPass = BCrypt.Net.BCrypt.Verify(passwordActual, cliente.PasswordHash);
+            else
+                okPass = (cliente.PasswordHash == passwordActual);
+
+            if (!okPass)
+                return new ClienteAuthResultDto { ok = false, message = "La contraseña actual no es correcta." };
+
+            cliente.PasswordHash = BCrypt.Net.BCrypt.HashPassword(passwordNueva);
+
+            _repo.Guardar();
+
+            _email.Enviar(cliente.Email, "Contraseña actualizada", $"Hola {cliente.Nombre}, tu contraseña fue cambiada correctamente.");
+
+            return new ClienteAuthResultDto
+            {
+                ok = true,
+                message = "Contraseña actualizada correctamente.",
+                id_cliente = cliente.Id,
+                email = cliente.Email
+            };
+        }
+
+        public ClientePerfilDto? ObtenerPerfil(int clienteId)
+        {
+            if (clienteId <= 0)
+                return null;
+
+            var cliente = _repo.GetClientePorId(clienteId);
+
+            if (cliente == null || !cliente.Activo)
+                return null;
+
+            return new ClientePerfilDto
+            {
+                id_cliente = cliente.Id,
+                nombre = cliente.Nombre,
+                email = cliente.Email,
+                telefono = cliente.Telefono,
+                activo = cliente.Activo,
+                fecha_registro = cliente.FechaRegistro
+            };
+        }
+
     }
 }

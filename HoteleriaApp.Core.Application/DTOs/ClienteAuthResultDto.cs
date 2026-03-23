@@ -12,4 +12,5 @@ public class ClienteAuthResultDto
     public string message { get; set; } = string.Empty;
     public int? id_cliente { get; set; }
     public string? email { get; set; }
+    public string? token { get; set; }
 }
