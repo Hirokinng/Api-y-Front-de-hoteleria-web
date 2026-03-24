@@ -51,9 +51,9 @@ namespace HoteleriaApp.Controllers.Api
         public async Task<ActionResult<List<Habitacion>>> GetDisponibles(
             [FromQuery] DateOnly fechaInicio,
             [FromQuery] DateOnly fechaFin,
-            [FromQuery] int? tipoHabitacionId,
+            [FromQuery] Guid? tipoHabitacionId,
             [FromQuery] int? capacidadMinima,
-            [FromQuery] List<int>? amenitiesIds)
+            [FromQuery] List<Guid>? amenitiesIds)
         {
             var disponibles = await _habitacionesService.BuscarDisponiblesAsync(
                 fechaInicio,
@@ -67,8 +67,8 @@ namespace HoteleriaApp.Controllers.Api
 
         public class AsignarHabitacionRequest
         {
-            public int ReservaId { get; set; }
-            public int HabitacionId { get; set; }
+            public Guid ReservaId { get; set; }
+            public Guid HabitacionId { get; set; }
         }
 
         [HttpPost("asignar")]
@@ -88,7 +88,7 @@ namespace HoteleriaApp.Controllers.Api
 
         public class BloqueoHabitacionRequest
         {
-            public int HabitacionId { get; set; }
+            public Guid HabitacionId { get; set; }
             public DateOnly FechaInicio { get; set; }
             public DateOnly FechaFin { get; set; }
             public string Motivo { get; set; } = null!;

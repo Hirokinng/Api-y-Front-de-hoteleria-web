@@ -12,7 +12,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
         public HabitacionRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IReadOnlyList<Habitacion>> GetDisponiblesAsync(
-            int idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
+            Guid idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
         {
             return await _dbSet
                 .AsNoTracking()

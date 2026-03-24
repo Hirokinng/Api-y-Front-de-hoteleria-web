@@ -26,9 +26,9 @@ namespace HoteleriaApp.Core.Application.Services
         public async Task<List<Habitacion>> BuscarDisponiblesAsync(
             DateOnly fechaInicio,
             DateOnly fechaFin,
-            int? tipoHabitacionId = null,
+            Guid? tipoHabitacionId = null,
             int? capacidadMinima = null,
-            List<int>? amenitiesIds = null)
+            List<Guid>? amenitiesIds = null)  // Cambiado de List<int> a List<Guid>
         {
             var query = _context.Habitaciones
                 .Include(h => h.TipoHabitacion)
@@ -66,54 +66,35 @@ namespace HoteleriaApp.Core.Application.Services
             return await query.ToListAsync();
         }
 
-        public async Task<bool> AsignarHabitacionAReservaAsync(int reservaId, int habitacionId)
+        public async Task<bool> AsignarHabitacionAReservaAsync(Guid reservaId, Guid habitacionId)
         {
             var reserva = await _context.Reservas
                 .Include(r => r.Habitaciones)
                     .ThenInclude(rh => rh.Habitacion)
-                .FirstOrDefaultAsync(r => r.Id == reservaId);
+                .FirstOrDefaultAsync(r => r.Id == reservaId);  // Comparación con Guid
 
-            if (reserva is null)
-            {
-                return false;
-            }
+            if (reserva is null) return false;
 
             var habitacion = await _context.Habitaciones
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
                 .Include(h => h.Bloqueos)
-                .FirstOrDefaultAsync(h => h.Id == habitacionId);
+                .FirstOrDefaultAsync(h => h.Id == habitacionId);  // Comparación con Guid
 
-            if (habitacion is null)
-            {
-                return false;
-            }
-            
-            if (habitacion.Capacidad < reserva.NumeroHuespedes)
-            {
-                return false;
-            }
+            if (habitacion is null) return false;
+
+            if (habitacion.Capacidad < reserva.NumeroHuespedes) return false;
 
             var fechaInicio = reserva.FechaEntrada;
             var fechaFin = reserva.FechaSalida;
 
-            var tieneReservaSolapada = habitacion.Reservas.Any(rh =>
+            if (habitacion.Reservas.Any(rh =>
                 rh.Reserva.FechaEntrada < fechaFin &&
-                fechaInicio < rh.Reserva.FechaSalida);
+                fechaInicio < rh.Reserva.FechaSalida)) return false;
 
-            if (tieneReservaSolapada)
-            {
-                return false;
-            }
-
-            var tieneBloqueoSolapado = habitacion.Bloqueos.Any(b =>
+            if (habitacion.Bloqueos.Any(b =>
                 b.FechaInicio < fechaFin &&
-                fechaInicio < b.FechaFin);
-
-            if (tieneBloqueoSolapado)
-            {
-                return false;
-            }
+                fechaInicio < b.FechaFin)) return false;
 
             var asignacion = new ReservaHabitacion
             {
@@ -129,45 +110,29 @@ namespace HoteleriaApp.Core.Application.Services
         }
 
         public async Task<BloqueoHabitacion?> CrearBloqueoHabitacionAsync(
-            int habitacionId,
+            Guid habitacionId,
             DateOnly fechaInicio,
             DateOnly fechaFin,
             string motivo,
             TipoBloqueoHabitacion tipo)
         {
-            if (fechaFin <= fechaInicio)
-            {
-                return null;
-            }
+            if (fechaFin <= fechaInicio) return null;
 
             var habitacion = await _context.Habitaciones
                 .Include(h => h.Bloqueos)
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
-                .FirstOrDefaultAsync(h => h.Id == habitacionId);
+                .FirstOrDefaultAsync(h => h.Id == habitacionId); // Comparación con Guid
 
-            if (habitacion is null)
-            {
-                return null;
-            }
+            if (habitacion is null) return null;
 
-            var tieneReservaSolapada = habitacion.Reservas.Any(rh =>
+            if (habitacion.Reservas.Any(rh =>
                 rh.Reserva.FechaEntrada < fechaFin &&
-                fechaInicio < rh.Reserva.FechaSalida);
+                fechaInicio < rh.Reserva.FechaSalida)) return null;
 
-            if (tieneReservaSolapada)
-            {
-                return null;
-            }
-
-            var tieneBloqueoSolapado = habitacion.Bloqueos.Any(b =>
+            if (habitacion.Bloqueos.Any(b =>
                 b.FechaInicio < fechaFin &&
-                fechaInicio < b.FechaFin);
-
-            if (tieneBloqueoSolapado)
-            {
-                return null;
-            }
+                fechaInicio < b.FechaFin)) return null;
 
             var bloqueo = new BloqueoHabitacion
             {

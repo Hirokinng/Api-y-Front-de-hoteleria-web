@@ -9,14 +9,14 @@ namespace HoteleriaApp.Core.Application.Interfaces
         Task<List<Habitacion>> BuscarDisponiblesAsync(
             DateOnly fechaInicio,
             DateOnly fechaFin,
-            int? tipoHabitacionId = null,
+            Guid? tipoHabitacionId = null,
             int? capacidadMinima = null,
-            List<int>? amenitiesIds = null);
+            List<Guid>? amenitiesIds = null);
 
-        Task<bool> AsignarHabitacionAReservaAsync(int reservaId, int habitacionId);
+        Task<bool> AsignarHabitacionAReservaAsync(Guid reservaId, Guid habitacionId);
 
         Task<BloqueoHabitacion?> CrearBloqueoHabitacionAsync(
-            int habitacionId,
+            Guid habitacionId,
             DateOnly fechaInicio,
             DateOnly fechaFin,
             string motivo,

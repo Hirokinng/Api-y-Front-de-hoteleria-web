@@ -1,12 +1,14 @@
 ﻿using HoteleriaApp.Core.Application.DTOs.Reservas;
 using HoteleriaApp.Core.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace HoteleriaApp.Controllers.Api
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]                                    
     public class ReservaApiController : ControllerBase
     {
         private readonly IReservaService _reservaService;
@@ -24,29 +26,26 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(reservas);
         }
 
-        // GET: api/reservaapi/5
+        // GET: api/reservaapi/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReservaDto>> GetById(int id)
+        public async Task<ActionResult<ReservaDto>> GetById(Guid id)
         {
             var reserva = await _reservaService.GetByIdAsync(id);
-
             if (reserva == null)
                 return NotFound();
-
             return Ok(reserva);
         }
 
         // GET: api/reservaapi/disponibilidad
         [HttpGet("disponibilidad")]
         public async Task<ActionResult<IReadOnlyList<HabitacionDisponibleDto>>> BuscarDisponibilidad(
-            [FromQuery] int idCategoria,
+            [FromQuery] Guid idCategoria,
             [FromQuery] DateOnly fechaEntrada,
             [FromQuery] DateOnly fechaSalida,
             [FromQuery] byte numHuespedes)
         {
             var disponibles = await _reservaService.BuscarDisponibilidadAsync(
                 idCategoria, fechaEntrada, fechaSalida, numHuespedes);
-
             return Ok(disponibles);
         }
 
@@ -54,37 +53,32 @@ namespace HoteleriaApp.Controllers.Api
         [HttpPost]
         public async Task<ActionResult> Crear([FromBody] CrearReservaDto dto)
         {
-            var resultado = await _reservaService.CrearAsync(dto);
-
+            var idCliente = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!); 
+            var resultado = await _reservaService.CrearAsync(dto, idCliente);
             if (!resultado.Ok)
                 return BadRequest(resultado.Error);
-
             return CreatedAtAction(nameof(GetById),
                 new { id = resultado.Reserva!.Id },
                 resultado.Reserva);
         }
 
         // PUT: api/reservaapi
-        [HttpPut]
-        public async Task<ActionResult> Editar([FromBody] EditarReservaDto dto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Editar(Guid id, [FromBody] EditarReservaDto dto)
         {
-            var resultado = await _reservaService.EditarAsync(dto);
-
+            var resultado = await _reservaService.EditarAsync(id, dto);
             if (!resultado.Ok)
                 return BadRequest(resultado.Error);
-
             return NoContent();
         }
 
-        // DELETE: api/reservaapi/5
+        // DELETE: api/reservaapi/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Cancelar(int id)
+        public async Task<ActionResult> Cancelar(Guid id)
         {
             var resultado = await _reservaService.CancelarAsync(id);
-
             if (!resultado.Ok)
                 return BadRequest(resultado.Error);
-
             return NoContent();
         }
     }

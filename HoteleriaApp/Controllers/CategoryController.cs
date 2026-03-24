@@ -32,7 +32,7 @@ namespace HoteleriaApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             if (category == null) return NotFound();
@@ -58,7 +58,7 @@ namespace HoteleriaApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _categoryService.DeleteAsync(id);
             return RedirectToAction("Index");

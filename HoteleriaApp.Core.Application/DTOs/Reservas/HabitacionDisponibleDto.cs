@@ -3,7 +3,7 @@
 
     public class HabitacionDisponibleDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string NumeroHabitacion { get; set; } = null!;
         public int NumeroPiso { get; set; }
         public string NombreCategoria { get; set; } = null!;
