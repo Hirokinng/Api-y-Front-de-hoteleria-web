@@ -1,24 +1,137 @@
 ﻿@model HoteleriaApp.Core.Application.DTOs.Category.CreateCategoryDto
 
-<h2>Nueva Categoría</h2>
+@{
+    ViewData["Title"] = "Nueva Categoría";
+}
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label>Nombre</label>
-        <input asp-for="Name" class="form-control" />
+<div class="max-w-6xl mx-auto px-8 py-10">
+
+    <!-- HEADER -->
+    <header class="mb-10">
+        <div class="flex items-center gap-3 mb-4">
+            <a asp-action="Index" class="p-2 text-secondary hover:text-primary hover:bg-surface-container-low rounded-lg transition-all">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+            </a>
+            <span class="text-secondary text-sm">Categorías</span>
+            <span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
+            <span class="text-primary text-sm font-medium">Nueva Categoría</span>
+        </div>
+        <h1 class="font-headline text-5xl text-primary font-bold mb-4 tracking-tight">Nueva Categoría</h1>
+        <p class="text-secondary text-lg max-w-2xl">Define los estándares de lujo y confort. Las categorías permiten organizar tu inventario y segmentar tu oferta para diferentes tipos de huéspedes.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded-xl shadow-sm border border-outline-variant/10">
+
+        <!-- FORM -->
+        <section class="lg:col-span-8 bg-white p-8 md:p-12">
+            <form asp-action="Create" method="post" class="space-y-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-primary tracking-widest uppercase mb-2">Nombre de la Categoría *</label>
+                        <input asp-for="Name" type="text"
+                               class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-on-surface"
+                               placeholder="Ej. Suite Presidencial" />
+                        <span asp-validation-for="Name" class="text-red-500 text-xs mt-1 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">error</span>
+                        </span>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-primary tracking-widest uppercase mb-2">Descripción</label>
+                        <textarea asp-for="Description" rows="4"
+                                  class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-on-surface"
+                                  placeholder="Describe la experiencia, vistas y mobiliario..."></textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-primary tracking-widest uppercase mb-2">Precio por Noche (RD$) *</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-4 text-secondary font-medium">RD$</span>
+                            <input asp-for="PricePerNight" type="number" step="0.01" min="0"
+                                   class="w-full bg-surface-container-highest border-none rounded-lg p-4 pl-12 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-on-surface font-medium"
+                                   placeholder="0.00" />
+                        </div>
+                        <span asp-validation-for="PricePerNight" class="text-red-500 text-xs mt-1"></span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-primary tracking-widest uppercase mb-2">Características</label>
+                    <input asp-for="Characteristics" type="text"
+                           class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-on-surface"
+                           placeholder="Ej. WiFi, TV, Jacuzzi, Minibar, Vista al Mar..." />
+                    <p class="text-xs text-secondary mt-2">Separa las características con comas.</p>
+                </div>
+
+                <div class="flex items-center justify-end gap-4 pt-8 border-t border-outline-variant/10">
+                    <a asp-action="Index"
+                       class="px-8 py-3 rounded-lg border-2 border-outline-variant text-secondary font-bold hover:bg-surface-container-low transition-all no-underline">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="px-10 py-3 rounded-lg bg-[#2E86DE] text-white font-bold shadow-lg shadow-blue-500/20 hover:bg-[#2575c0] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        Guardar Categoría
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- SIDEBAR -->
+        <aside class="lg:col-span-4 bg-[#002547] p-8 md:p-12 flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(circle_at_top_right,_#59a6ff_0%,_transparent_60%)]"></div>
+            <div class="relative z-10">
+                <div class="mb-10">
+                    <span class="material-symbols-outlined text-[#59a6ff] text-4xl mb-4 block" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+                    <h2 class="font-headline text-3xl text-white mb-6">Consejos del Concierge</h2>
+                </div>
+                <div class="space-y-10">
+                    <div class="flex gap-4">
+                        <span class="text-[#59a6ff] font-headline text-2xl serif-italic flex-shrink-0">01.</span>
+                        <div>
+                            <p class="text-white font-medium leading-relaxed">"Asegúrate de que el precio sea competitivo respecto a la temporada."</p>
+                            <p class="text-blue-300/60 text-sm mt-2">Un ajuste del 5% puede aumentar la ocupación en un 15%.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="text-[#59a6ff] font-headline text-2xl serif-italic flex-shrink-0">02.</span>
+                        <div>
+                            <p class="text-white font-medium leading-relaxed">"Las características ayudan a vender más experiencias, no solo habitaciones."</p>
+                            <p class="text-blue-300/60 text-sm mt-2">Menciona beneficios exclusivos como acceso al lounge o check-out tardío.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <span class="text-[#59a6ff] font-headline text-2xl serif-italic flex-shrink-0">03.</span>
+                        <div>
+                            <p class="text-white font-medium leading-relaxed">"Utiliza nombres evocadores que resuenen con tu marca."</p>
+                            <p class="text-blue-300/60 text-sm mt-2">Evita 'Habitación 1', prefiere 'Suite Ejecutiva' o 'Refugio de Serenidad'.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="relative z-10 mt-16 p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="h-12 w-12 rounded-full bg-blue-500/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[#59a6ff]">trending_up</span>
+                    </div>
+                    <div>
+                        <h4 class="text-white text-sm font-bold">Métrica de Impacto</h4>
+                        <p class="text-blue-300/60 text-xs">Análisis predictivo</p>
+                    </div>
+                </div>
+                <p class="text-blue-100 text-sm serif-italic">"Las categorías con descripciones de más de 200 caracteres reciben un 40% más de interés en preventa."</p>
+            </div>
+        </aside>
     </div>
-    <div class="mb-3">
-        <label>Descripción</label>
-        <input asp-for="Description" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Precio por Noche</label>
-        <input asp-for="PricePerNight" class="form-control" />
-    </div>
-    <div class="mb-3">
-        <label>Características</label>
-        <input asp-for="Characteristics" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+
+    <footer class="mt-10 text-center">
+        <p class="text-secondary text-sm">
+            ¿Necesitas ayuda? Revisa la
+            <a class="text-[#2E86DE] font-semibold underline decoration-2 underline-offset-4" href="/swagger" target="_blank">Documentación de la API</a>.
+        </p>
+    </footer>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
