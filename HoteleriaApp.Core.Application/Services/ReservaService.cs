@@ -25,14 +25,14 @@ namespace HoteleriaApp.Core.Application.Services
             return reservas.Select(MapToDto).ToList();
         }
 
-        public async Task<ReservaDto?> GetByIdAsync(int id)
+        public async Task<ReservaDto?> GetByIdAsync(Guid id)
         {
             var reserva = await _reservaRepo.GetByIdWithDetailsAsync(id);
             return reserva is null ? null : MapToDto(reserva);
         }
 
         public async Task<IReadOnlyList<HabitacionDisponibleDto>> BuscarDisponibilidadAsync(
-            int idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
+            Guid idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
         {
             var habitaciones = await _reservaRepo.GetHabitacionesDisponiblesAsync(
                 idCategoria, fechaEntrada, fechaSalida, numHuespedes);
@@ -54,7 +54,7 @@ namespace HoteleriaApp.Core.Application.Services
             }).ToList();
         }
 
-        public async Task<(bool Ok, string? Error, ReservaDto? Reserva)> CrearAsync(CrearReservaDto dto)
+        public async Task<(bool Ok, string? Error, ReservaDto? Reserva)> CrearAsync(CrearReservaDto dto, Guid idCliente)
         {
             if (dto.FechaSalida <= dto.FechaEntrada)
                 return (false, "La fecha de salida debe ser posterior a la de entrada.", null);
@@ -77,7 +77,7 @@ namespace HoteleriaApp.Core.Application.Services
             decimal subtotal = precioNoche * totalNoches;
 
             decimal totalServicios = 0m;
-            var serviciosAgregar = new List<(int IdServicio, decimal Precio)>();
+            var serviciosAgregar = new List<(Guid IdServicio, decimal Precio)>();
 
             foreach (var idServicio in dto.IdsServicios)
             {
@@ -91,7 +91,7 @@ namespace HoteleriaApp.Core.Application.Services
             var reserva = new Reserva
             {
                 NumeroReserva = GenerarNumeroReserva(),
-                IdCliente = dto.IdCliente,
+                IdCliente = idCliente,                  
                 IdCategoria = dto.IdCategoria,
                 FechaEntrada = dto.FechaEntrada,
                 FechaSalida = dto.FechaSalida,
@@ -123,9 +123,9 @@ namespace HoteleriaApp.Core.Application.Services
             return (true, null, creada is null ? null : MapToDto(creada));
         }
 
-        public async Task<(bool Ok, string? Error)> EditarAsync(EditarReservaDto dto)
+        public async Task<(bool Ok, string? Error)> EditarAsync(Guid id, EditarReservaDto dto)
         {
-            var reserva = await _reservaRepo.GetByIdWithDetailsAsync(dto.Id);
+            var reserva = await _reservaRepo.GetByIdWithDetailsAsync(id);  
             if (reserva is null)
                 return (false, "Reserva no encontrada.");
 
@@ -139,7 +139,7 @@ namespace HoteleriaApp.Core.Application.Services
             if (idHabitacion.HasValue)
             {
                 var solapada = await _reservaRepo.ExisteSolapamientoAsync(
-                    idHabitacion.Value, dto.FechaEntrada, dto.FechaSalida, dto.Id);
+                    idHabitacion.Value, dto.FechaEntrada, dto.FechaSalida, id);  
                 if (solapada)
                     return (false, "La habitación no está disponible para las nuevas fechas.");
             }
@@ -159,7 +159,7 @@ namespace HoteleriaApp.Core.Application.Services
             return (true, null);
         }
 
-        public async Task<(bool Ok, string? Error)> CancelarAsync(int id)
+        public async Task<(bool Ok, string? Error)> CancelarAsync(Guid id)
         {
             var reserva = await _reservaRepo.GetByIdAsync(id);
             if (reserva is null)
@@ -192,22 +192,15 @@ namespace HoteleriaApp.Core.Application.Services
             {
                 Id = r.Id,
                 NumeroReserva = r.NumeroReserva,
-                IdCliente = r.IdCliente,
-                NombreCliente = r.Cliente?.Nombre ?? string.Empty,
-                IdCategoria = r.IdCategoria,
                 NombreCategoria = r.Category?.Name ?? string.Empty,
                 NumeroHabitacion = habitacion?.Numero ?? "-",
                 FechaEntrada = r.FechaEntrada,
                 FechaSalida = r.FechaSalida,
                 NumeroHuespedes = r.NumeroHuespedes,
                 Estado = r.Estado.ToString(),
-                PrecioBaseNoche = r.PrecioBaseNoche,
                 TotalNoches = r.TotalNoches,
-                SubtotalHabitacion = r.SubtotalHabitacion,
-                TotalServicios = r.TotalServicios,
                 Total = r.Total,
                 FechaCreacion = r.FechaCreacion,
-                FechaCancelacion = r.FechaCancelacion,
                 Servicios = r.ReservaServicios
                     .Select(rs => rs.Servicio?.Nombre ?? string.Empty)
                     .Where(n => n.Length > 0)

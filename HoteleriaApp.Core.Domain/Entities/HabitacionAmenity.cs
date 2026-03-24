@@ -2,10 +2,11 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class HabitacionAmenity
     {
-        public int HabitacionId { get; set; }
+        public Guid Id { get; set; }
+        public Guid HabitacionId { get; set; }
         public Habitacion Habitacion { get; set; } = null!;
 
-        public int AmenityId { get; set; }
+        public Guid AmenityId { get; set; }
         public Amenity Amenity { get; set; } = null!;
     }
 }

@@ -5,9 +5,9 @@ namespace HoteleriaApp.Core.Application.Interfaces
     public interface ICategoryService
     {
         Task<List<CategoryDto>> GetAllAsync();
-        Task<CategoryDto> GetByIdAsync(int id);
+        Task<CategoryDto> GetByIdAsync(Guid id);
         Task CreateAsync(CreateCategoryDto dto);
         Task UpdateAsync(UpdateCategoryDto dto);
-        Task DeleteAsync(int id);
+        Task DeleteAsync(Guid id);
     }
 }

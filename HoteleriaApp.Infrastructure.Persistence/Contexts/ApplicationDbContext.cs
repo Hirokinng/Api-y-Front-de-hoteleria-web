@@ -37,7 +37,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
         public DbSet<CategoriaServicio> CategoriasServicio { get; set; }
 
         // Implementación para GenericRepository
-        public DbSet<T> Set<T>() where T : class => base.Set<T>();
+        public override DbSet<T> Set<T>() where T : class => base.Set<T>();
 
         
 

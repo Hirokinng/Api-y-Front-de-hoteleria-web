@@ -4,10 +4,10 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class HistorialEstadoReserva : BaseEntity
     {
-        public int IdReserva { get; set; }
+        public Guid IdReserva { get; set; }
         public EstadoReserva? EstadoAnterior { get; set; }
         public EstadoReserva EstadoNuevo { get; set; }
-        public int? IdUsuario { get; set; }
+        public Guid? IdUsuario { get; set; }
         public DateTime FechaCambio { get; set; } = DateTime.UtcNow;
         public string? Observacion { get; set; }
 

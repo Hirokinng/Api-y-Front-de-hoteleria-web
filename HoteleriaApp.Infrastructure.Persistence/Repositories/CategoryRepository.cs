@@ -30,7 +30,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
                 }).ToListAsync();
         }
 
-        public async Task<CategoryDto> GetByIdAsync(int id)
+        public async Task<CategoryDto> GetByIdAsync(Guid id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return null;
@@ -76,7 +76,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return;

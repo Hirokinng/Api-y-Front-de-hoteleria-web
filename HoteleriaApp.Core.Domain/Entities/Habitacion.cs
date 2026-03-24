@@ -4,17 +4,17 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class Habitacion
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Numero { get; set; } = null!;
         public int Piso { get; set; }
 
-        public int TipoHabitacionId { get; set; }
+        public Guid TipoHabitacionId { get; set; }
         public TipoHabitacion TipoHabitacion { get; set; } = null!;
 
         public int Capacidad { get; set; }
         public HabitacionEstado Estado { get; set; } = HabitacionEstado.Disponible;
 
-        public int IdCategoria { get; set; }
+        public Guid IdCategoria { get; set; }
         public Category Categoria { get; set; } = null!;
 
         public ICollection<HabitacionAmenity> Amenities { get; set; } = new List<HabitacionAmenity>();

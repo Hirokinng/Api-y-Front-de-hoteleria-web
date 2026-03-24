@@ -32,7 +32,7 @@ public class HabitacionConfiguration : IEntityTypeConfiguration<Habitacion>
                .HasColumnName("tipo_habitacion_id");
 
         builder.HasOne(h => h.TipoHabitacion)
-               .WithMany()
+               .WithMany(t => t.Habitaciones)
                .HasForeignKey(h => h.TipoHabitacionId);
 
         builder.HasOne(h => h.Categoria)
