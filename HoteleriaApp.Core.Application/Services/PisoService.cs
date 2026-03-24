@@ -54,7 +54,7 @@ namespace HoteleriaApp.Core.Application.Services
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<bool> UpdateAsync(Guid id, string nombre, string descripcion)
+        public async Task<bool> UpdateAsync(Guid id, string nombre, string descripcion, int numeroPiso)
         {
             if (string.IsNullOrWhiteSpace(nombre))
                 throw new ArgumentException("El nombre no puede estar vacío");
@@ -71,7 +71,7 @@ namespace HoteleriaApp.Core.Application.Services
             if (descripcion != null && descripcion.Length > 200)
                 throw new ArgumentException("La descripción no puede exceder 200 caracteres");
 
-            piso.Update(nombre, descripcion);
+            piso.Update(nombre, descripcion, numeroPiso);
 
             return await _repository.UpdateAsync(piso);
         }
