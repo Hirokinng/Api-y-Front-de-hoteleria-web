@@ -14,14 +14,17 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Debe ir aquí, antes de todo
+builder.Environment.EnvironmentName = "Development";
+
 builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
-
-
-
+builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
+builder.Services.AddScoped<IReservaService, ReservaService>();
+builder.Services.AddScoped<IHabitacionesService, HabitacionesService>();
 builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
 builder.Services.AddSingleton<IEmailServicio, HoteleriaApp.Infrastructure.Shared.Services.EmailServicio>();
@@ -30,6 +33,9 @@ builder.Services.AddSingleton<IEmailServicio, HoteleriaApp.Infrastructure.Shared
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IApplicationDbContext>(provider =>
+    provider.GetRequiredService<ApplicationDbContext>());
 
 
 builder.Services.AddEndpointsApiExplorer();

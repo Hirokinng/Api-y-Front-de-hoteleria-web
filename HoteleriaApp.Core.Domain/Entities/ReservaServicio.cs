@@ -4,8 +4,8 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class ReservaServicio : BaseEntity
     {
-        public int IdReserva { get; set; }
-        public int IdServicio { get; set; }
+        public Guid IdReserva { get; set; }
+        public Guid IdServicio { get; set; }
         public decimal PrecioAplicado { get; set; }
 
         public Reserva Reserva { get; set; } = null!;

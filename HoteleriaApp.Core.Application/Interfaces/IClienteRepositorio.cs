@@ -11,7 +11,7 @@ namespace HoteleriaApp.Core.Application.Interfaces
     {
         void Crear(Cliente cliente);
         IEnumerable<Cliente> GetClientes();
-        Cliente? GetClientePorId(int id);
+        Cliente? GetClientePorId(Guid id);
         Cliente? GetClientePorEmail(string email);
         void Guardar();
 

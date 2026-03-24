@@ -47,7 +47,7 @@ namespace HoteleriaApp.Controllers
         {
             var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(claimId, out var clienteId))
+            if (!Guid.TryParse(claimId, out var clienteId))
                 return Unauthorized(new { ok = false, message = "Token inválido." });
 
             var result = _servicio.ActualizarPerfil(clienteId, dto);
@@ -61,7 +61,7 @@ namespace HoteleriaApp.Controllers
         {
             var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(claimId, out var clienteId))
+            if (!Guid.TryParse(claimId, out var clienteId))
                 return Unauthorized(new { ok = false, message = "Token inválido." });
 
             var result = _servicio.CambiarPassword(clienteId, dto);
@@ -75,7 +75,7 @@ namespace HoteleriaApp.Controllers
         {
             var claimId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(claimId, out var clienteId))
+            if (!Guid.TryParse(claimId, out var clienteId))
                 return Unauthorized(new { ok = false, message = "Token inválido." });
 
             var perfil = _servicio.ObtenerPerfil(clienteId);

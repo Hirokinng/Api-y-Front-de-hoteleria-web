@@ -5,14 +5,12 @@ namespace HoteleriaApp.Core.Application.DTOs.Reservas
 {
     public class CrearReservaDto
     {
-        [Required]
-        public int IdCliente { get; set; }
 
         [Required]
-        public int IdCategoria { get; set; }
+        public Guid IdCategoria { get; set; }
 
         [Required]
-        public int IdHabitacion { get; set; }
+        public Guid IdHabitacion { get; set; }
 
         [Required]
         public DateOnly FechaEntrada { get; set; }
@@ -23,7 +21,7 @@ namespace HoteleriaApp.Core.Application.DTOs.Reservas
         [Required, Range(1, 20)]
         public int NumeroHuespedes { get; set; }
 
-        public List<int> IdsServicios { get; set; } = [];
+        public List<Guid> IdsServicios { get; set; } = [];
     }
 
 }

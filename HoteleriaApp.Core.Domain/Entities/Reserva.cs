@@ -2,13 +2,13 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class Reserva
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string NumeroReserva { get; set; } = null!;
-        public int IdCliente { get; set; }
+        public Guid IdCliente { get; set; }
         public Cliente Cliente { get; set; } = null!;
-        public int? IdUsuario { get; set; }
+        public Guid? IdUsuario { get; set; }
         public Usuario? Usuario { get; set; }
-        public int IdCategoria { get; set; }
+        public Guid IdCategoria { get; set; }
         public Category Category { get; set; } = null!;
         public DateOnly FechaEntrada { get; set; }
         public DateOnly FechaSalida { get; set; }

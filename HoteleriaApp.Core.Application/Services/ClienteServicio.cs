@@ -124,9 +124,9 @@ namespace HoteleriaApp.Core.Application.Services
             };
         }
 
-        public ClienteAuthResultDto ActualizarPerfil(int clienteId, ClienteUpdateDto dto)
+        public ClienteAuthResultDto ActualizarPerfil(Guid clienteId, ClienteUpdateDto dto)
         {
-            if (clienteId <= 0)
+            if (clienteId == Guid.Empty)
                 return new ClienteAuthResultDto { ok = false, message = "Cliente inválido." };
 
             var nombre = (dto.nombre ?? "").Trim();
@@ -156,9 +156,9 @@ namespace HoteleriaApp.Core.Application.Services
             };
         }
 
-        public ClienteAuthResultDto CambiarPassword(int clienteId, ClienteCambiarPasswordDto dto)
+        public ClienteAuthResultDto CambiarPassword(Guid clienteId, ClienteCambiarPasswordDto dto)
         {
-            if (clienteId <= 0)
+            if (clienteId == Guid.Empty)
                 return new ClienteAuthResultDto { ok = false, message = "Cliente inválido." };
 
             var passwordActual = dto.passwordActual ?? "";
@@ -199,9 +199,9 @@ namespace HoteleriaApp.Core.Application.Services
             };
         }
 
-        public ClientePerfilDto? ObtenerPerfil(int clienteId)
+        public ClientePerfilDto? ObtenerPerfil(Guid clienteId)
         {
-            if (clienteId <= 0)
+            if (clienteId == Guid.Empty)
                 return null;
 
             var cliente = _repo.GetClientePorId(clienteId);

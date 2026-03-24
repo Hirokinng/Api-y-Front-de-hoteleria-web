@@ -17,7 +17,7 @@ namespace HoteleriaApp.Core.Application.Services
             return await _categoryRepository.GetAllAsync();
         }
 
-        public async Task<CategoryDto> GetByIdAsync(int id)
+        public async Task<CategoryDto> GetByIdAsync(Guid id)
         {
             return await _categoryRepository.GetByIdAsync(id);
         }
@@ -32,7 +32,7 @@ namespace HoteleriaApp.Core.Application.Services
             await _categoryRepository.UpdateAsync(dto);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             await _categoryRepository.DeleteAsync(id);
         }

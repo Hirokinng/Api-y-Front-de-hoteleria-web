@@ -8,7 +8,7 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class Category
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public decimal PricePerNight { get; set; }
@@ -18,5 +18,8 @@ namespace HoteleriaApp.Core.Domain.Entities
 
         public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
         public ICollection<Habitacion> Habitaciones { get; set; } = new List<Habitacion>();
+
+        public ICollection<CategoriaServicio> CategoriaServicios { get; set; } = new List<CategoriaServicio>(); 
+        public ICollection<Tarifa> Tarifas { get; set; } = new List<Tarifa>();
     }
 }

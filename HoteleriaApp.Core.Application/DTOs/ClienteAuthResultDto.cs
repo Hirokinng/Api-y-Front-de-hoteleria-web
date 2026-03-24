@@ -10,7 +10,7 @@ public class ClienteAuthResultDto
 {
     public bool ok { get; set; }
     public string message { get; set; } = string.Empty;
-    public int? id_cliente { get; set; }
+    public Guid? id_cliente { get; set; }
     public string? email { get; set; }
     public string? token { get; set; }
 }

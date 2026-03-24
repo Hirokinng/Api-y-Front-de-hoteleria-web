@@ -25,7 +25,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Reserva?> GetByIdWithDetailsAsync(int id)
+        public async Task<Reserva?> GetByIdWithDetailsAsync(Guid id)
         {
             return await _dbSet
                 .Include(r => r.Cliente)
@@ -40,7 +40,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
         }
 
         public async Task<IReadOnlyList<Habitacion>> GetHabitacionesDisponiblesAsync(
-            int idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
+            Guid idCategoria, DateOnly fechaEntrada, DateOnly fechaSalida, byte numHuespedes)
         {
             return await _context.Habitaciones
                 .AsNoTracking()
@@ -59,7 +59,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
         }
 
         public async Task<bool> ExisteSolapamientoAsync(
-            int idHabitacion, DateOnly fechaEntrada, DateOnly fechaSalida, int? excludeReservaId = null)
+            Guid idHabitacion, DateOnly fechaEntrada, DateOnly fechaSalida, Guid? excludeReservaId = null)
         {
             return await _context.DetallesReserva
                 .AnyAsync(d =>

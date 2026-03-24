@@ -24,7 +24,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
             return _db.Clientes.ToList();
         }
 
-        public Cliente? GetClientePorId(int id)
+        public Cliente? GetClientePorId(Guid id)
         {
             return _db.Clientes.FirstOrDefault(c => c.Id == id);
         }

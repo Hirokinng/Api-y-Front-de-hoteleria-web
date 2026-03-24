@@ -4,9 +4,9 @@ namespace HoteleriaApp.Core.Domain.Entities
 {
     public class BloqueoHabitacion
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
-        public int HabitacionId { get; set; }
+        public Guid HabitacionId { get; set; }
         public Habitacion Habitacion { get; set; } = null!;
 
         public DateOnly FechaInicio { get; set; }
