@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:HoteleriaApp.Infrastructure.Persistence/Migrations/20260322193409_MigracionInicial.Designer.cs
-    [Migration("20260322193409_MigracionInicial")]
-    partial class MigracionInicial
-========
-    [Migration("20260324145859_HirokiUpdate")]
-    partial class HirokiUpdate
->>>>>>>> 40e2638 (Agrega precision a TipoHabitacion y actualizar ModuloPiso):HoteleriaApp.Infrastructure.Persistence/Migrations/20260324145859_HirokiUpdate.Designer.cs
+    [Migration("20260324171518_UpdateModuloPiso")]
+    partial class UpdateModuloPiso
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,11 +27,9 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Amenity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
@@ -91,11 +84,9 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.BloqueoHabitacion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateOnly>("FechaFin")
                         .HasColumnType("date");
@@ -103,8 +94,8 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                     b.Property<DateOnly>("FechaInicio")
                         .HasColumnType("date");
 
-                    b.Property<int>("HabitacionId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("HabitacionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
@@ -120,40 +111,14 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                     b.ToTable("BloqueosHabitacion");
                 });
 
-            modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Categoria", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
-
-                    b.Property<byte>("CapacidadMax")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categoria");
-                });
-
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.CategoriaServicio", b =>
                 {
-                    b.Property<int>("IdCategoria")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdCategoria")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_categoria");
 
-                    b.Property<int>("IdServicio")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdServicio")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_servicio");
 
                     b.Property<bool>("Activo")
@@ -162,8 +127,8 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasDefaultValue(true)
                         .HasColumnName("activo");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(10,2)")
@@ -178,12 +143,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Category", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_categoria");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Capacidad")
                         .HasColumnType("int");
@@ -222,12 +185,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Cliente", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_cliente");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
@@ -241,8 +202,8 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasColumnName("email");
 
-                    b.Property<DateOnly>("FechaRegistro")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2")
                         .HasColumnName("fecha_registro");
 
                     b.Property<string>("Nombre")
@@ -272,19 +233,17 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.DetalleReserva", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_detalle");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdHabitacion")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdHabitacion")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_habitacion");
 
-                    b.Property<int>("IdReserva")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdReserva")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva");
 
                     b.HasKey("Id");
@@ -298,27 +257,22 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Habitacion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_habitacion");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Capacidad")
                         .HasColumnType("int")
                         .HasColumnName("capacidad");
-
-                    b.Property<int?>("CategoriaId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Estado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("estado");
 
-                    b.Property<int>("IdCategoria")
-                        .HasColumnType("int");
+                    b.Property<Guid>("IdCategoria")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Numero")
                         .IsRequired()
@@ -330,16 +284,11 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("piso");
 
-                    b.Property<int>("TipoHabitacionId")
-                        .HasColumnType("int")
+                    b.Property<Guid>("TipoHabitacionId")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("tipo_habitacion_id");
 
-                    b.Property<int?>("TipoHabitacionId1")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("IdCategoria");
 
@@ -348,24 +297,20 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TipoHabitacionId");
 
-                    b.HasIndex("TipoHabitacionId1");
-
                     b.ToTable("Habitacion", (string)null);
                 });
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.HabitacionAmenity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("AmenityId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AmenityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HabitacionId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("HabitacionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -378,12 +323,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.HistorialEstadoReserva", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_historial");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EstadoAnterior")
                         .HasMaxLength(20)
@@ -400,12 +343,12 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("fecha_cambio");
 
-                    b.Property<int>("IdReserva")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdReserva")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("IdUsuario")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_usuario");
 
                     b.Property<string>("Observacion")
@@ -424,12 +367,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Pago", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_pago");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -443,8 +384,8 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("fecha_pago");
 
-                    b.Property<int>("IdReserva")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdReserva")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva");
 
                     b.Property<decimal>("Monto")
@@ -500,15 +441,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Reserva", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("CategoriaId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Estado")
                         .IsRequired()
@@ -534,16 +470,16 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnType("date")
                         .HasColumnName("fecha_salida");
 
-                    b.Property<int>("IdCategoria")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdCategoria")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_categoria");
 
-                    b.Property<int>("IdCliente")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdCliente")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_cliente");
 
-                    b.Property<int?>("IdUsuario")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("IdUsuario")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_usuario");
 
                     b.Property<int>("NumeroHuespedes")
@@ -585,8 +521,6 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoriaId");
-
                     b.HasIndex("IdCategoria");
 
                     b.HasIndex("IdCliente");
@@ -601,20 +535,18 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.ReservaHabitacion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("EsPrincipal")
                         .HasColumnType("bit");
 
-                    b.Property<int>("HabitacionId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("HabitacionId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ReservaId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ReservaId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -627,19 +559,17 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.ReservaServicio", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva_servicio");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("IdReserva")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdReserva")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_reserva");
 
-                    b.Property<int>("IdServicio")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdServicio")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_servicio");
 
                     b.Property<decimal>("PrecioAplicado")
@@ -658,12 +588,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Servicio", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_servicio");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
@@ -692,12 +620,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Tarifa", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_tarifa");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
@@ -705,12 +631,12 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasDefaultValue(true)
                         .HasColumnName("activo");
 
-                    b.Property<int>("IdCategoria")
-                        .HasColumnType("int")
+                    b.Property<Guid>("IdCategoria")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_categoria");
 
-                    b.Property<int?>("IdTemporada")
-                        .HasColumnType("int")
+                    b.Property<Guid?>("IdTemporada")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_temporada");
 
                     b.Property<decimal>("PrecioNoche")
@@ -728,12 +654,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Temporada", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_temporada");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
@@ -762,11 +686,9 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.TipoHabitacion", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("CapacidadBase")
                         .HasColumnType("int");
@@ -789,12 +711,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Usuario", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("uniqueidentifier")
                         .HasColumnName("id_usuario");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
@@ -851,7 +771,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.CategoriaServicio", b =>
                 {
-                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Categoria", "Categoria")
+                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Category", "Categoria")
                         .WithMany("CategoriaServicios")
                         .HasForeignKey("IdCategoria")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -889,10 +809,6 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Habitacion", b =>
                 {
-                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Categoria", null)
-                        .WithMany("Habitaciones")
-                        .HasForeignKey("CategoriaId");
-
                     b.HasOne("HoteleriaApp.Core.Domain.Entities.Category", "Categoria")
                         .WithMany("Habitaciones")
                         .HasForeignKey("IdCategoria")
@@ -900,14 +816,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("HoteleriaApp.Core.Domain.Entities.TipoHabitacion", "TipoHabitacion")
-                        .WithMany()
+                        .WithMany("Habitaciones")
                         .HasForeignKey("TipoHabitacionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("HoteleriaApp.Core.Domain.Entities.TipoHabitacion", null)
-                        .WithMany("Habitaciones")
-                        .HasForeignKey("TipoHabitacionId1");
 
                     b.Navigation("Categoria");
 
@@ -964,10 +876,6 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Reserva", b =>
                 {
-                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Categoria", null)
-                        .WithMany("Reservas")
-                        .HasForeignKey("CategoriaId");
-
                     b.HasOne("HoteleriaApp.Core.Domain.Entities.Category", "Category")
                         .WithMany("Reservas")
                         .HasForeignKey("IdCategoria")
@@ -1032,7 +940,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Tarifa", b =>
                 {
-                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Categoria", "Categoria")
+                    b.HasOne("HoteleriaApp.Core.Domain.Entities.Category", "Categoria")
                         .WithMany("Tarifas")
                         .HasForeignKey("IdCategoria")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1053,7 +961,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                     b.Navigation("Habitaciones");
                 });
 
-            modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Categoria", b =>
+            modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Category", b =>
                 {
                     b.Navigation("CategoriaServicios");
 
@@ -1062,13 +970,6 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                     b.Navigation("Reservas");
 
                     b.Navigation("Tarifas");
-                });
-
-            modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Category", b =>
-                {
-                    b.Navigation("Habitaciones");
-
-                    b.Navigation("Reservas");
                 });
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.Cliente", b =>
