@@ -60,7 +60,7 @@ namespace HoteleriaApp.Controllers
         {
             try
             {
-                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion);
+                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion, dto.numeroPiso);
 
                 if (!updated)
                     return NotFound();
