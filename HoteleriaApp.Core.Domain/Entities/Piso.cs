@@ -15,26 +15,29 @@ namespace HoteleriaApp.Core.Domain.Entities
         public bool Activo { get; private set; }
         private Piso() { }
 
-        public Piso(string nombre, string descripcion)
+        public Piso(string nombre, string descripcion, int numeroPiso)
         {
             Id = Guid.NewGuid();
             Nombre = nombre;
             Descripcion = descripcion;
+            NumeroPiso = numeroPiso;
         }
 
-        public void Actualizar(string nombre, string descripcion)
+        public void Actualizar(string nombre, string descripcion, int numeroPiso)
         {
             Nombre = nombre;
             Descripcion = descripcion;
+            NumeroPiso = numeroPiso;
         }
 
-        public void Update(string nombre, string descripcion)
+        public void Update(string nombre, string descripcion, int numeroPiso)
         {
             if (string.IsNullOrWhiteSpace(nombre))
                 throw new ArgumentException("El nombre no puede estar vacío");
 
             Nombre = nombre;
             Descripcion = descripcion ?? string.Empty;
+            NumeroPiso = numeroPiso;
         }
     }
 }
