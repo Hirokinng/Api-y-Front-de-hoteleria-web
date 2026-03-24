@@ -127,7 +127,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CapacidadBase = table.Column<int>(type: "int", nullable: false),
-                    PrecioBasePorNoche = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    PrecioBasePorNoche = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
