@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class HabitacionesController : Controller
     {
+      
         public IActionResult Index()
         {
             ViewData["Title"] = "Inventario de Habitaciones";

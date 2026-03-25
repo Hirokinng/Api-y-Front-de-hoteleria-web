@@ -1,9 +1,11 @@
 ﻿using HoteleriaApp.Core.Application.DTOs.Category;
 using HoteleriaApp.Core.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
