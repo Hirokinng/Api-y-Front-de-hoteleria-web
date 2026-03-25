@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260323235518_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260325193528_UpdateAdminPassword")]
+    partial class UpdateAdminPassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -756,6 +756,18 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuario", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Activo = true,
+                            Email = "admin@hotel.com",
+                            FechaCreacion = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nombre = "Administrador del Sistema",
+                            PasswordHash = "$2a$12$S6s9vLsPCLjA42bJrdHQ8.yWV4rivSdRP13COZsRKOZP8pOvyrG2y",
+                            Rol = "Administrador"
+                        });
                 });
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.BloqueoHabitacion", b =>

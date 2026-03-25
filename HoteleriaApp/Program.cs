@@ -1,16 +1,20 @@
 
-using HoteleriaApp.Infrastructure.Persistence.Repositories;
 using HoteleriaApp.Core.Application.Interfaces;
 using HoteleriaApp.Core.Application.Services;
 using HoteleriaApp.Core.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using HoteleriaApp.Infrastructure.Persistence.Contexts;
+using HoteleriaApp.Infrastructure.Persistence.Repositories;
+using HoteleriaApp.Infrastructure.Seeding;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+<<<<<<< Updated upstream
+=======
 using System.Text.Json.Serialization;
-using HoteleriaApp.Infrastructure.Seeding;
+>>>>>>> Stashed changes
 
 
 
@@ -26,10 +30,14 @@ builder.Services.AddControllersWithViews()
     });
 
 // Add services to the container.
+<<<<<<< Updated upstream
+=======
+builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+>>>>>>> Stashed changes
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
@@ -83,20 +91,35 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
-    });
 
+builder.Services.AddAuthentication(options =>
+{
+    // 1. Configuramos las Cookies como el jefe de seguridad por defecto para la web
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+
+    options.LoginPath = "/ClientesMvc/Login";
+
+    options.AccessDeniedPath = "/Home/Index";
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
+
+
+System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddAuthorization();
 
 
@@ -125,7 +148,6 @@ app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapStaticAssets();
 
 app.MapControllerRoute(

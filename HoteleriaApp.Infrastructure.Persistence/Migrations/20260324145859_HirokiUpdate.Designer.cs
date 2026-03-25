@@ -4,6 +4,7 @@ using HoteleriaApp.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260324145859_HirokiUpdate")]
+    partial class HirokiUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -753,18 +756,6 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuario", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            Activo = true,
-                            Email = "admin@hotel.com",
-                            FechaCreacion = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Nombre = "Administrador del Sistema",
-                            PasswordHash = "$2a$12$7VSbFVWWrwtu3w5UpUEkmuNnlrhxPWM1JIXslLB./qvp.1wAJh39K",
-                            Rol = "Administrador"
-                        });
                 });
 
             modelBuilder.Entity("HoteleriaApp.Core.Domain.Entities.BloqueoHabitacion", b =>

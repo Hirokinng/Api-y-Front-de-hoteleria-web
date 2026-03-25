@@ -13,4 +13,5 @@ public class ClienteAuthResultDto
     public Guid? id_cliente { get; set; }
     public string? email { get; set; }
     public string? token { get; set; }
+    public string rol { get; set; }
 }

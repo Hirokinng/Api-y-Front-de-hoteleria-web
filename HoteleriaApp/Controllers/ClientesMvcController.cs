@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 public class ClientesMvcController : Controller
 {
@@ -17,6 +21,7 @@ public class ClientesMvcController : Controller
     public IActionResult Register() => View();
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Login(string Email, string Password)
     {
         var client = _httpClientFactory.CreateClient();
@@ -26,6 +31,8 @@ public class ClientesMvcController : Controller
             password = Password
         });
         var content = new StringContent(body, Encoding.UTF8, "application/json");
+
+       
         var response = await client.PostAsync("https://localhost:7194/api/Clientes/login", content);
 
         if (response.IsSuccessStatusCode)
@@ -33,7 +40,22 @@ public class ClientesMvcController : Controller
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<JsonElement>(json);
             var token = result.GetProperty("token").GetString();
+            var rol = result.TryGetProperty("rol", out var r) ? r.GetString() : "Cliente"; // Leemos el rol
+
             HttpContext.Session.SetString("JwtToken", token!);
+
+            var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, Email),
+    new Claim(ClaimTypes.Role, rol!) // <-- ¡Le pasamos el rol a la Cookie!
+};
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+
             return RedirectToAction("Perfil");
         }
 
@@ -53,7 +75,7 @@ public class ClientesMvcController : Controller
             password = Password
         });
         var content = new StringContent(body, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("https://localhost:7194/api/Clientes/register", content);
+        var response = await client.PostAsync("https://localhost:7194/api/Usuarios/login", content);
 
         if (response.IsSuccessStatusCode)
             return RedirectToAction("Login");

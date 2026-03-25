@@ -1,11 +1,13 @@
-﻿using System.Security.Claims;
-using HoteleriaApp.Core.Application.DTOs;
+﻿using HoteleriaApp.Core.Application.DTOs;
 using HoteleriaApp.Core.Application.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HoteleriaApp.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ApiController]
     [Route("api/[controller]")]
     public class ClientesController : ControllerBase

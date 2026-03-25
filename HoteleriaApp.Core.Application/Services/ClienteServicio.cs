@@ -14,12 +14,15 @@ namespace HoteleriaApp.Core.Application.Services
     public class ClienteServicio : IClienteServicio
     {
         private readonly IClienteRepositorio _repo;
+        private readonly IUsuarioRepositorio _usuarioRepo; // <-- 1. Agregamos el nuevo repo
         private readonly IEmailServicio _email;
         private readonly IConfiguration _configuration;
 
-        public ClienteServicio(IClienteRepositorio repo, IEmailServicio email, IConfiguration configuration)
+        // 2. Lo inyectamos en el constructor
+        public ClienteServicio(IClienteRepositorio repo, IUsuarioRepositorio usuarioRepo, IEmailServicio email, IConfiguration configuration)
         {
             _repo = repo;
+            _usuarioRepo = usuarioRepo;
             _email = email;
             _configuration = configuration;
         }
@@ -73,20 +76,56 @@ namespace HoteleriaApp.Core.Application.Services
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
                 return new ClienteAuthResultDto { ok = false, message = "Email y password son obligatorios." };
 
-            var cliente = _repo.GetClientePorEmail(email);
+            Guid idLogueado = Guid.Empty;
+            string nombreLogueado = "";
+            string emailLogueado = "";
+            string rolAsignado = "";
+            bool loginExitoso = false;
 
-            if (cliente == null || !cliente.Activo)
+            // --- PASO 1: ¿ES UN ADMINISTRADOR/EMPLEADO? ---
+            var admin = _usuarioRepo.GetUsuarioPorEmail(email);
+            if (admin != null && admin.Activo)
+            {
+                bool okPass = (!string.IsNullOrWhiteSpace(admin.PasswordHash) && admin.PasswordHash.StartsWith("$2"))
+                    ? BCrypt.Net.BCrypt.Verify(password, admin.PasswordHash)
+                    : (admin.PasswordHash == password);
+
+                if (okPass)
+                {
+                    idLogueado = admin.Id;
+                    nombreLogueado = admin.Nombre;
+                    emailLogueado = admin.Email;
+                    rolAsignado = "Admin"; // <-- ¡El gafete VIP!
+                    loginExitoso = true;
+                }
+            }
+
+            // --- PASO 2: SI NO ES ADMIN, ¿ES UN CLIENTE NORMAL? ---
+            if (!loginExitoso)
+            {
+                var cliente = _repo.GetClientePorEmail(email);
+                if (cliente != null && cliente.Activo)
+                {
+                    bool okPass = (!string.IsNullOrWhiteSpace(cliente.PasswordHash) && cliente.PasswordHash.StartsWith("$2"))
+                        ? BCrypt.Net.BCrypt.Verify(password, cliente.PasswordHash)
+                        : (cliente.PasswordHash == password);
+
+                    if (okPass)
+                    {
+                        idLogueado = cliente.Id;
+                        nombreLogueado = cliente.Nombre;
+                        emailLogueado = cliente.Email;
+                        rolAsignado = "Cliente"; // <-- Gafete de huésped
+                        loginExitoso = true;
+                    }
+                }
+            }
+
+            // --- PASO 3: SI NO ESTÁ EN NINGUNA TABLA ---
+            if (!loginExitoso)
                 return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
 
-            bool okPass;
-            if (!string.IsNullOrWhiteSpace(cliente.PasswordHash) && cliente.PasswordHash.StartsWith("$2"))
-                okPass = BCrypt.Net.BCrypt.Verify(password, cliente.PasswordHash);
-            else
-                okPass = (cliente.PasswordHash == password);
-
-            if (!okPass)
-                return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
-
+            // --- PASO 4: GENERAR EL JWT ---
             var key = _configuration["Jwt:Key"];
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
@@ -96,10 +135,11 @@ namespace HoteleriaApp.Core.Application.Services
 
             var claims = new[]
             {
-              new Claim(ClaimTypes.NameIdentifier, cliente.Id.ToString()),
-              new Claim(ClaimTypes.Name, cliente.Nombre),
-              new Claim(ClaimTypes.Email, cliente.Email)
-            };
+        new Claim(ClaimTypes.NameIdentifier, idLogueado.ToString()),
+        new Claim(ClaimTypes.Name, nombreLogueado),
+        new Claim(ClaimTypes.Email, emailLogueado),
+        new Claim(ClaimTypes.Role, rolAsignado) // <-- ESTO ACTIVA EL [Authorize(Roles="Admin")] EN TU API
+    };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -118,10 +158,13 @@ namespace HoteleriaApp.Core.Application.Services
             {
                 ok = true,
                 message = "Login correcto.",
-                id_cliente = cliente.Id,
-                email = cliente.Email,
-                token = token
+                id_cliente = idLogueado,
+                email = emailLogueado,
+                token = token,
+                rol = rolAsignado 
             };
+
+
         }
 
         public ClienteAuthResultDto ActualizarPerfil(Guid clienteId, ClienteUpdateDto dto)

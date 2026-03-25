@@ -45,6 +45,32 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
+            // 1. ID fijo (obligatorio para que EF Core no se confunda)
+            var adminId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+
+            // 2. Sembrar el usuario usando exactamente tus propiedades
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    Id = adminId, // Viene de BaseEntity
+                    Nombre = "Administrador del Sistema",
+                    Email = "admin@hotel.com",
+
+                    // OJO AQUÍ: Como tu propiedad se llama PasswordHash, idealmente debería ser una contraseña encriptada. 
+                    // Si para pruebas su sistema acepta texto plano temporalmente, déjalo así. 
+                    // Si usan BCrypt u otro, tendrás que poner el texto ya encriptado aquí.
+                    PasswordHash = "$2a$12$7VSbFVWWrwtu3w5UpUEkmuNnlrhxPWM1JIXslLB./qvp.1wAJh39K",
+                
+                    Rol = RolUsuario.Administrador,
+
+                    Activo = true,
+
+                    // TRUCO PRO: Nunca uses DateTime.UtcNow en un Seed. 
+                    // Si lo haces, Entity Framework te pedirá hacer una migración nueva cada segundo que pase. Usa una fecha fija.
+                    FechaCreacion = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                }
+
+                );
             modelBuilder.ApplyConfigurationsFromAssembly(
                 typeof(ApplicationDbContext).Assembly
             );

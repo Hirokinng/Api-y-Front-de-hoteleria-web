@@ -2,10 +2,12 @@
 using HoteleriaApp.Core.Application.Services;
 using HoteleriaApp.Core.Domain.Entities;
 using HoteleriaApp.Core.Domain.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class PisosController : ControllerBase
