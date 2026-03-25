@@ -37,7 +37,7 @@
                 const selRes = document.getElementById('reservaId');
                 const selHab = document.getElementById('habitacionId');
                 reservas.forEach(r => {
-                    selRes.innerHTML += `<option value="${r.id}">Reserva #${r.id} - ${r.nombreHuesped} (${r.cantidadHuespedes} personas)</option>`;
+                    selRes.innerHTML += `<option value="${r.id}">Reserva #${r.numeroReserva} - ${r.numeroHuespedes} personas (${r.totalNoches} noches)</option>`;
                 });
                 habitaciones.forEach(h => {
                     selHab.innerHTML += `<option value="${h.id}">${h.numero} - ${h.tipoHabitacion?.nombre || '-'} (Cap: ${h.capacidad})</option>`;
@@ -50,8 +50,8 @@
 
         document.getElementById('frmAsignar').addEventListener('submit', async e => {
             e.preventDefault();
-            const reservaId = parseInt(document.getElementById('reservaId').value);
-            const habitacionId = parseInt(document.getElementById('habitacionId').value);
+            const reservaId = document.getElementById('reservaId').value;
+            const habitacionId = document.getElementById('habitacionId').value;
             document.getElementById('mensajeOk').classList.add('d-none');
             document.getElementById('mensajeErr').classList.add('d-none');
 
