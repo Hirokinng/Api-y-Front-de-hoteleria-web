@@ -4,32 +4,30 @@
 
 <div class="pt-12 pb-12 px-8 max-w-[1600px] mx-auto space-y-10">
 
-    <!-- HERO -->
     <section class="relative rounded-xl overflow-hidden bg-[#002547] min-h-[320px] flex flex-col justify-center px-12 text-white">
         <div class="absolute inset-0 opacity-10 bg-gradient-to-br from-blue-400 to-transparent"></div>
         <div class="relative z-10 max-w-2xl">
-            <span class="inline-block text-on-primary-container text-xs font-bold tracking-[0.2em] uppercase mb-4">Bienvenido al sistema</span>
+            <span class="inline-block text-on-primary-container text-xs font-bold tracking-[0.2em] uppercase mb-4">Sistema de Gestión Hotelera</span>
             <h1 class="font-headline text-5xl md:text-6xl mb-6 leading-tight">
                 Gestiona tu Hotel con <span class="serif-italic">Elegancia</span>
             </h1>
             <p class="text-blue-100/80 text-lg mb-8 font-light leading-relaxed">
-                Control total sobre tus operaciones diarias con una interfaz diseñada para la excelencia y el confort administrativo.
+                Control total sobre tus operaciones diarias. Administra reservas, habitaciones, categorías y clientes desde un solo lugar.
             </p>
             <div class="flex gap-4">
-                <a asp-controller="Reserva" asp-action="Index"
-                   class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2">
-                    <span>Nueva Reserva</span>
-                    <span class="material-symbols-outlined text-sm">add</span>
+                <a asp-controller="Category" asp-action="Index"
+                   class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline">
+                    <span class="material-symbols-outlined text-sm">category</span>
+                    Ver Categorías
                 </a>
-                <a href="/swagger" target="_blank"
-                   class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-3 rounded-lg font-medium transition-all">
-                    Ver API Docs
+                <a asp-controller="Habitaciones" asp-action="Disponibilidad"
+                   class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-3 rounded-lg font-medium transition-all no-underline">
+                    Buscar Disponibilidad
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- MODULES -->
     <section>
         <div class="flex justify-between items-end mb-8">
             <div>
@@ -45,7 +43,7 @@
                     <span class="material-symbols-outlined">category</span>
                 </div>
                 <h4 class="text-xl font-headline font-bold text-primary mb-2">Categorías</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Administra tipos de habitaciones, tarifas y características por categoría.</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Administra los tipos de habitación con tarifas, características y disponibilidad.</p>
                 <div class="flex justify-between items-center text-xs text-secondary font-medium">
                     <span>Gestionar categorías</span>
                     <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
@@ -58,7 +56,7 @@
                     <span class="material-symbols-outlined">layers</span>
                 </div>
                 <h4 class="text-xl font-headline font-bold text-primary mb-2">Pisos</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Organización estructural por niveles y sectores del complejo hotelero.</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Organiza los pisos del hotel y gestiona la distribución de habitaciones por nivel.</p>
                 <div class="flex justify-between items-center text-xs text-secondary font-medium">
                     <span>Gestionar pisos</span>
                     <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
@@ -71,7 +69,7 @@
                     <span class="material-symbols-outlined">bed</span>
                 </div>
                 <h4 class="text-xl font-headline font-bold text-primary mb-2">Habitaciones</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Estado en tiempo real, limpieza, mantenimiento y asignación de huéspedes.</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Control de inventario, asignación de habitaciones y gestión de bloqueos.</p>
                 <div class="flex justify-between items-center text-xs text-secondary font-medium">
                     <span>Gestionar habitaciones</span>
                     <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
@@ -84,99 +82,44 @@
                     <span class="material-symbols-outlined">calendar_month</span>
                 </div>
                 <h4 class="text-xl font-headline font-bold text-primary mb-2">Reservas</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Calendario maestro de ocupación, check-ins pendientes y cancelaciones.</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Gestiona reservas, verifica disponibilidad y controla check-ins y check-outs.</p>
                 <div class="flex justify-between items-center text-xs text-secondary font-medium">
                     <span>Gestionar reservas</span>
                     <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
                 </div>
             </a>
 
-            <a href="/swagger" target="_blank"
+            <a asp-controller="ClientesMvc" asp-action="Login"
                class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
-                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
-                    <span class="material-symbols-outlined">api</span>
-                </div>
-                <h4 class="text-xl font-headline font-bold text-primary mb-2">API</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Documentación técnica para integraciones con OTAs y sistemas externos.</p>
-                <div class="flex justify-between items-center text-xs text-secondary font-medium">
-                    <span>Abrir Swagger</span>
-                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
-                </div>
-            </a>
-
-            <div class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg">
                 <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
                     <span class="material-symbols-outlined">person_check</span>
                 </div>
                 <h4 class="text-xl font-headline font-bold text-primary mb-2">Clientes</h4>
-                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Registro y autenticación de clientes con JWT y gestión de perfiles.</p>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Registro, autenticación y gestión de perfiles de clientes del hotel.</p>
                 <div class="flex justify-between items-center text-xs text-secondary font-medium">
-                    <span>Ver API de Clientes</span>
+                    <span>Gestionar clientes</span>
                     <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
                 </div>
-            </div>
+            </a>
 
-        </div>
-    </section>
+            <a asp-controller="Reserva" asp-action="Disponibilidad"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Disponibilidad</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Busca habitaciones disponibles por fechas, categoría y número de huéspedes.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Buscar disponibilidad</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
 
-    <!-- API SECTION -->
-    <section class="bg-[#002547] rounded-xl overflow-hidden text-white">
-        <div class="p-10 md:p-12 flex flex-col lg:flex-row gap-12">
-            <div class="flex-1">
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="material-symbols-outlined text-[#2E86DE]">terminal</span>
-                    <span class="text-xs font-bold tracking-widest uppercase text-on-primary-container">Integración Técnica</span>
-                </div>
-                <h3 class="font-headline text-4xl mb-6">Endpoints del Sistema</h3>
-                <p class="text-blue-100/60 mb-8 leading-relaxed">Conecta tu infraestructura con el núcleo de HOTELERIA a través de nuestra API RESTful.</p>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border-l-2 border-[#2E86DE]">
-                        <span class="text-[10px] bg-[#2E86DE] px-2 py-1 rounded font-bold">GET</span>
-                        <span class="font-mono text-sm">/api/habitaciones/disponibles</span>
-                    </div>
-                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border-l-2 border-emerald-500">
-                        <span class="text-[10px] bg-emerald-500 px-2 py-1 rounded font-bold">POST</span>
-                        <span class="font-mono text-sm">/api/ReservaApi</span>
-                    </div>
-                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border-l-2 border-amber-500">
-                        <span class="text-[10px] bg-amber-500 px-2 py-1 rounded font-bold">PUT</span>
-                        <span class="font-mono text-sm">/api/ReservaApi/{id}</span>
-                    </div>
-                </div>
-                <a href="/swagger" target="_blank" class="mt-10 text-[#2E86DE] font-bold text-sm flex items-center gap-2 hover:gap-4 transition-all">
-                    Documentación Completa
-                    <span class="material-symbols-outlined">open_in_new</span>
-                </a>
-            </div>
-            <div class="flex-1 bg-white/5 rounded-xl p-8 border border-white/10">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex gap-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500/50"></div>
-                        <div class="w-3 h-3 rounded-full bg-amber-500/50"></div>
-                        <div class="w-3 h-3 rounded-full bg-emerald-500/50"></div>
-                    </div>
-                    <span class="text-[10px] text-blue-100/40 uppercase font-bold">Example Response</span>
-                </div>
-                <pre class="font-mono text-sm text-blue-100/80 leading-relaxed overflow-x-auto">{
-  "status": "success",
-  "data": {
-    "reservation_id": "HTL-2026-01",
-    "guest": "Juan García",
-    "room": "Suite Premium 402",
-    "check_in": "2026-04-01T14:00:00Z",
-    "services": [
-      "Desayuno incluido",
-      "Late Checkout"
-    ]
-  }
-}</pre>
-            </div>
         </div>
     </section>
 
 </div>
 
-<!-- FOOTER -->
 <footer class="bg-surface-container px-8 py-8 mt-4">
     <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <div class="flex items-center gap-8">
@@ -184,7 +127,6 @@
             <nav class="flex gap-6 text-xs font-medium text-secondary">
                 <a class="hover:text-primary transition-colors" href="#">Políticas</a>
                 <a class="hover:text-primary transition-colors" href="#">Soporte</a>
-                <a class="hover:text-primary transition-colors" href="/swagger" target="_blank">API Docs</a>
             </nav>
         </div>
         <div class="text-xs text-outline">

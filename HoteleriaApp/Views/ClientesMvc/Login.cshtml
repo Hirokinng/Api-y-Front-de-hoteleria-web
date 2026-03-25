@@ -1,0 +1,105 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>HOTELERIA - Acceso Clientes</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002547", "secondary": "#455f87",
+                        "surface": "#f6f9fe", "surface-container-highest": "#dfe3e8",
+                        "surface-container-lowest": "#ffffff", "surface-container": "#ebeef3",
+                        "on-surface": "#181c20", "on-surface-variant": "#43474e",
+                        "outline": "#74777f", "outline-variant": "#c4c6cf",
+                        "on-primary-container": "#59a6ff", "primary-fixed": "#d3e4ff",
+                        "secondary-container": "#b5d0fd", "secondary-fixed-dim": "#adc8f5",
+                        "brand-blue": "#2E86DE"
+                    },
+                    fontFamily: { "headline": ["Newsreader", "serif"], "body": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface selection:bg-primary-fixed">
+<main class="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div class="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-blue-100/30 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-[-5%] left-[-5%] w-[30%] h-[30%] bg-blue-50/40 rounded-full blur-[100px]"></div>
+    </div>
+
+    <section class="relative z-10 w-full max-w-[440px]">
+        <div class="bg-surface-container-lowest rounded-xl shadow-lg overflow-hidden">
+            <div class="p-10 md:p-12">
+                <header class="text-center mb-10">
+                    <h1 class="font-headline italic text-4xl text-primary tracking-tight mb-3">HOTELERIA</h1>
+                    <p class="font-body text-sm text-secondary uppercase tracking-[0.2em] font-medium opacity-80">Digital Concierge</p>
+                </header>
+
+                <form asp-controller="ClientesMvc" asp-action="Login" method="post" class="space-y-6">
+                    @Html.AntiForgeryToken()
+                    <div class="space-y-2">
+                        <label class="block text-[11px] font-semibold text-secondary uppercase tracking-wider ml-1">Correo Electrónico</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">mail</span>
+                            <input name="Email" type="email" placeholder="nombre@ejemplo.com" required
+                                   class="w-full pl-12 pr-4 py-3.5 bg-surface-container-highest/50 border-none rounded-lg text-on-surface placeholder:text-outline/60 focus:ring-1 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none text-sm"/>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-end px-1">
+                            <label class="block text-[11px] font-semibold text-secondary uppercase tracking-wider">Contraseña</label>
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
+                            <input name="Password" type="password" placeholder="••••••••" required
+                                   class="w-full pl-12 pr-4 py-3.5 bg-surface-container-highest/50 border-none rounded-lg text-on-surface placeholder:text-outline/60 focus:ring-1 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all outline-none text-sm"/>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                            @ViewBag.Error
+                        </div>
+                    }
+
+                    <button type="submit"
+                            class="w-full bg-brand-blue hover:bg-[#2573c2] text-white font-medium py-4 rounded-lg shadow-lg shadow-brand-blue/10 active:scale-[0.98] transition-all text-sm tracking-wide">
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <footer class="mt-10 pt-8 border-t border-outline-variant/10 text-center">
+                    <p class="text-sm text-secondary">
+                        ¿No tienes una cuenta?
+                        <a asp-controller="ClientesMvc" asp-action="Register" class="text-brand-blue font-semibold hover:underline decoration-brand-blue/30 underline-offset-4 ml-1">
+                            Regístrate
+                        </a>
+                    </p>
+                </footer>
+            </div>
+        </div>
+        <div class="mt-8 flex justify-center gap-6 text-[10px] text-outline uppercase tracking-widest font-medium">
+            <a class="hover:text-primary transition-colors" href="#">Privacidad</a>
+            <a class="hover:text-primary transition-colors" href="#">Términos</a>
+            <a class="hover:text-primary transition-colors" href="#">Soporte</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>

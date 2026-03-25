@@ -31,9 +31,7 @@
                         <input asp-for="Name" type="text"
                                class="w-full bg-surface-container-highest border-none rounded-lg p-4 focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all text-on-surface"
                                placeholder="Ej. Suite Presidencial" />
-                        <span asp-validation-for="Name" class="text-red-500 text-xs mt-1 flex items-center gap-1">
-                            <span class="material-symbols-outlined text-xs">error</span>
-                        </span>
+                        <span asp-validation-for="Name" class="text-red-500 text-xs mt-1 block"></span>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-primary tracking-widest uppercase mb-2">Descripción</label>

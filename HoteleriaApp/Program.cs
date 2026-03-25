@@ -20,6 +20,10 @@ builder.Environment.EnvironmentName = "Development";
 builder.Services.AddControllersWithViews();
 
 // Add services to the container.
+builder.Services.AddHttpClient();
+builder.Services.AddSession();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
@@ -92,6 +96,8 @@ builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
+
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

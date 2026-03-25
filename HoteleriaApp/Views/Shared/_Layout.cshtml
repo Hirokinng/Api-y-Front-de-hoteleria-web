@@ -56,7 +56,6 @@
 </head>
 <body class="font-body text-on-surface antialiased">
 
-    <!-- SIDEBAR -->
     <aside class="h-screen w-64 fixed left-0 top-0 bg-[#002547] flex flex-col py-6 z-40 hidden md:flex">
         <div class="px-6 mb-10">
             <h1 class="font-headline text-xl text-white tracking-tight uppercase">HOTELERIA</h1>
@@ -89,6 +88,11 @@
                 <span class="text-sm font-medium">Reservas</span>
             </a>
             <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
+               asp-controller="ClientesMvc" asp-action="Login">
+                <span class="material-symbols-outlined">person_check</span>
+                <span class="text-sm font-medium">Clientes</span>
+            </a>
+            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
                href="/swagger" target="_blank">
                 <span class="material-symbols-outlined">api</span>
                 <span class="text-sm font-medium">API</span>
@@ -102,9 +106,8 @@
         </div>
     </aside>
 
-    <!-- MAIN -->
     <main class="md:ml-64 min-h-screen">
-        <!-- TOP BAR -->
+
         <header class="fixed top-0 right-0 left-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl">
             <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1920px] mx-auto">
                 <div class="flex items-center gap-4">
@@ -128,7 +131,6 @@
             <div class="bg-slate-100 h-[1px] w-full"></div>
         </header>
 
-        <!-- PAGE CONTENT -->
         <div class="pt-[73px]">
             @RenderBody()
         </div>
