@@ -59,7 +59,7 @@
 
         document.getElementById('frmBloquear').addEventListener('submit', async e => {
             e.preventDefault();
-            const habitacionId = parseInt(document.getElementById('habitacionId').value);
+            const habitacionId = document.getElementById('habitacionId').value;
             const fechaInicio = document.getElementById('fechaInicio').value;
             const fechaFin = document.getElementById('fechaFin').value;
             const motivo = document.getElementById('motivo').value;

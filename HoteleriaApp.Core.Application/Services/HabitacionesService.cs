@@ -20,6 +20,9 @@ namespace HoteleriaApp.Core.Application.Services
                 .Include(h => h.TipoHabitacion)
                 .Include(h => h.Amenities)
                     .ThenInclude(ha => ha.Amenity)
+                .Include(h => h.Reservas)
+                    .ThenInclude(rh => rh.Reserva)
+                .Include(h => h.Bloqueos)
                 .ToListAsync();
         }
 
