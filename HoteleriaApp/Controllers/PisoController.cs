@@ -10,7 +10,7 @@ namespace HoteleriaApp.Controllers
     [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
-    public class PisosController : ControllerBase
+    public class PisosController : Controller
     {
         private readonly IPisoService _pisoService;
 
@@ -19,6 +19,7 @@ namespace HoteleriaApp.Controllers
             _pisoService = pisoService;
         }
 
+ 
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -44,7 +45,7 @@ namespace HoteleriaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Piso piso)
         {
-        
+
             await _pisoService.CreateAsync(piso);
             return Ok("Piso creado correctamente");
         }

@@ -32,11 +32,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
         public DbSet<ReservaServicio> ReservaServicios { get; set; }
         public DbSet<Auditoria> Auditorias { get; set; }
 
-        //Agregando DbSets faltantes
         public DbSet<Tarifa> Tarifas { get; set; }
         public DbSet<CategoriaServicio> CategoriasServicio { get; set; }
 
-        // Implementación para GenericRepository
+        //  GenericRepository
         public override DbSet<T> Set<T>() where T : class => base.Set<T>();
 
         
@@ -55,18 +54,12 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
                     Id = adminId, // Viene de BaseEntity
                     Nombre = "Administrador del Sistema",
                     Email = "admin@hotel.com",
-
-                    // OJO AQUÍ: Como tu propiedad se llama PasswordHash, idealmente debería ser una contraseña encriptada. 
-                    // Si para pruebas su sistema acepta texto plano temporalmente, déjalo así. 
-                    // Si usan BCrypt u otro, tendrás que poner el texto ya encriptado aquí.
                     PasswordHash = "$2a$12$7VSbFVWWrwtu3w5UpUEkmuNnlrhxPWM1JIXslLB./qvp.1wAJh39K",
                 
                     Rol = RolUsuario.Administrador,
 
                     Activo = true,
 
-                    // TRUCO PRO: Nunca uses DateTime.UtcNow en un Seed. 
-                    // Si lo haces, Entity Framework te pedirá hacer una migración nueva cada segundo que pase. Usa una fecha fija.
                     FechaCreacion = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 }
 

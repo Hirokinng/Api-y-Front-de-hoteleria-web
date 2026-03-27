@@ -11,10 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-<<<<<<< Updated upstream
-=======
 using System.Text.Json.Serialization;
->>>>>>> Stashed changes
 
 
 
@@ -30,14 +27,11 @@ builder.Services.AddControllersWithViews()
     });
 
 // Add services to the container.
-<<<<<<< Updated upstream
-=======
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
->>>>>>> Stashed changes
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
