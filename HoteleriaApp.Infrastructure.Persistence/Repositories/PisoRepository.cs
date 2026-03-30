@@ -49,6 +49,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Repositories
         public async Task CreateAsync(Piso piso)
         {
             await _context.Pisos.AddAsync(piso);
+
             await _context.SaveChangesAsync();
         }
 

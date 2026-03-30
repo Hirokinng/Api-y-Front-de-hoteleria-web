@@ -1,7 +1,7 @@
 ﻿@model HoteleriaApp.Core.Application.DTOs.PisoDto
 
 @{
-    ViewData["Title"] = "Crear Nuevo Piso";
+    ViewData["Title"] = "Editar Piso";
 }
 
 <div class="pb-12 px-8 max-w-[800px] mx-auto space-y-8 pt-8">
@@ -11,12 +11,14 @@
             <span class="material-symbols-outlined text-sm">arrow_back</span>
             Volver a la lista
         </a>
-        <h1 class="font-headline text-4xl text-primary">Registrar Nuevo Piso</h1>
-        <p class="text-secondary mt-2">Completa los datos para habilitar un nuevo nivel en el hotel.</p>
+        <h1 class="font-headline text-4xl text-primary">Editar Piso</h1>
+        <p class="text-secondary mt-2">Modifica la información de este nivel del hotel.</p>
     </div>
 
     <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
-        <form asp-action="Create" method="post" class="space-y-6">
+        <form asp-action="Edit" method="post" class="space-y-6">
+
+            <input type="hidden" asp-for="Id" />
 
             <div class="form-group mb-3">
                 <label asp-for="NombreClave" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Nombre Clave (Edificio / Carpeta)</label>
@@ -27,27 +29,27 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label asp-for="Nombre" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Nombre del Piso</label>
-                    <input asp-for="Nombre" placeholder="Ej. Planta Baja, Penthouse..." class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" required />
+                    <input asp-for="Nombre" class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" required />
                     <span asp-validation-for="Nombre" class="text-red-500 text-xs mt-1"></span>
                 </div>
 
                 <div>
                     <label asp-for="numeroPiso" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Nivel (Número)</label>
-                    <input asp-for="numeroPiso" type="number" placeholder="Ej. 1, 2, 3..." class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" required />
+                    <input asp-for="numeroPiso" type="number" class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" required />
                     <span asp-validation-for="numeroPiso" class="text-red-500 text-xs mt-1"></span>
                 </div>
             </div>
 
             <div>
-                <label asp-for="Descripcion" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Descripción (Opcional)</label>
-                <textarea asp-for="Descripcion" rows="3" placeholder="Ej. Zona de piscina, habitaciones presidenciales..." class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all"></textarea>
+                <label asp-for="Descripcion" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Descripción</label>
+                <textarea asp-for="Descripcion" rows="3" class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all"></textarea>
                 <span asp-validation-for="Descripcion" class="text-red-500 text-xs mt-1"></span>
             </div>
 
             <div class="flex justify-end pt-6 border-t border-outline-variant/10">
                 <button type="submit" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
-                    <span class="material-symbols-outlined text-sm">save</span>
-                    Guardar Piso
+                    <span class="material-symbols-outlined text-sm">update</span>
+                    Actualizar Piso
                 </button>
             </div>
         </form>

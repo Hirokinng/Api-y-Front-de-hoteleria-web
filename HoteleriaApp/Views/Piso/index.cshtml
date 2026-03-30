@@ -9,115 +9,114 @@
     <div class="flex justify-between items-start">
         <div>
             <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">INFRAESTRUCTURA DEL HOTEL</p>
-            <h1 class="font-headline text-4xl text-primary">Lista de Pisos</h1>
+            @if (ViewBag.VistaActual == "Carpetas")
+            {
+                <h1 class="font-headline text-4xl text-primary">Edificios y Hoteles</h1>
+            }
+            else
+            {
+                <h1 class="font-headline text-4xl text-primary">Pisos: @ViewBag.HotelActual</h1>
+            }
         </div>
-        <a asp-action="Create"
-           class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
+        <a asp-action="Create" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
             <span class="material-symbols-outlined text-sm">add</span>
             Nuevo Piso
         </a>
     </div>
 
-    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
-        @if (Model == null || Model.Count == 0)
+    @if (ViewBag.VistaActual == "Carpetas")
+    {
+        var carpetas = ViewBag.Carpetas as Dictionary<string, int>;
+        
+        @if (carpetas == null || carpetas.Count == 0)
         {
-            <div class="flex flex-col items-center justify-center py-24 text-center">
+            <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
                 <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-3xl text-secondary">layers</span>
+                    <span class="material-symbols-outlined text-3xl text-secondary">domain</span>
                 </div>
-                <h3 class="font-headline text-2xl text-primary mb-2">Sin pisos registrados</h3>
-                <p class="text-secondary text-sm mb-6 max-w-xs">Registra el primer piso de tu hotel para comenzar a organizar las habitaciones.</p>
-                <a asp-action="Create"
-                   class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline">
-                    <span class="material-symbols-outlined text-sm">add</span>
-                    Registrar Primer Piso
-                </a>
+                <h3 class="font-headline text-2xl text-primary mb-2">Sin propiedades registradas</h3>
+                <p class="text-secondary text-sm mb-6 max-w-xs">Registra un nuevo piso y asígnale un Nombre Clave para crear tu primer edificio.</p>
             </div>
         }
         else
         {
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-[#002547] text-white">
-                        <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-24">Nivel</th>
-                        <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Nombre</th>
-                        <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Descripción</th>
-                        <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant/10">
-                    @foreach (var item in Model.OrderBy(p => p.numeroPiso))
-                    {
-                        <tr class="hover:bg-surface-container-low transition-colors">
-                            <td class="px-6 py-5">
-                                <span class="bg-surface-container-low text-[#002547] font-bold px-3 py-1 rounded-full text-sm">
-                                    Piso @item.numeroPiso
-                                </span>
-                            </td>
-                            <td class="px-6 py-5">
-                                <span class="font-bold text-primary">@item.Nombre</span>
-                            </td>
-                            <td class="px-6 py-5 text-on-surface-variant text-sm max-w-md">
-                                <span class="block truncate">@item.Descripcion</span>
-                            </td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id"
-                                       class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all"
-                                       title="Editar">
-                                        <span class="material-symbols-outlined text-sm">edit</span>
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id"
-                                       class="p-2 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                       title="Eliminar"
-                                       onclick="return confirm('¿Estás seguro de que deseas eliminar el piso «@item.Nombre»? Esta acción podría afectar a las habitaciones asignadas a este nivel.')">
-                                        <span class="material-symbols-outlined text-sm">delete</span>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between">
-                <span class="text-xs text-secondary">Mostrando @Model.Count piso(s) registrado(s)</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @foreach (var carpeta in carpetas)
+                {
+                    <a asp-action="Index" asp-route-hotel="@carpeta.Key" class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6 hover:shadow-md hover:border-[#2E86DE]/50 transition-all no-underline group block">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-blue-50 text-[#2E86DE] flex items-center justify-center group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined">folder</span>
+                            </div>
+                            <span class="bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-full">
+                                @carpeta.Value Piso(s)
+                            </span>
+                        </div>
+                        <h3 class="font-headline text-xl text-primary group-hover:text-[#2E86DE] transition-colors">@carpeta.Key</h3>
+                        <p class="text-sm text-secondary mt-1">Ver niveles registrados &rarr;</p>
+                    </a>
+                }
             </div>
         }
-    </div>
+    }
 
-    @if (Model != null && Model.Count > 0)
+    @if (ViewBag.VistaActual == "Pisos")
     {
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-[#002547] rounded-xl p-8 text-white">
-                <h3 class="font-headline text-2xl mb-2 serif-italic">Resumen Estructural</h3>
-                <p class="text-blue-100/60 text-sm mb-6">Información de los niveles físicos de tu hotel.</p>
-                <div class="flex gap-8">
-                    <div>
-                        <div class="font-headline text-4xl font-bold text-white">@Model.Count</div>
-                        <div class="text-xs text-blue-300/60 uppercase tracking-widest mt-1">Pisos Registrados</div>
-                    </div>
-                    <div>
-                        <div class="font-headline text-4xl font-bold text-[#2E86DE]">
-                            @Model.Max(p => p.numeroPiso)
-                        </div>
-                        <div class="text-xs text-blue-300/60 uppercase tracking-widest mt-1">Nivel Máximo</div>
-                    </div>
+        <div class="mb-4">
+            <a asp-action="Index" class="text-secondary hover:text-[#2E86DE] flex items-center gap-2 no-underline text-sm font-medium w-max">
+                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                Volver a la lista de hoteles
+            </a>
+        </div>
+
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="flex flex-col items-center justify-center py-24 text-center">
+                    <h3 class="font-headline text-2xl text-primary mb-2">No hay pisos aquí</h3>
                 </div>
-            </div>
-            <div class="bg-white rounded-xl p-8 border border-outline-variant/20 shadow-sm flex flex-col justify-between">
-                <div>
-                    <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-4">
-                        <span class="material-symbols-outlined">add_circle</span>
-                    </div>
-                    <h3 class="font-headline text-xl text-primary mb-2">Agregar Nuevo Piso</h3>
-                    <p class="text-on-surface-variant text-sm leading-relaxed">¿El hotel se está expandiendo? Registra un nuevo nivel para asignar más habitaciones.</p>
-                </div>
-                <a asp-action="Create"
-                   class="mt-6 bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 no-underline">
-                    <span class="material-symbols-outlined text-sm">add</span>
-                    Registrar Piso
-                </a>
-            </div>
+            }
+            else
+            {
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#002547] text-white">
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-24">Nivel</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Nombre</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Descripción</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/10">
+                        @foreach (var item in Model.OrderBy(p => p.numeroPiso))
+                        {
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-5">
+                                    <span class="bg-surface-container-low text-[#002547] font-bold px-3 py-1 rounded-full text-sm">
+                                        Piso @item.numeroPiso
+                                    </span>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <span class="font-bold text-primary">@item.Nombre</span>
+                                </td>
+                                <td class="px-6 py-5 text-on-surface-variant text-sm max-w-md">
+                                    <span class="block truncate">@item.Descripcion</span>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all" title="Editar">
+                                            <span class="material-symbols-outlined text-sm">edit</span>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="p-2 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Eliminar" onclick="return confirm('¿Estás seguro de que deseas eliminar este piso?')">
+                                            <span class="material-symbols-outlined text-sm">delete</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         </div>
     }
 </div>
