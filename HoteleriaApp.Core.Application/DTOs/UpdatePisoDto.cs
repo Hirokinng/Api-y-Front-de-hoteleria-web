@@ -11,5 +11,6 @@ namespace HoteleriaApp.Core.Application.DTOs
         public string Nombre { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
         public int numeroPiso { get; set; }
+        public string NombreClave { get; set; }
     }
 }

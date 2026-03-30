@@ -67,6 +67,10 @@ namespace HoteleriaApp.Infrastructure.Persistence.Contexts
             modelBuilder.ApplyConfigurationsFromAssembly(
                 typeof(ApplicationDbContext).Assembly
             );
+            modelBuilder.ApplyConfiguration(new PisoConfiguration());
+            modelBuilder.Entity<HoteleriaApp.Core.Domain.Entities.Piso>()
+        .HasIndex(p => p.NumeroPiso)
+        .IsUnique(false);
         }
     }
 }
