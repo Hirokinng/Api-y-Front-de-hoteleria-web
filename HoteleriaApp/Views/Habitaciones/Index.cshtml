@@ -2,57 +2,155 @@
     ViewData["Title"] = "Inventario de Habitaciones";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Inventario de Habitaciones</h2>
-    <a asp-action="Disponibilidad" class="btn btn-outline-primary">Buscar Disponibilidad</a>
-</div>
+<div class="pb-12 px-8 max-w-[1600px] mx-auto space-y-8 pt-8">
 
-<div class="table-responsive">
-    <table class="table table-hover" id="tablaInventario">
-        <thead class="table-light">
-            <tr>
-                <th>Número</th>
-                <th>Piso</th>
-                <th>Tipo</th>
-                <th>Capacidad</th>
-                <th>Estado</th>
-                <th>Amenities</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE HABITACIONES</p>
+            <h1 class="font-headline text-4xl text-primary">Inventario de Habitaciones</h1>
+        </div>
+        <a asp-action="Crear" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
+            <span class="material-symbols-outlined text-sm">add</span>
+            Nueva Habitación
+        </a>
+    </div>
 
-<div class="text-muted small" id="mensajeCarga">Cargando inventario...</div>
-<div class="alert alert-danger d-none" id="mensajeError" role="alert"></div>
+    <div class="flex items-center gap-3">
+        <a asp-action="Disponibilidad" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
+            <span class="material-symbols-outlined text-sm">search</span>
+            Buscar Disponibilidad
+        </a>
+        <a asp-action="Asignar" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
+            <span class="material-symbols-outlined text-sm">link</span>
+            Asignar
+        </a>
+        <a asp-action="Bloquear" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
+            <span class="material-symbols-outlined text-sm">block</span>
+            Bloquear
+        </a>
+    </div>
+
+    <div id="loadingState" class="bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-12 h-12 rounded-full border-4 border-[#2E86DE]/20 border-t-[#2E86DE] animate-spin mb-4"></div>
+        <p class="text-secondary text-sm">Cargando inventario de habitaciones...</p>
+    </div>
+
+    <div id="errorState" class="hidden bg-white rounded-xl border border-red-200 shadow-sm flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl text-red-500">error</span>
+        </div>
+        <h3 class="font-headline text-2xl text-primary mb-2">Error al cargar datos</h3>
+        <p class="text-secondary text-sm mb-2" id="errorMessage"></p>
+    </div>
+
+    <div id="emptyState" class="hidden bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-3xl text-secondary">hotel</span>
+        </div>
+        <h3 class="font-headline text-2xl text-primary mb-2">Sin habitaciones registradas</h3>
+        <p class="text-secondary text-sm mb-6 max-w-xs">Registra una nueva habitación para comenzar a gestionar tu inventario.</p>
+        <a asp-action="Crear" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
+            <span class="material-symbols-outlined text-sm">add</span>
+            Nueva Habitación
+        </a>
+    </div>
+
+    <div id="tableContainer" class="hidden bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+        <table class="w-full" id="tablaInventario">
+            <thead>
+                <tr class="bg-[#002547] text-white">
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-24">Número</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-20">Piso</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Tipo</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Capacidad</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-36">Estado</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/10" id="tablaBody">
+            </tbody>
+        </table>
+    </div>
+
+</div>
 
 @section Scripts {
     <script>
         (async function () {
+            const loadingState = document.getElementById('loadingState');
+            const errorState = document.getElementById('errorState');
+            const emptyState = document.getElementById('emptyState');
+            const tableContainer = document.getElementById('tableContainer');
+            const errorMessage = document.getElementById('errorMessage');
+
             try {
                 const res = await fetch('/api/habitaciones');
+                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
                 const habitaciones = await res.json();
-                const tbody = document.querySelector('#tablaInventario tbody');
-                const msg = document.getElementById('mensajeCarga');
-                msg.textContent = habitaciones.length === 0 ? 'No hay habitaciones registradas.' : '';
+
+                loadingState.classList.add('hidden');
+
+                if (habitaciones.length === 0) {
+                    emptyState.classList.remove('hidden');
+                    return;
+                }
+
+                tableContainer.classList.remove('hidden');
+                const tbody = document.getElementById('tablaBody');
 
                 habitaciones.forEach(h => {
-                    const amenities = (h.amenities || []).map(a => a.amenity?.nombre || '').filter(Boolean).join(', ') || '-';
-                    const estado = h.estado === 0 ? 'Disponible' : h.estado === 1 ? 'Ocupada' : 'Fuera de servicio';
-                    tbody.innerHTML += `<tr>
-                        <td>${h.numero}</td>
-                        <td>${h.piso}</td>
-                        <td>${h.tipoHabitacion?.nombre || '-'}</td>
-                        <td>${h.capacidad}</td>
-                        <td><span class="badge bg-${h.estado === 0 ? 'success' : h.estado === 1 ? 'warning' : 'secondary'}">${estado}</span></td>
-                        <td>${amenities}</td>
-                    </tr>`;
+                    const estadoMap = {
+                        0: { text: 'Disponible', bg: 'bg-green-100', color: 'text-green-700' },
+                        1: { text: 'Ocupada', bg: 'bg-amber-100', color: 'text-amber-700' },
+                        2: { text: 'Fuera de servicio', bg: 'bg-gray-100', color: 'text-gray-600' }
+                    };
+                    const estado = estadoMap[h.estado] || estadoMap[2];
+                    const tipo = h.tipoHabitacion?.nombre || '-';
+
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-surface-container-low transition-colors';
+                    tr.innerHTML = `
+                        <td class="px-6 py-5">
+                            <span class="bg-surface-container-low text-[#002547] font-bold px-3 py-1 rounded-full text-sm">${h.numero}</span>
+                        </td>
+                        <td class="px-6 py-5 text-sm text-on-surface-variant">${h.piso}</td>
+                        <td class="px-6 py-5">
+                            <span class="font-bold text-primary">${tipo}</span>
+                        </td>
+                        <td class="px-6 py-5 text-sm text-on-surface-variant">${h.capacidad} persona(s)</td>
+                        <td class="px-6 py-5">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${estado.bg} ${estado.color}">${estado.text}</span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex items-center gap-2">
+                                <a href="/Habitaciones/Detalles/${h.id}" class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all" title="Ver detalles">
+                                    <span class="material-symbols-outlined text-sm">visibility</span>
+                                </a>
+                                <button onclick="eliminarHabitacion('${h.id}', '${h.numero}')" class="p-2 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Eliminar">
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
                 });
+
             } catch (e) {
-                document.getElementById('mensajeError').classList.remove('d-none');
-                document.getElementById('mensajeError').textContent = 'Error al cargar inventario: ' + e.message;
-                document.getElementById('mensajeCarga').textContent = '';
+                loadingState.classList.add('hidden');
+                errorState.classList.remove('hidden');
+                errorMessage.textContent = e.message;
             }
         })();
+
+        async function eliminarHabitacion(id, numero) {
+            if (!confirm(`¿Estás seguro de que deseas eliminar la habitación ${numero}?`)) return;
+            try {
+                const res = await fetch(`/api/habitaciones/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error(`Error ${res.status}`);
+                window.location.reload();
+            } catch (e) {
+                alert('Error al eliminar la habitación: ' + e.message);
+            }
+        }
     </script>
 }

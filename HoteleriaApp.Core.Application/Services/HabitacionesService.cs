@@ -74,7 +74,7 @@ namespace HoteleriaApp.Core.Application.Services
             var reserva = await _context.Reservas
                 .Include(r => r.Habitaciones)
                     .ThenInclude(rh => rh.Habitacion)
-                .FirstOrDefaultAsync(r => r.Id == reservaId);  // Comparación con Guid
+                .FirstOrDefaultAsync(r => r.Id == reservaId);  // Comparaciï¿½n con Guid
 
             if (reserva is null) return false;
 
@@ -82,7 +82,7 @@ namespace HoteleriaApp.Core.Application.Services
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
                 .Include(h => h.Bloqueos)
-                .FirstOrDefaultAsync(h => h.Id == habitacionId);  // Comparación con Guid
+                .FirstOrDefaultAsync(h => h.Id == habitacionId);  // Comparaciï¿½n con Guid
 
             if (habitacion is null) return false;
 
@@ -125,7 +125,7 @@ namespace HoteleriaApp.Core.Application.Services
                 .Include(h => h.Bloqueos)
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
-                .FirstOrDefaultAsync(h => h.Id == habitacionId); // Comparación con Guid
+                .FirstOrDefaultAsync(h => h.Id == habitacionId); // Comparaciï¿½n con Guid
 
             if (habitacion is null) return null;
 
@@ -151,6 +151,58 @@ namespace HoteleriaApp.Core.Application.Services
             await _context.SaveChangesAsync();
 
             return bloqueo;
+        }
+
+        public async Task<Habitacion?> ObtenerPorIdAsync(Guid id)
+        {
+            return await _context.Habitaciones
+                .Include(h => h.TipoHabitacion)
+                .Include(h => h.Amenities)
+                    .ThenInclude(ha => ha.Amenity)
+                .Include(h => h.Reservas)
+                    .ThenInclude(rh => rh.Reserva)
+                .Include(h => h.Bloqueos)
+                .Include(h => h.Categoria)
+                .FirstOrDefaultAsync(h => h.Id == id);
+        }
+
+        public async Task<Habitacion> CrearHabitacionAsync(string numero, int piso, Guid tipoHabitacionId, int capacidad, Guid idCategoria)
+        {
+            var habitacion = new Habitacion
+            {
+                Id = Guid.NewGuid(),
+                Numero = numero,
+                Piso = piso,
+                TipoHabitacionId = tipoHabitacionId,
+                Capacidad = capacidad,
+                IdCategoria = idCategoria,
+                Estado = HabitacionEstado.Disponible
+            };
+
+            _context.Habitaciones.Add(habitacion);
+            await _context.SaveChangesAsync();
+
+            return habitacion;
+        }
+
+        public async Task<bool> EliminarHabitacionAsync(Guid id)
+        {
+            var habitacion = await _context.Habitaciones
+                .Include(h => h.Reservas)
+                    .ThenInclude(rh => rh.Reserva)
+                .FirstOrDefaultAsync(h => h.Id == id);
+
+            if (habitacion is null) return false;
+
+            var tieneReservasActivas = habitacion.Reservas
+                .Any(rh => rh.Reserva.Estado != EstadoReserva.Cancelada);
+
+            if (tieneReservasActivas) return false;
+
+            _context.Habitaciones.Remove(habitacion);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

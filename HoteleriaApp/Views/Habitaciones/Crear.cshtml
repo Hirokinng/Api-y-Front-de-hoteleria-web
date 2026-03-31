@@ -1,0 +1,158 @@
+@{
+    ViewData["Title"] = "Nueva Habitación";
+}
+
+<div class="pb-12 px-8 max-w-[800px] mx-auto space-y-8 pt-8">
+
+    <div>
+        <a asp-action="Index" class="text-[#2E86DE] flex items-center gap-2 mb-4 hover:underline w-max no-underline text-sm font-medium">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al inventario
+        </a>
+        <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE HABITACIONES</p>
+        <h1 class="font-headline text-4xl text-primary">Nueva Habitación</h1>
+        <p class="text-secondary mt-2">Completa los datos para registrar una nueva habitación en el hotel.</p>
+    </div>
+
+    <div id="formError" class="hidden bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">error</span>
+        <span id="formErrorText"></span>
+    </div>
+
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
+        <form id="crearForm" class="space-y-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="numero" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Número de Habitación</label>
+                    <input type="text" id="numero" name="numero" placeholder="Ej: 101" required
+                           class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" />
+                </div>
+
+                <div>
+                    <label for="piso" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Piso</label>
+                    <input type="number" id="piso" name="piso" placeholder="Ej: 1" required
+                           class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="tipoHabitacionId" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Tipo de Habitación</label>
+                    <select id="tipoHabitacionId" name="tipoHabitacionId" required
+                            class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all bg-white">
+                        <option value="">Cargando tipos...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="capacidad" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Capacidad (personas)</label>
+                    <input type="number" id="capacidad" name="capacidad" placeholder="Ej: 2" min="1" required
+                           class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all" />
+                </div>
+            </div>
+
+            <div>
+                <label for="idCategoria" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Categoría</label>
+                <select id="idCategoria" name="idCategoria" required
+                        class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all bg-white">
+                    <option value="">Cargando categorías...</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end pt-6 border-t border-outline-variant/10">
+                <button type="submit" id="submitBtn"
+                        class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-sm">save</span>
+                    Guardar Habitación
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        // Load room types
+        (async function () {
+            try {
+                const res = await fetch('/api/habitaciones/tipos');
+                if (!res.ok) throw new Error('No se pudieron cargar los tipos');
+                const tipos = await res.json();
+                const select = document.getElementById('tipoHabitacionId');
+                select.innerHTML = '<option value="">Seleccionar tipo...</option>';
+                tipos.forEach(t => {
+                    const opt = document.createElement('option');
+                    opt.value = t.id;
+                    opt.textContent = t.nombre;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                const select = document.getElementById('tipoHabitacionId');
+                select.innerHTML = '<option value="">Error al cargar tipos</option>';
+            }
+        })();
+
+        // Load categories
+        (async function () {
+            try {
+                const res = await fetch('/api/habitaciones/categorias');
+                if (!res.ok) throw new Error('No se pudieron cargar las categorías');
+                const categorias = await res.json();
+                const select = document.getElementById('idCategoria');
+                select.innerHTML = '<option value="">Seleccionar categoría...</option>';
+                categorias.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.name;
+                    select.appendChild(opt);
+                });
+            } catch (e) {
+                const select = document.getElementById('idCategoria');
+                select.innerHTML = '<option value="">Error al cargar categorías</option>';
+            }
+        })();
+
+        // Form submission
+        document.getElementById('crearForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const errorDiv = document.getElementById('formError');
+            const errorText = document.getElementById('formErrorText');
+            const submitBtn = document.getElementById('submitBtn');
+
+            errorDiv.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Guardando...';
+
+            try {
+                const body = {
+                    numero: document.getElementById('numero').value,
+                    piso: parseInt(document.getElementById('piso').value),
+                    tipoHabitacionId: document.getElementById('tipoHabitacionId').value,
+                    capacidad: parseInt(document.getElementById('capacidad').value),
+                    idCategoria: document.getElementById('idCategoria').value
+                };
+
+                const res = await fetch('/api/habitaciones', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+
+                if (!res.ok) {
+                    const errData = await res.text();
+                    throw new Error(errData || `Error ${res.status}`);
+                }
+
+                window.location.href = '/Habitaciones/Index';
+
+            } catch (err) {
+                errorDiv.classList.remove('hidden');
+                errorText.textContent = err.message;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm">save</span> Guardar Habitación';
+            }
+        });
+    </script>
+}

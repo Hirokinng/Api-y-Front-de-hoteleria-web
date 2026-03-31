@@ -1,4 +1,4 @@
-﻿@model List<HabitacionDisponibleDto>
+﻿@model List<HoteleriaApp.Core.Application.DTOs.Reservas.HabitacionDisponibleDto>?
 
 <h2>Consultar Disponibilidad</h2>
 
@@ -6,7 +6,7 @@
     @Html.AntiForgeryToken()
     <div class="mb-3">
         <label>ID Categoría</label>
-        <input type="number" name="idCategoria" class="form-control" required />
+        <input type="text" name="idCategoria" class="form-control" required />
     </div>
     <div class="mb-3">
         <label>Fecha de Entrada</label>
