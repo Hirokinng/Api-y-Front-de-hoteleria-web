@@ -1,0 +1,251 @@
+@{
+    ViewData["Title"] = "Disponibilidad de Habitaciones";
+}
+
+<div class="pb-12 px-8 max-w-[1600px] mx-auto space-y-8 pt-8">
+
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE INVENTARIO</p>
+            <h1 class="font-headline text-4xl text-primary italic">Búsqueda de Inventario</h1>
+            <p class="mt-2 text-secondary text-sm max-w-lg leading-relaxed">
+                Optimice la ocupación gestionando las unidades disponibles en tiempo real.
+                Utilice los filtros avanzados para encontrar la estancia perfecta para sus huéspedes.
+            </p>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm px-6 py-4 flex items-center gap-4">
+            <span class="material-symbols-outlined text-[#2E86DE]" style="font-variation-settings:'FILL' 1;">info</span>
+            <div>
+                <p class="text-[10px] font-bold text-secondary tracking-widest uppercase">Estado Global</p>
+                <p class="font-headline text-2xl font-bold text-primary" id="pctOcupacion">—%</p>
+                <p class="text-xs text-secondary">Ocupación Mensual</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+        <div class="grid grid-cols-4 gap-4 items-end">
+            <div class="space-y-2">
+                <label class="block text-xs font-bold tracking-widest text-on-surface-variant uppercase">Fecha Check-in</label>
+                <input type="date" id="fechaCheckIn"
+                       class="w-full bg-surface-container-highest border-none rounded-lg p-3 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-on-surface" />
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-bold tracking-widest text-on-surface-variant uppercase">Fecha Check-out</label>
+                <input type="date" id="fechaCheckOut"
+                       class="w-full bg-surface-container-highest border-none rounded-lg p-3 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-on-surface" />
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-bold tracking-widest text-on-surface-variant uppercase">Tipo de Habitación</label>
+                <div class="relative">
+                    <select id="tipoHabitacion"
+                            class="w-full appearance-none bg-surface-container-highest border-none rounded-lg p-3 pr-10 text-on-surface text-sm cursor-pointer focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                        <option value="">Todas las categorías</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-secondary text-sm">expand_more</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-xs font-bold tracking-widest text-on-surface-variant uppercase">Capacidad Mínima</label>
+                <div class="flex gap-2">
+                    <input type="number" id="capacidad" min="1" placeholder="Ej. 2"
+                           class="flex-1 bg-surface-container-highest border-none rounded-lg p-3 focus:ring-2 focus:ring-primary/20 outline-none transition-all text-on-surface" />
+                    <button id="btnBuscar"
+                            class="px-5 py-3 bg-[#2E86DE] hover:bg-[#2575c0] text-white font-semibold rounded-lg shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">search</span>
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-outline-variant/10 flex items-center justify-between">
+            <h2 class="font-headline text-xl text-primary">Resultados Disponibles</h2>
+            <span class="text-xs font-bold bg-surface-container-low text-secondary px-3 py-1 rounded-full tracking-widest uppercase" id="conteoResultados">
+                0 RESULTADOS
+            </span>
+        </div>
+
+        <div id="resultadosContainer">
+
+            <div class="flex flex-col items-center justify-center py-20 text-center" id="estadoVacio">
+                <div class="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-3xl text-secondary/40">hotel</span>
+                </div>
+                <h3 class="font-headline text-2xl text-primary mb-2">No se encontraron habitaciones</h3>
+                <p class="text-secondary text-sm max-w-xs leading-relaxed">
+                    No se encontraron habitaciones disponibles para los criterios seleccionados.
+                    Intente ajustar las fechas o el tipo de categoría.
+                </p>
+            </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-outline-variant/10" id="footerTabla" style="display:none;">
+            <span class="text-xs text-secondary" id="textoFooter"></span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-[#002547] rounded-xl p-8 text-white">
+            <p class="font-headline text-xl italic mb-2">Sugerencia Inteligente</p>
+            <p class="text-blue-100/60 text-sm leading-relaxed mb-4" id="sugerenciaTexto">
+                Las habitaciones del ala Este tienen mayor demanda para estas fechas.
+                Considere habilitar el upgrade automático.
+            </p>
+            <span class="material-symbols-outlined text-[#59a6ff]">auto_awesome</span>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6 flex items-center justify-between">
+            <div>
+                <p class="text-[10px] font-bold text-secondary tracking-widest uppercase mb-1">Tarifa Promedio</p>
+                <p class="font-headline text-3xl font-bold text-primary" id="tarifaPromedio">—</p>
+                <p class="text-xs text-secondary mt-1">/ Noche</p>
+            </div>
+            <span class="material-symbols-outlined text-emerald-500 text-3xl">trending_up</span>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+            <p class="text-[10px] font-bold text-secondary tracking-widest uppercase mb-2">Próximos Check-ins</p>
+            <p class="font-headline text-xl text-primary mb-1">Hoy, <span id="fechaHoy"></span></p>
+            <div class="flex items-center gap-2 mt-2">
+                <div class="flex -space-x-2">
+                    <div class="w-7 h-7 rounded-full bg-[#2E86DE] border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">A</div>
+                    <div class="w-7 h-7 rounded-full bg-[#002547] border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">M</div>
+                    <div class="w-7 h-7 rounded-full bg-secondary border-2 border-white flex items-center justify-center text-white text-[10px] font-bold">R</div>
+                </div>
+                <span class="text-xs text-secondary font-bold">+8</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const hoy = new Date();
+        document.getElementById('fechaHoy').textContent = hoy.toLocaleDateString('es-DO', { day: 'numeric', month: 'long' });
+
+        (async function () {
+            try {
+                const [tipos, habitaciones] = await Promise.all([
+                    fetch('/api/habitaciones/tipos').then(r => r.json()),
+                    fetch('/api/habitaciones').then(r => r.json())
+                ]);
+
+                const sel = document.getElementById('tipoHabitacion');
+                tipos.forEach(t => { sel.innerHTML += `<option value="${t.id}">${t.nombre}</option>`; });
+
+                const disponibles = habitaciones.filter(h => h.estado === 0).length;
+                const pct = habitaciones.length > 0
+                    ? Math.round(((habitaciones.length - disponibles) / habitaciones.length) * 100)
+                    : 0;
+                document.getElementById('pctOcupacion').textContent = `${pct}%`;
+                document.getElementById('tarifaPromedio').textContent = `RD$—`;
+
+            } catch (e) {
+                console.error('Error cargando tipos:', e);
+            }
+        })();
+
+        document.getElementById('btnBuscar').addEventListener('click', buscarDisponibilidad);
+
+        async function buscarDisponibilidad() {
+            const fechaCheckIn  = document.getElementById('fechaCheckIn').value;
+            const fechaCheckOut = document.getElementById('fechaCheckOut').value;
+            const tipo          = document.getElementById('tipoHabitacion').value;
+            const capacidad     = document.getElementById('capacidad').value;
+
+            const btn = document.getElementById('btnBuscar');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">sync</span> Buscando...';
+
+            try {
+                const params = new URLSearchParams();
+                if (fechaCheckIn)  params.append('fechaInicio', fechaCheckIn);
+                if (fechaCheckOut) params.append('fechaFin', fechaCheckOut);
+                if (tipo)          params.append('tipoHabitacionId', tipo);
+                if (capacidad)     params.append('capacidadMinima', capacidad);
+
+                const res = await fetch(`/api/habitaciones/disponibles?${params}`);
+                const habitaciones = await res.json();
+
+                renderResultados(habitaciones);
+
+            } catch (e) {
+                document.getElementById('estadoVacio').style.display = 'flex';
+                document.getElementById('estadoVacio').querySelector('p').textContent = 'Error al buscar: ' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">search</span> Buscar';
+            }
+        }
+
+        function renderResultados(habitaciones) {
+            const container = document.getElementById('resultadosContainer');
+            const footer    = document.getElementById('footerTabla');
+            document.getElementById('conteoResultados').textContent = `${habitaciones.length} RESULTADOS`;
+
+            if (habitaciones.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-3xl text-secondary/40">hotel</span>
+                        </div>
+                        <h3 class="font-headline text-2xl text-primary mb-2">No se encontraron habitaciones</h3>
+                        <p class="text-secondary text-sm max-w-xs leading-relaxed">
+                            No se encontraron habitaciones disponibles para los criterios seleccionados.
+                            Intente ajustar las fechas o el tipo de categoría.
+                        </p>
+                    </div>`;
+                footer.style.display = 'none';
+                return;
+            }
+
+            const table = `
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#002547] text-white">
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Número</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Piso</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Tipo</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Capacidad</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Precio/Noche</th>
+                            <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/10">
+                        ${habitaciones.map(h => `
+                            <tr class="hover:bg-surface-container-low transition-colors">
+                                <td class="px-6 py-5"><span class="font-bold text-primary">${h.numero}</span></td>
+                                <td class="px-6 py-5 text-secondary text-sm">Piso ${h.piso}</td>
+                                <td class="px-6 py-5 text-on-surface-variant text-sm">${h.tipoHabitacion?.nombre || '—'}</td>
+                                <td class="px-6 py-5 text-secondary text-sm">
+                                    <span class="material-symbols-outlined text-sm align-middle">group</span> ${h.capacidad}
+                                </td>
+                                <td class="px-6 py-5">
+                                    <span class="text-[#2E86DE] font-bold font-headline text-lg">
+                                        RD$${(h.tipoHabitacion?.precioPorNoche || 0).toLocaleString('es-DO')}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-5">
+                                    <a href="/Habitaciones/AsignarHabitacion"
+                                       class="text-xs font-bold text-[#2E86DE] hover:underline no-underline">
+                                        Asignar →
+                                    </a>
+                                </td>
+                            </tr>`).join('')}
+                    </tbody>
+                </table>`;
+
+            container.innerHTML = table;
+            footer.style.display = 'flex';
+            document.getElementById('textoFooter').textContent = `Mostrando ${habitaciones.length} habitación(es) disponible(s)`;
+
+            const precios = habitaciones.map(h => h.tipoHabitacion?.precioPorNoche || 0).filter(p => p > 0);
+            if (precios.length > 0) {
+                const prom = Math.round(precios.reduce((a, b) => a + b, 0) / precios.length);
+                document.getElementById('tarifaPromedio').textContent = `RD$${prom.toLocaleString('es-DO')}`;
+            }
+        }
+    </script>
+}

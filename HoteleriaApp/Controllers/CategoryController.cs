@@ -1,9 +1,18 @@
 ﻿using HoteleriaApp.Core.Application.DTOs.Category;
 using HoteleriaApp.Core.Application.Interfaces;
+<<<<<<< Updated upstream
+=======
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Stashed changes
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+<<<<<<< Updated upstream
+=======
+    [Authorize(Roles = "Admin", AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+>>>>>>> Stashed changes
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

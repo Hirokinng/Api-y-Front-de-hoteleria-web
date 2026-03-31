@@ -1,0 +1,208 @@
+@{
+    ViewData["Title"] = "Asignar Habitación a Reserva";
+}
+
+<div class="pb-12 px-8 max-w-[1600px] mx-auto pt-8">
+
+    <div class="flex gap-12">
+
+        @* Princp form columba *@
+        <div class="flex-1 space-y-10">
+
+            @* Cabxz *@
+            <div>
+                <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE INVENTARIO</p>
+                <h1 class="font-headline text-5xl font-bold text-primary tracking-tight">Asignar Habitación</h1>
+                <p class="mt-3 text-secondary text-sm max-w-lg leading-relaxed">
+                    Vincule una reserva activa con el inventario físico disponible para optimizar el flujo de check-in.
+                </p>
+            </div>
+
+            @* Card pal form *@
+            <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-[#002547]/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none"></div>
+
+                <form id="frmAsignar" class="space-y-8 relative z-10">
+
+                    @* Reserva *@
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold tracking-widest text-primary/60 uppercase">Reserva</label>
+                        <div class="relative">
+                            <select id="reservaId" required
+                                    class="w-full appearance-none bg-surface-container-low border-none rounded-lg py-4 px-5 pr-12 text-on-surface text-base cursor-pointer focus:ring-1 focus:ring-primary/20 outline-none transition-all">
+                                <option value="" disabled selected>Seleccione una reserva...</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold tracking-widest text-primary/60 uppercase">Habitación</label>
+                        <div class="relative">
+                            <select id="habitacionId" required
+                                    class="w-full appearance-none bg-surface-container-low border-none rounded-lg py-4 px-5 pr-12 text-on-surface text-base cursor-pointer focus:ring-1 focus:ring-primary/20 outline-none transition-all">
+                                <option value="" disabled selected>Seleccione disponibilidad...</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-secondary">expand_more</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit"
+                                class="px-12 py-4 bg-[#2E86DE] hover:bg-[#2575c0] text-white font-semibold rounded-lg shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]">
+                            Asignar
+                        </button>
+                        <a asp-action="Index"
+                           class="ml-4 text-sm text-secondary hover:text-primary no-underline transition-colors">
+                            Volver al inventario
+                        </a>
+                    </div>
+                </form>
+
+                <div id="mensajeOk" class="hidden mt-6 flex items-center gap-4 bg-emerald-50 text-emerald-800 p-5 rounded-lg border border-emerald-100/50">
+                    <span class="material-symbols-outlined text-emerald-600" style="font-variation-settings:'FILL' 1;">check_circle</span>
+                    <p class="font-medium text-sm"></p>
+                </div>
+
+                <div id="mensajeErr" class="hidden mt-6 flex items-center gap-4 bg-red-50 text-red-800 p-5 rounded-lg border border-red-100/50">
+                    <span class="material-symbols-outlined text-red-500" style="font-variation-settings:'FILL' 1;">error</span>
+                    <p class="font-medium text-sm"></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-6">
+                <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+                    <p class="text-[10px] font-bold tracking-widest text-secondary uppercase mb-2">Última Asignación</p>
+                    <h4 class="font-headline text-xl text-primary">Reserva #7840</h4>
+                    <p class="text-xs text-secondary mt-1">Asignada a Habitación 204 &bull; Hace 5 min</p>
+                </div>
+                <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+                    <p class="text-[10px] font-bold tracking-widest text-secondary uppercase mb-2">Estado de Inventario</p>
+                    <h4 class="font-headline text-xl text-primary" id="countDisponibles">— Disponibles</h4>
+                    <p class="text-xs text-secondary mt-1" id="countDetalle">Cargando...</p>
+                </div>
+            </div>
+
+        </div>
+
+        <aside class="w-80 flex-shrink-0">
+            <div class="bg-[#002547] rounded-2xl p-8 text-white sticky top-24 space-y-8">
+                <h3 class="font-headline text-2xl font-bold">Consejos de Asignación</h3>
+                <ul class="space-y-7">
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-[#59a6ff] flex-shrink-0">verified_user</span>
+                        <div>
+                            <p class="text-sm font-semibold text-[#59a6ff] mb-1">Prioridad de Socios</p>
+                            <p class="text-xs text-white/60 leading-relaxed">Asigne habitaciones en pisos altos para socios Gold o Platinum de forma automática.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-[#59a6ff] flex-shrink-0">cleaning_services</span>
+                        <div>
+                            <p class="text-sm font-semibold text-[#59a6ff] mb-1">Estado de Limpieza</p>
+                            <p class="text-xs text-white/60 leading-relaxed">Verifique siempre que el estado sea 'Limpio' antes de confirmar la asignación física.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-[#59a6ff] flex-shrink-0">family_restroom</span>
+                        <div>
+                            <p class="text-sm font-semibold text-[#59a6ff] mb-1">Capacidad Máxima</p>
+                            <p class="text-xs text-white/60 leading-relaxed">No asigne habitaciones Standard a reservas de más de 2 personas sin sofá-cama disponible.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <span class="material-symbols-outlined text-[#59a6ff] flex-shrink-0">info</span>
+                        <div>
+                            <p class="text-sm font-semibold text-[#59a6ff] mb-1">Nota del Concierge</p>
+                            <p class="text-xs text-white/60 leading-relaxed">Las solicitudes especiales (cuna, flores) deben revisarse en el panel de detalles de reserva.</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="bg-white/5 p-4 rounded-xl border border-white/10">
+                    <p class="text-[10px] text-white/50 uppercase tracking-widest mb-3 text-center">Rendimiento de Turno</p>
+                    <div class="flex items-end justify-center gap-1 h-8">
+                        <div class="w-2 bg-[#59a6ff] h-4 rounded-t-sm"></div>
+                        <div class="w-2 bg-[#59a6ff] h-6 rounded-t-sm"></div>
+                        <div class="w-2 bg-[#59a6ff] h-8 rounded-t-sm"></div>
+                        <div class="w-2 bg-[#59a6ff] h-5 rounded-t-sm"></div>
+                        <div class="w-2 bg-white/20 h-3 rounded-t-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (async function () {
+            try {
+                const [reservas, habitaciones] = await Promise.all([
+                    fetch('/api/habitaciones/reservas').then(r => r.json()),
+                    fetch('/api/habitaciones').then(r => r.json())
+                ]);
+
+                const selRes = document.getElementById('reservaId');
+                const selHab = document.getElementById('habitacionId');
+
+                reservas.forEach(r => {
+                    selRes.innerHTML += `<option value="${r.id}">Reserva #${r.numeroReserva} - ${r.numeroHuespedes} personas (${r.totalNoches} noches)</option>`;
+                });
+
+                const disponibles = habitaciones.filter(h => h.estado === 0);
+                const suites = disponibles.filter(h => h.tipoHabitacion?.nombre?.toLowerCase().includes('suite')).length;
+                const standard = disponibles.length - suites;
+
+                disponibles.forEach(h => {
+                    selHab.innerHTML += `<option value="${h.id}">${h.numero} - ${h.tipoHabitacion?.nombre || '—'} (Cap: ${h.capacidad})</option>`;
+                });
+
+                document.getElementById('countDisponibles').textContent = `${disponibles.length} Disponibles`;
+                document.getElementById('countDetalle').textContent = `${suites} Suite, ${standard} Standard · Actualizado ahora`;
+
+            } catch (e) {
+                mostrarError('Error al cargar datos: ' + e.message);
+            }
+        })();
+
+        document.getElementById('frmAsignar').addEventListener('submit', async e => {
+            e.preventDefault();
+            const reservaId    = document.getElementById('reservaId').value;
+            const habitacionId = document.getElementById('habitacionId').value;
+            ocultarAlertas();
+
+            try {
+                const res = await fetch('/api/habitaciones/asignar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reservaId, habitacionId })
+                });
+                const data = await res.json().catch(() => ({}));
+
+                if (res.ok) {
+                    mostrarOk(data.message || 'Habitación asignada correctamente.');
+                } else {
+                    mostrarError(typeof data === 'string' ? data : (data.message || data.detail || data.title || 'Error al asignar.'));
+                }
+            } catch (e) {
+                mostrarError('Error: ' + e.message);
+            }
+        });
+
+        function ocultarAlertas() {
+            document.getElementById('mensajeOk').classList.add('hidden');
+            document.getElementById('mensajeErr').classList.add('hidden');
+        }
+        function mostrarOk(msg) {
+            const el = document.getElementById('mensajeOk');
+            el.querySelector('p').textContent = msg;
+            el.classList.remove('hidden');
+        }
+        function mostrarError(msg) {
+            const el = document.getElementById('mensajeErr');
+            el.querySelector('p').textContent = msg;
+            el.classList.remove('hidden');
+        }
+    </script>
+}
