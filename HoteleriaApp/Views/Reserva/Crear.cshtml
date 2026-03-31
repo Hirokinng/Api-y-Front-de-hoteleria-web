@@ -1,4 +1,4 @@
-﻿@model HoteleriaApp.Models.DTOs.CrearReservaDto
+@model HoteleriaApp.Core.Application.DTOs.Reservas.CrearReservaDto
 
 <h2>Nueva Reserva</h2>
 
@@ -6,16 +6,12 @@
     @Html.AntiForgeryToken()
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
     <div class="mb-3">
-        <label>ID Cliente</label>
-        <input asp-for="IdCliente" class="form-control" />
-    </div>
-    <div class="mb-3">
         <label>ID Categoría</label>
         <input asp-for="IdCategoria" class="form-control" />
     </div>
     <div class="mb-3">
         <label>ID Habitación</label>
-        <input asp-for="IdHabitacion" class="form-control" />
+        <input asp-for="IdHabitacion" class="form-control" value="@ViewBag.IdHabitacion" />
     </div>
     <div class="mb-3">
         <label>Fecha de Entrada</label>

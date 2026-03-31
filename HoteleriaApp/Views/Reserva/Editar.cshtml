@@ -1,11 +1,10 @@
-﻿@model HoteleriaApp.Models.DTOs.EditarReservaDto
+@model HoteleriaApp.Core.Application.DTOs.Reservas.EditarReservaDto
 
 <h2>Editar Reserva</h2>
 
-<form asp-action="Editar" method="post">
+<form asp-action="Editar" asp-route-id="@ViewBag.ReservaId" method="post">
     @Html.AntiForgeryToken()
     <div asp-validation-summary="All" class="text-danger mb-3"></div>
-    <input asp-for="Id" type="hidden" />
     <div class="mb-3">
         <label>Fecha de Entrada</label>
         <input asp-for="FechaEntrada" type="date" class="form-control" />

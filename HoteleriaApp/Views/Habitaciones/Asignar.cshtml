@@ -2,58 +2,189 @@
     ViewData["Title"] = "Asignar Habitación a Reserva";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Asignar Habitación a Reserva</h2>
-    <a asp-action="Index" class="btn btn-outline-secondary">Volver al Inventario</a>
-</div>
+<div class="pb-12 px-8 max-w-[800px] mx-auto space-y-8 pt-8">
 
-<div class="card" style="max-width: 500px;">
-    <div class="card-body">
-        <form id="frmAsignar">
-            <div class="mb-3">
-                <label class="form-label">Reserva</label>
-                <select class="form-select" id="reservaId" required></select>
+    <div>
+        <a asp-action="Index" class="text-[#2E86DE] flex items-center gap-2 mb-4 hover:underline w-max no-underline text-sm font-medium">
+            <span class="material-symbols-outlined text-sm">arrow_back</span>
+            Volver al inventario
+        </a>
+        <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE HABITACIONES</p>
+        <h1 class="font-headline text-4xl text-primary">Asignar Habitación a Reserva</h1>
+        <p class="text-secondary mt-2">Selecciona una reserva y una habitación disponible para vincularlas.</p>
+    </div>
+
+    <!-- Success message -->
+    <div id="mensajeOk" class="hidden bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-green-700 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">check_circle</span>
+        <span id="mensajeOkText"></span>
+    </div>
+
+    <!-- Error message -->
+    <div id="mensajeErr" class="hidden bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">error</span>
+        <span id="mensajeErrText"></span>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingState" class="bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
+        <div class="w-12 h-12 rounded-full border-4 border-[#2E86DE]/20 border-t-[#2E86DE] animate-spin mb-4"></div>
+        <p class="text-secondary text-sm">Cargando reservas y habitaciones...</p>
+    </div>
+
+    <!-- Form -->
+    <div id="formContainer" class="hidden bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
+        <form id="frmAsignar" class="space-y-6">
+
+            <div>
+                <label for="reservaId" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Reserva</label>
+                <select id="reservaId" required
+                        class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all bg-white">
+                    <option value="">Seleccionar reserva...</option>
+                </select>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Habitación</label>
-                <select class="form-select" id="habitacionId" required></select>
+
+            <!-- Reservation details card -->
+            <div id="reservaInfo" class="hidden bg-blue-50 border border-blue-100 rounded-lg p-4">
+                <div class="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Huéspedes</p>
+                        <p class="font-bold text-primary" id="infoHuespedes">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Entrada</p>
+                        <p class="font-bold text-primary" id="infoEntrada">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Salida</p>
+                        <p class="font-bold text-primary" id="infoSalida">-</p>
+                    </div>
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary">Asignar</button>
+
+            <div>
+                <label for="habitacionId" class="block text-sm font-bold text-secondary mb-2 uppercase tracking-wide text-[11px]">Habitación</label>
+                <select id="habitacionId" required
+                        class="w-full border border-outline-variant/50 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2E86DE] transition-all bg-white">
+                    <option value="">Seleccionar habitación...</option>
+                </select>
+            </div>
+
+            <!-- Room details card -->
+            <div id="habitacionInfo" class="hidden bg-green-50 border border-green-100 rounded-lg p-4">
+                <div class="grid grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Tipo</p>
+                        <p class="font-bold text-primary" id="infoTipo">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Capacidad</p>
+                        <p class="font-bold text-primary" id="infoCapacidad">-</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-secondary uppercase tracking-wide mb-1">Estado</p>
+                        <p class="font-bold text-primary" id="infoEstado">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-6 border-t border-outline-variant/10">
+                <button type="submit" id="submitBtn"
+                        class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2 shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined text-sm">link</span>
+                    Asignar Habitación
+                </button>
+            </div>
         </form>
     </div>
-</div>
 
-<div class="alert alert-success d-none mt-3" id="mensajeOk" role="alert"></div>
-<div class="alert alert-danger d-none mt-3" id="mensajeErr" role="alert"></div>
+</div>
 
 @section Scripts {
     <script>
+        let reservasData = [];
+        let habitacionesData = [];
+
         (async function () {
+            const loadingState = document.getElementById('loadingState');
+            const formContainer = document.getElementById('formContainer');
+
             try {
                 const [reservas, habitaciones] = await Promise.all([
                     fetch('/api/habitaciones/reservas').then(r => r.json()),
                     fetch('/api/habitaciones').then(r => r.json())
                 ]);
+
+                reservasData = reservas;
+                habitacionesData = habitaciones;
+
                 const selRes = document.getElementById('reservaId');
                 const selHab = document.getElementById('habitacionId');
+
                 reservas.forEach(r => {
-                    selRes.innerHTML += `<option value="${r.id}">Reserva #${r.numeroReserva} - ${r.numeroHuespedes} personas (${r.totalNoches} noches)</option>`;
+                    const opt = document.createElement('option');
+                    opt.value = r.id;
+                    opt.textContent = `Reserva #${r.numeroReserva} — ${r.numeroHuespedes} persona(s), ${r.totalNoches} noche(s)`;
+                    selRes.appendChild(opt);
                 });
+
                 habitaciones.forEach(h => {
-                    selHab.innerHTML += `<option value="${h.id}">${h.numero} - ${h.tipoHabitacion?.nombre || '-'} (Cap: ${h.capacidad})</option>`;
+                    const estadoText = h.estado === 0 ? 'Disponible' : h.estado === 1 ? 'Ocupada' : 'Fuera de servicio';
+                    const opt = document.createElement('option');
+                    opt.value = h.id;
+                    opt.textContent = `${h.numero} — ${h.tipoHabitacion?.nombre || '-'} (Cap: ${h.capacidad}) [${estadoText}]`;
+                    selHab.appendChild(opt);
                 });
+
+                loadingState.classList.add('hidden');
+                formContainer.classList.remove('hidden');
+
             } catch (e) {
-                document.getElementById('mensajeErr').classList.remove('d-none');
-                document.getElementById('mensajeErr').textContent = 'Error al cargar datos: ' + e.message;
+                loadingState.classList.add('hidden');
+                showError('Error al cargar datos: ' + e.message);
             }
         })();
 
-        document.getElementById('frmAsignar').addEventListener('submit', async e => {
+        // Show reservation details on select
+        document.getElementById('reservaId').addEventListener('change', function () {
+            const info = document.getElementById('reservaInfo');
+            const r = reservasData.find(x => x.id === this.value);
+            if (r) {
+                document.getElementById('infoHuespedes').textContent = r.numeroHuespedes + ' persona(s)';
+                document.getElementById('infoEntrada').textContent = r.fechaEntrada?.substring(0, 10) || '-';
+                document.getElementById('infoSalida').textContent = r.fechaSalida?.substring(0, 10) || '-';
+                info.classList.remove('hidden');
+            } else {
+                info.classList.add('hidden');
+            }
+        });
+
+        // Show room details on select
+        document.getElementById('habitacionId').addEventListener('change', function () {
+            const info = document.getElementById('habitacionInfo');
+            const h = habitacionesData.find(x => x.id === this.value);
+            if (h) {
+                document.getElementById('infoTipo').textContent = h.tipoHabitacion?.nombre || '-';
+                document.getElementById('infoCapacidad').textContent = h.capacidad + ' persona(s)';
+                const estadoMap = { 0: 'Disponible', 1: 'Ocupada', 2: 'Fuera de servicio' };
+                document.getElementById('infoEstado').textContent = estadoMap[h.estado] || '-';
+                info.classList.remove('hidden');
+            } else {
+                info.classList.add('hidden');
+            }
+        });
+
+        // Form submission
+        document.getElementById('frmAsignar').addEventListener('submit', async function (e) {
             e.preventDefault();
+            hideMessages();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm animate-spin">progress_activity</span> Asignando...';
+
             const reservaId = document.getElementById('reservaId').value;
             const habitacionId = document.getElementById('habitacionId').value;
-            document.getElementById('mensajeOk').classList.add('d-none');
-            document.getElementById('mensajeErr').classList.add('d-none');
 
             try {
                 const res = await fetch('/api/habitaciones/asignar', {
@@ -62,17 +193,33 @@
                     body: JSON.stringify({ reservaId, habitacionId })
                 });
                 const data = await res.json().catch(() => ({}));
+
                 if (res.ok) {
-                    document.getElementById('mensajeOk').classList.remove('d-none');
-                    document.getElementById('mensajeOk').textContent = data.message || 'Habitación asignada correctamente.';
+                    showSuccess(data.message || 'Habitación asignada correctamente.');
                 } else {
-                    document.getElementById('mensajeErr').classList.remove('d-none');
-                    document.getElementById('mensajeErr').textContent = typeof data === 'string' ? data : (data.message || data.detail || data.title || 'Error al asignar.');
+                    showError(typeof data === 'string' ? data : (data.message || data.detail || data.title || 'Error al asignar.'));
                 }
             } catch (e) {
-                document.getElementById('mensajeErr').classList.remove('d-none');
-                document.getElementById('mensajeErr').textContent = 'Error: ' + e.message;
+                showError('Error: ' + e.message);
             }
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span class="material-symbols-outlined text-sm">link</span> Asignar Habitación';
         });
+
+        function showSuccess(msg) {
+            document.getElementById('mensajeOk').classList.remove('hidden');
+            document.getElementById('mensajeOkText').textContent = msg;
+        }
+
+        function showError(msg) {
+            document.getElementById('mensajeErr').classList.remove('hidden');
+            document.getElementById('mensajeErrText').textContent = msg;
+        }
+
+        function hideMessages() {
+            document.getElementById('mensajeOk').classList.add('hidden');
+            document.getElementById('mensajeErr').classList.add('hidden');
+        }
     </script>
 }

@@ -1,4 +1,4 @@
-﻿@model HoteleriaApp.Models.DTOs.ReservaDto
+@model HoteleriaApp.Core.Application.DTOs.Reservas.ReservaDto
 
 <h2>Detalle de Reserva</h2>
 
@@ -7,7 +7,6 @@
         <h5 class="card-title">@Model.NumeroReserva</h5>
         <div class="row">
             <div class="col-md-6">
-                <p><strong>Cliente:</strong> @Model.NombreCliente</p>
                 <p><strong>Categoría:</strong> @Model.NombreCategoria</p>
                 <p><strong>Habitación:</strong> @Model.NumeroHabitacion</p>
                 <p><strong>Huéspedes:</strong> @Model.NumeroHuespedes</p>
@@ -17,7 +16,6 @@
                 <p><strong>Fecha Entrada:</strong> @Model.FechaEntrada.ToString("dd/MM/yyyy")</p>
                 <p><strong>Fecha Salida:</strong> @Model.FechaSalida.ToString("dd/MM/yyyy")</p>
                 <p><strong>Noches:</strong> @Model.TotalNoches</p>
-                <p><strong>Precio por Noche:</strong> RD$@Model.PrecioBaseNoche.ToString("N2")</p>
                 <p><strong>Fecha Creación:</strong> @Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
             </div>
         </div>
@@ -26,8 +24,6 @@
         <p><strong>Servicios:</strong> @string.Join(", ", Model.Servicios)</p>
         }
         <hr />
-        <p><strong>Subtotal Habitación:</strong> RD$@Model.SubtotalHabitacion.ToString("N2")</p>
-        <p><strong>Total Servicios:</strong> RD$@Model.TotalServicios.ToString("N2")</p>
         <h5><strong>Total:</strong> RD$@Model.Total.ToString("N2")</h5>
     </div>
 </div>
