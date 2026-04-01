@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "Reservar";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+}
+
+<div class="pt-28 pb-20 px-8 max-w-7xl mx-auto">
+    <div class="mb-10">
+        <h1 class="text-5xl font-serif text-primary mb-2">Encuentre su Refugio</h1>
+        <p class="text-secondary italic">Descubra una curaduría exclusiva de estancias diseñadas para elevar su experiencia de viaje.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+        <!-- FILTERS -->
+        <aside class="lg:col-span-1 space-y-6">
+            <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20">
+                <h3 class="text-sm font-bold uppercase tracking-widest text-secondary mb-6">Rango de Precio</h3>
+                <input type="range" id="rangoPrice" min="0" max="50000" value="50000"
+                       class="w-full accent-[#2E86DE]" oninput="filtrarResultados()"/>
+                <div class="flex justify-between text-xs text-secondary mt-2">
+                    <span>RD$0</span>
+                    <span id="maxPriceLabel">RD$50,000+</span>
+                </div>
+            </div>
+
+            <div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20">
+                <h3 class="text-sm font-bold uppercase tracking-widest text-secondary mb-4">Categorías</h3>
+                <div class="space-y-3" id="filtrosCategorias"></div>
+            </div>
+        </aside>
+
+        <!-- RESULTS -->
+        <div class="lg:col-span-3">
+            <div class="flex justify-between items-center mb-6">
+                <p class="text-sm text-secondary" id="conteoResultados">Buscando...</p>
+            </div>
+            <div class="space-y-6" id="resultadosContainer">
+                <div class="text-center py-16 text-secondary">
+                    <span class="material-symbols-outlined text-4xl mb-4 block">search</span>
+                    Buscando disponibilidad...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+let todasCategorias = [];
+let resultadosGlobales = [];
+
+const params = new URLSearchParams(window.location.search);
+const fechaEntrada = params.get('fechaEntrada') || '';
+const fechaSalida = params.get('fechaSalida') || '';
+const numHuespedes = params.get('numHuespedes') || '1';
+const idCategoriaParam = params.get('idCategoria') || '';
+
+(async function() {
+    try {
+        const res = await fetch('/api/habitaciones/tipos');
+        if (!res.ok) return;
+        todasCategorias = await res.json();
+
+        const filtrosEl = document.getElementById('filtrosCategorias');
+        todasCategorias.forEach(c => {
+            filtrosEl.innerHTML += `
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" value="${c.id}" class="filtro-cat rounded accent-[#2E86DE]"
+                       ${(!idCategoriaParam || idCategoriaParam === c.id) ? 'checked' : ''}
+                       onchange="filtrarResultados()"/>
+                <span class="text-sm text-on-surface">${c.nombre}</span>
+            </label>`;
+        });
+
+        mostrarCategorias(todasCategorias);
+    } catch(e) {
+        console.error(e);
+    }
+})();
+
+function mostrarCategorias(categorias) {
+    const maxPrice = parseInt(document.getElementById('rangoPrice').value);
+    const checkedIds = [...document.querySelectorAll('.filtro-cat:checked')].map(el => el.value);
+    
+    const filtradas = categorias.filter(c => {
+        const precioOk = c.precioBasePorNoche <= maxPrice;
+        const catOk = checkedIds.length === 0 || checkedIds.includes(c.id?.toString());
+        return precioOk && catOk;
+    });
+
+    const container = document.getElementById('resultadosContainer');
+    document.getElementById('conteoResultados').textContent = `Mostrando ${filtradas.length} categoría(s) disponible(s)`;
+
+    if (filtradas.length === 0) {
+        container.innerHTML = `
+        <div class="text-center py-16 text-secondary">
+            <span class="material-symbols-outlined text-4xl mb-4 block">search_off</span>
+            No hay categorías disponibles con estos filtros.
+        </div>`;
+        return;
+    }
+
+    container.innerHTML = '';
+    filtradas.forEach(c => {
+        container.innerHTML += `
+        <div class="group bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-outline-variant/10 flex flex-col md:flex-row">
+            <div class="w-full md:w-64 h-48 md:h-auto flex-shrink-0 bg-gradient-to-br from-[#002547] to-[#2E86DE] relative flex items-center justify-center">
+                <span class="material-symbols-outlined text-white/30 text-6xl">hotel</span>
+                <div class="absolute top-3 left-3">
+                    <span class="bg-primary text-white text-[10px] px-2 py-1 rounded-full uppercase tracking-widest font-bold">${c.nombre}</span>
+                </div>
+            </div>
+            <div class="flex-grow p-8 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-2xl font-serif text-primary mb-1">${c.nombre}</h3>
+                    <p class="text-secondary text-sm leading-relaxed mb-4">${c.descripcion || ''}</p>
+                    <p class="text-xs text-slate-400">${c.descripcion || ''}</p>
+                </div>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-outline-variant/10">
+                    <div>
+                        <span class="text-xs text-secondary uppercase tracking-widest">Por noche</span>
+                        <p class="text-2xl font-serif font-bold text-primary">RD$${Number(c.precioBasePorNoche).toLocaleString()}</p>
+                        ${fechaEntrada && fechaSalida ? `<p class="text-xs text-secondary">TOTAL: RD$${calcTotal(c.precioBasePorNoche, fechaEntrada, fechaSalida).toLocaleString()}</p>` : ''}
+                    </div>
+                    <a href="/ClientePortal/Detalle?idCategoria=${c.id}&fechaEntrada=${fechaEntrada}&fechaSalida=${fechaSalida}&numHuespedes=${numHuespedes}"
+                       class="bg-[#2E86DE] text-white px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all no-underline">
+                        Reservar
+                    </a>
+                </div>
+            </div>
+        </div>`;
+    });
+}
+
+function filtrarResultados() {
+    const maxPrice = parseInt(document.getElementById('rangoPrice').value);
+    document.getElementById('maxPriceLabel').textContent = `RD$${maxPrice.toLocaleString()}+`;
+    mostrarCategorias(todasCategorias);
+}
+
+function calcTotal(precio, entrada, salida) {
+    const d1 = new Date(entrada), d2 = new Date(salida);
+    const noches = Math.max(1, Math.round((d2 - d1) / 86400000));
+    return precio * noches;
+}
+</script>
+}

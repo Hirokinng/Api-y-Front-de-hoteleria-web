@@ -1,0 +1,177 @@
+﻿@{
+    ViewData["Title"] = "Mis Reservas";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+}
+
+<div class="pt-32 pb-20 px-8 max-w-7xl mx-auto">
+    <section class="mb-12">
+        <h1 class="text-5xl md:text-6xl font-serif font-semibold text-primary mb-4 tracking-tight">Mis Reservas</h1>
+        <p class="text-secondary max-w-2xl leading-relaxed">Gestione sus estancias próximas y pasadas con la exclusividad y el detalle que define la experiencia HOTELERIA.</p>
+    </section>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-12">
+
+        <!-- FILTERS -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/20">
+                <h3 class="text-xl font-serif font-semibold mb-6">Filtrar Historial</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-widest text-secondary mb-2">Estado</label>
+                        <select id="filtroEstado" onchange="filtrarReservas()"
+                                class="w-full bg-surface-container-low border-none rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary/20">
+                            <option value="">Todos los estados</option>
+                            <option value="Confirmada">Confirmada</option>
+                            <option value="En espera">En espera</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-primary text-white p-8 rounded-xl shadow-lg relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="material-symbols-outlined text-on-primary-container mb-4 block">loyalty</span>
+                    <p class="text-sm opacity-80 uppercase tracking-widest">Historial</p>
+                    <h4 class="text-3xl font-serif font-bold mt-1" id="totalReservas">0</h4>
+                    <div class="mt-4 pt-4 border-t border-white/10 text-xs">Total de reservas</div>
+                </div>
+                <div class="absolute -right-8 -bottom-8 opacity-10">
+                    <span class="material-symbols-outlined text-9xl">hotel</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESERVATIONS LIST -->
+        <div class="lg:col-span-3 space-y-6" id="listaReservas">
+            <div class="text-center py-16 text-secondary">
+                <span class="material-symbols-outlined text-4xl mb-4 block animate-pulse">calendar_month</span>
+                Cargando reservas...
+            </div>
+        </div>
+    </div>
+
+    <!-- HELP SECTION -->
+    <section class="mt-8 p-12 bg-surface-container rounded-2xl flex flex-col md:flex-row items-center justify-between gap-8">
+        <div class="max-w-xl text-center md:text-left">
+            <h2 class="text-3xl font-serif font-semibold text-primary mb-4">¿Necesita asistencia personal?</h2>
+            <p class="text-secondary">Nuestro equipo está disponible para ayudarle con cualquier modificación en su reserva.</p>
+        </div>
+        <div class="flex flex-wrap gap-4">
+            <button class="bg-primary text-white px-8 py-4 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined">support_agent</span>
+                Contactar Soporte
+            </button>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+<script>
+let todasReservas = [];
+
+(async function() {
+    const token = '@(Context.Session.GetString("JwtToken") ?? "")';
+    if (!token) {
+        window.location.href = '/ClientesMvc/Login';
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/ReservaApi', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!res.ok) {
+            document.getElementById('listaReservas').innerHTML = `
+            <div class="text-center py-16 text-secondary">
+                <span class="material-symbols-outlined text-4xl mb-4 block">lock</span>
+                Inicia sesión para ver tus reservas.
+            </div>`;
+            return;
+        }
+
+        todasReservas = await res.json();
+        document.getElementById('totalReservas').textContent = todasReservas.length;
+        filtrarReservas();
+    } catch(e) {
+        document.getElementById('listaReservas').innerHTML = `
+        <div class="text-center py-16 text-secondary">
+            <span class="material-symbols-outlined text-4xl mb-4 block">error</span>
+            Error al cargar reservas.
+        </div>`;
+    }
+})();
+
+function filtrarReservas() {
+    const estado = document.getElementById('filtroEstado').value;
+    const filtradas = estado ? todasReservas.filter(r => r.estado === estado) : todasReservas;
+    renderReservas(filtradas);
+}
+
+function renderReservas(reservas) {
+    const container = document.getElementById('listaReservas');
+
+    if (reservas.length === 0) {
+        container.innerHTML = `
+        <div class="text-center py-16 bg-surface-container-lowest rounded-xl border border-outline-variant/20">
+            <span class="material-symbols-outlined text-4xl mb-4 block text-secondary">calendar_month</span>
+            <p class="text-secondary">No tienes reservas registradas.</p>
+            <a asp-controller="ClientePortal" asp-action="Buscar"
+               class="mt-4 inline-block bg-[#2E86DE] text-white px-6 py-3 rounded-lg font-medium no-underline">
+                Hacer una reserva
+            </a>
+        </div>`;
+        return;
+    }
+
+    container.innerHTML = '';
+    reservas.forEach(r => {
+        const badgeClass = r.estado === 'Confirmada'
+            ? 'bg-emerald-100 text-emerald-800'
+            : r.estado === 'Cancelada'
+            ? 'bg-red-100 text-red-800'
+            : 'bg-amber-100 text-amber-800';
+
+        const dotClass = r.estado === 'Confirmada' ? 'bg-emerald-500'
+            : r.estado === 'Cancelada' ? 'bg-red-500' : 'bg-amber-500';
+
+        const precioClass = r.estado === 'Cancelada' ? 'line-through text-slate-400' : 'text-primary';
+
+        container.innerHTML += `
+        <div class="group bg-surface-container-lowest rounded-xl p-6 transition-all hover:shadow-md flex flex-col md:flex-row gap-6 items-center border border-outline-variant/10">
+            <div class="w-full md:w-48 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gradient-to-br from-[#002547] to-[#2E86DE] flex items-center justify-center">
+                <span class="material-symbols-outlined text-white/30 text-4xl">hotel</span>
+            </div>
+            <div class="flex-grow grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                <div>
+                    <p class="text-[10px] text-secondary uppercase tracking-widest mb-1">Reserva #</p>
+                    <p class="font-medium text-sm">${r.numeroReserva || r.id?.toString().slice(0,8) || '—'}</p>
+                    <h3 class="text-xl font-serif mt-2">Categoría ${r.idCategoria || '—'}</h3>
+                </div>
+                <div>
+                    <p class="text-[10px] text-secondary uppercase tracking-widest mb-1">Fechas</p>
+                    <p class="text-sm font-medium">${r.fechaEntrada || '—'} — ${r.fechaSalida || '—'}</p>
+                    <p class="text-xs text-secondary mt-1">${r.totalNoches || '—'} noche(s), ${r.numeroHuespedes || '—'} persona(s)</p>
+                </div>
+                <div class="flex flex-col justify-between items-start md:items-end">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full ${badgeClass} text-[11px] font-bold uppercase tracking-tight">
+                        <span class="w-1.5 h-1.5 rounded-full ${dotClass} mr-2"></span>
+                        ${r.estado || '—'}
+                    </span>
+                    <p class="text-2xl font-serif font-bold mt-4 ${precioClass}">
+                        RD$${Number(r.total || 0).toLocaleString()}
+                    </p>
+                </div>
+            </div>
+            <div class="border-t md:border-t-0 md:border-l border-outline-variant/20 pt-4 md:pt-0 md:pl-6 flex justify-center">
+                <button class="bg-primary text-white px-5 py-3 rounded-lg text-sm font-semibold hover:opacity-90 transition-all flex items-center gap-2">
+                    Ver detalle
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+        </div>`;
+    });
+}
+</script>
+}

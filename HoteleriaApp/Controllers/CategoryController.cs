@@ -1,9 +1,12 @@
 ﻿using HoteleriaApp.Core.Application.DTOs.Category;
 using HoteleriaApp.Core.Application.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+    [Authorize(Roles = "Admin", AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -32,7 +35,7 @@ namespace HoteleriaApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             var category = await _categoryService.GetByIdAsync(id);
             if (category == null) return NotFound();
@@ -58,7 +61,7 @@ namespace HoteleriaApp.Controllers
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _categoryService.DeleteAsync(id);
             return RedirectToAction("Index");

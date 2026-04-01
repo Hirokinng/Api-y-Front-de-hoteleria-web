@@ -1,0 +1,232 @@
+﻿@{
+    ViewData["Title"] = "Reservar";
+    Layout = "~/Views/Shared/_LayoutCliente.cshtml";
+}
+
+<div class="pt-28 pb-20 px-8 max-w-7xl mx-auto">
+    <div class="flex items-center gap-3 mb-8 text-sm text-secondary">
+        <a asp-controller="ClientePortal" asp-action="Buscar" class="hover:text-primary no-underline">← Volver a resultados</a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+        <!-- LEFT: Room Info -->
+        <div class="lg:col-span-2">
+            <!-- Image placeholder -->
+            <div class="w-full h-80 bg-gradient-to-br from-[#002547] to-[#2E86DE] rounded-2xl flex items-center justify-center mb-8 relative overflow-hidden">
+                <span class="material-symbols-outlined text-white/20 text-9xl">hotel</span>
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    <div class="w-2 h-2 rounded-full bg-white"></div>
+                    <div class="w-2 h-2 rounded-full bg-white/40"></div>
+                    <div class="w-2 h-2 rounded-full bg-white/40"></div>
+                </div>
+            </div>
+
+            <div id="categoriaInfo">
+                <div class="text-secondary text-sm mb-2" id="catLabel"></div>
+                <h1 class="text-4xl font-serif text-primary mb-4" id="catNombre">Cargando...</h1>
+                <div class="flex gap-4 text-sm text-secondary mb-6" id="catMeta"></div>
+                <p class="text-on-surface-variant leading-relaxed mb-8" id="catDescripcion"></p>
+
+                <h2 class="text-2xl font-serif text-primary mb-4">Comodidades y Servicios</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3" id="catCaracteristicas"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Booking Card -->
+        <div class="lg:col-span-1">
+            <div class="bg-surface-container-lowest rounded-xl p-8 shadow-lg border border-outline-variant/20 sticky top-28">
+                <div class="mb-6">
+                    <span class="text-3xl font-serif font-bold text-primary" id="cardPrecio">RD$0</span>
+                    <span class="text-secondary text-sm"> / noche</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-surface-container-low rounded-lg p-3">
+                        <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Llegada</p>
+                        <p class="text-sm font-medium" id="cardEntrada">—</p>
+                    </div>
+                    <div class="bg-surface-container-low rounded-lg p-3">
+                        <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-1">Salida</p>
+                        <p class="text-sm font-medium" id="cardSalida">—</p>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-2">Huéspedes</p>
+                    <p class="text-sm font-medium" id="cardHuespedes">—</p>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-[10px] uppercase tracking-widest text-secondary font-bold mb-3">Servicios Adicionales</p>
+                    <div id="serviciosContainer" class="space-y-2 text-sm text-secondary">Cargando servicios...</div>
+                </div>
+
+                <div class="border-t border-outline-variant/20 pt-4 space-y-2 mb-6 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-secondary" id="resumenPrecio">RD$0 × 0 noches</span>
+                        <span id="subtotal">RD$0</span>
+                    </div>
+                    <div class="flex justify-between font-bold text-base">
+                        <span>Total</span>
+                        <span id="total" class="text-primary font-serif text-xl">RD$0</span>
+                    </div>
+                </div>
+
+                <button id="btnConfirmar"
+                        class="w-full bg-[#2E86DE] text-white py-4 rounded-lg font-semibold hover:bg-opacity-90 transition-all shadow-lg shadow-blue-500/20">
+                    Confirmar reserva
+                </button>
+                <p class="text-xs text-center text-secondary mt-3">No se realizará ningún cargo hasta el check-in</p>
+
+                <div class="mt-4 p-4 bg-surface-container-low rounded-lg flex gap-3">
+                    <span class="material-symbols-outlined text-[#2E86DE] text-sm flex-shrink-0">verified_user</span>
+                    <p class="text-xs text-secondary">Cancelación gratuita hasta 48 horas antes de tu llegada.</p>
+                </div>
+
+                <div id="msgReserva" class="hidden mt-4 p-3 rounded-lg text-sm"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const params = new URLSearchParams(window.location.search);
+const idCategoria = params.get('idCategoria');
+const fechaEntrada = params.get('fechaEntrada') || '';
+const fechaSalida = params.get('fechaSalida') || '';
+const numHuespedes = parseInt(params.get('numHuespedes') || '1');
+let precioPorNoche = 0;
+let noches = 1;
+
+document.getElementById('cardEntrada').textContent = fechaEntrada || '—';
+document.getElementById('cardSalida').textContent = fechaSalida || '—';
+document.getElementById('cardHuespedes').textContent = numHuespedes + ' persona(s)';
+
+if (fechaEntrada && fechaSalida) {
+    const d1 = new Date(fechaEntrada), d2 = new Date(fechaSalida);
+    noches = Math.max(1, Math.round((d2 - d1) / 86400000));
+}
+
+(async function() {
+    try {
+        // Load category
+        const resCats = await fetch('/api/Category');
+        const cats = await resCats.json();
+        const cat = cats.find(c => c.id?.toString() === idCategoria || c.id === parseInt(idCategoria));
+        
+        if (cat) {
+            precioPorNoche = cat.pricePerNight;
+            document.getElementById('catLabel').textContent = cat.name;
+            document.getElementById('catNombre').textContent = cat.name;
+            document.getElementById('catDescripcion').textContent = cat.description || '';
+            document.getElementById('cardPrecio').textContent = 'RD$' + Number(precioPorNoche).toLocaleString();
+
+            if (cat.characteristics) {
+                const chars = cat.characteristics.split(',');
+                const el = document.getElementById('catCaracteristicas');
+                el.innerHTML = '';
+                chars.forEach(ch => {
+                    el.innerHTML += `
+                    <div class="flex items-center gap-2 text-sm text-on-surface">
+                        <span class="material-symbols-outlined text-[#2E86DE] text-sm">check_circle</span>
+                        ${ch.trim()}
+                    </div>`;
+                });
+            }
+
+            actualizarTotal();
+        }
+
+        // Services placeholder
+        document.getElementById('serviciosContainer').innerHTML = `
+        <label class="flex items-center justify-between gap-2 cursor-pointer">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" class="servicio-check accent-[#2E86DE]" data-precio="500" onchange="actualizarTotal()"/>
+                <span>Desayuno</span>
+            </div>
+            <span class="text-xs text-secondary">+RD$500/día</span>
+        </label>
+        <label class="flex items-center justify-between gap-2 cursor-pointer">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" class="servicio-check accent-[#2E86DE]" data-precio="1500" onchange="actualizarTotal()"/>
+                <span>Spa</span>
+            </div>
+            <span class="text-xs text-secondary">+RD$1,500/día</span>
+        </label>
+        <label class="flex items-center justify-between gap-2 cursor-pointer">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" class="servicio-check accent-[#2E86DE]" data-precio="800" onchange="actualizarTotal()"/>
+                <span>Transporte aeropuerto</span>
+            </div>
+            <span class="text-xs text-secondary">+RD$800</span>
+        </label>
+        <label class="flex items-center justify-between gap-2 cursor-pointer">
+            <div class="flex items-center gap-2">
+                <input type="checkbox" class="servicio-check accent-[#2E86DE]" data-precio="400" onchange="actualizarTotal()"/>
+                <span>Lavandería</span>
+            </div>
+            <span class="text-xs text-secondary">+RD$400/día</span>
+        </label>`;
+    } catch(e) {
+        console.error(e);
+    }
+})();
+
+function actualizarTotal() {
+    let extrasTotal = 0;
+    document.querySelectorAll('.servicio-check:checked').forEach(el => {
+        extrasTotal += parseInt(el.dataset.precio) * noches;
+    });
+    const subtotal = precioPorNoche * noches;
+    const total = subtotal + extrasTotal;
+    document.getElementById('resumenPrecio').textContent = `RD$${Number(precioPorNoche).toLocaleString()} × ${noches} noche(s)`;
+    document.getElementById('subtotal').textContent = 'RD$' + Number(subtotal).toLocaleString();
+    document.getElementById('total').textContent = 'RD$' + Number(total).toLocaleString();
+}
+
+document.getElementById('btnConfirmar').addEventListener('click', async function() {
+    const token = sessionStorage.getItem('JwtToken') || '@(Context.Session.GetString("JwtToken") ?? "")';
+    if (!token) {
+        window.location.href = '/ClientesMvc/Login';
+        return;
+    }
+
+    const msg = document.getElementById('msgReserva');
+    try {
+        const body = {
+            idCategoria: parseInt(idCategoria),
+            fechaEntrada: fechaEntrada,
+            fechaSalida: fechaSalida,
+            numeroHuespedes: numHuespedes
+        };
+
+        const res = await fetch('/api/ReservaApi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (res.ok) {
+            msg.className = 'mt-4 p-3 rounded-lg text-sm bg-green-50 border border-green-200 text-green-700';
+            msg.textContent = '✓ Reserva confirmada exitosamente. Serás redirigido a tus reservas.';
+            msg.classList.remove('hidden');
+            setTimeout(() => window.location.href = '/ClientePortal/MisReservas', 2000);
+        } else {
+            const err = await res.text();
+            msg.className = 'mt-4 p-3 rounded-lg text-sm bg-red-50 border border-red-200 text-red-700';
+            msg.textContent = 'Error: ' + err;
+            msg.classList.remove('hidden');
+        }
+    } catch(e) {
+        msg.className = 'mt-4 p-3 rounded-lg text-sm bg-red-50 border border-red-200 text-red-700';
+        msg.textContent = 'Error al procesar la reserva.';
+        msg.classList.remove('hidden');
+    }
+});
+</script>
+}

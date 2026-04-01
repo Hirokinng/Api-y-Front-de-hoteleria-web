@@ -1,0 +1,114 @@
+﻿@{
+    ViewData["Title"] = "Pisos";
+}
+
+<div class="p-8 lg:p-12 flex flex-col lg:flex-row gap-8 max-w-[1400px] mx-auto">
+
+    <!-- FORM -->
+    <div class="flex-1 max-w-3xl">
+        <div class="mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <a asp-controller="PisosMvc" asp-action="Index" class="p-2 text-secondary hover:text-primary hover:bg-surface-container-low rounded-lg transition-all">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                </a>
+                <span class="text-secondary text-sm">Pisos</span>
+                <span class="material-symbols-outlined text-sm text-outline">chevron_right</span>
+                <span class="text-primary text-sm font-medium">Nuevo Piso</span>
+            </div>
+            <h2 class="text-4xl lg:text-5xl font-headline text-primary mb-2">Nuevo Piso</h2>
+            <p class="text-secondary">Complete la información para registrar un nuevo nivel en la propiedad.</p>
+        </div>
+
+        <div class="bg-white rounded-xl p-8 shadow-sm border border-outline-variant/20">
+            <form asp-controller="PisosMvc" asp-action="Create" method="post" class="space-y-8">
+                @Html.AntiForgeryToken()
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="md:col-span-1">
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-2">Número de Piso</label>
+                        <input name="NumeroPiso" type="number" placeholder="0"
+                               class="w-full bg-surface-container-highest border-none rounded-lg py-3 px-4 focus:bg-white focus:ring-2 focus:ring-[#2E86DE]/20 transition-all"/>
+                    </div>
+                    <div class="md:col-span-3">
+                        <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-2">Nombre del Piso</label>
+                        <input name="Nombre" type="text" placeholder="Ej: Planta Ejecutiva, Penthouse..."
+                               class="w-full bg-surface-container-highest border-none rounded-lg py-3 px-4 focus:bg-white focus:ring-2 focus:ring-[#2E86DE]/20 transition-all"/>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-2">Descripción</label>
+                    <textarea name="Descripcion" rows="4"
+                              placeholder="Detalles sobre el acceso, servicios disponibles o características del piso..."
+                              class="w-full bg-surface-container-highest border-none rounded-lg py-3 px-4 focus:bg-white focus:ring-2 focus:ring-[#2E86DE]/20 transition-all"></textarea>
+                </div>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">@ViewBag.Error</div>
+                }
+
+                <div class="flex items-center gap-6 pt-4">
+                    <button type="submit"
+                            class="bg-[#2E86DE] hover:bg-[#256db5] text-white px-8 py-3 rounded-lg font-semibold shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+                        Guardar Piso
+                    </button>
+                    <a asp-controller="PisosMvc" asp-action="Index"
+                       class="text-secondary hover:text-primary font-medium text-sm transition-colors no-underline">
+                        Cancelar y volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="w-full lg:w-80 space-y-6">
+        <div class="bg-[#002547] text-white rounded-xl p-8 sticky top-24">
+            <div class="flex items-center gap-2 mb-6">
+                <span class="material-symbols-outlined text-on-primary-container">lightbulb</span>
+                <h3 class="font-headline text-xl">Consejos de Organización</h3>
+            </div>
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <h4 class="text-sm font-semibold text-on-primary-container uppercase tracking-widest">Nomenclatura</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed">Utilice nombres descriptivos que faciliten la ubicación tanto para el personal como para los huéspedes (ej: "Ala Norte", "Zona Wellness").</p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-semibold text-on-primary-container uppercase tracking-widest">Accesibilidad</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed">Indique claramente en la descripción si el piso cuenta con accesos especiales o restricciones de mantenimiento programado.</p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-semibold text-on-primary-container uppercase tracking-widest">Categorización</h4>
+                    <p class="text-sm text-slate-300 leading-relaxed">Agrupe habitaciones similares por piso para optimizar los tiempos de respuesta del servicio de limpieza y room service.</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/10 p-2 rounded-lg">
+                        <span class="material-symbols-outlined text-xs">info</span>
+                    </div>
+                    <p class="text-xs text-slate-400 italic">Los cambios realizados aquí se reflejarán inmediatamente en el panel de disponibilidad.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-surface-container rounded-xl p-6">
+            <h5 class="text-xs font-bold text-secondary uppercase tracking-widest mb-4">Acciones Relacionadas</h5>
+            <ul class="space-y-3">
+                <li>
+                    <a asp-controller="PisosMvc" asp-action="Index"
+                       class="flex items-center justify-between text-sm text-primary hover:translate-x-1 transition-transform no-underline">
+                        <span>Ver lista de pisos</span>
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Category" asp-action="Index"
+                       class="flex items-center justify-between text-sm text-primary hover:translate-x-1 transition-transform no-underline">
+                        <span>Gestionar categorías</span>
+                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+</div>
