@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
-    public class PisosController : Controller
+    public class PisosController : ControllerBase
     {
         private readonly IPisoService _pisoService;
 
@@ -19,7 +18,6 @@ namespace HoteleriaApp.Controllers
             _pisoService = pisoService;
         }
 
- 
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -63,7 +61,7 @@ namespace HoteleriaApp.Controllers
         {
             try
             {
-                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion, dto.numeroPiso, dto.NombreClave);
+                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion, dto.numeroPiso);
 
                 if (!updated)
                     return NotFound();

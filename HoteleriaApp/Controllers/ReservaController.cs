@@ -42,7 +42,6 @@ namespace HoteleriaApp.Controllers
         {
             if (!ModelState.IsValid) return View(dto);
 
-            // Get client ID from authenticated user
             var idCliente = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             var result = await _reservaService.CrearAsync(dto, idCliente);

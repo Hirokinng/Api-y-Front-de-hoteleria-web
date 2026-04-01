@@ -40,12 +40,14 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(amenities);
         }
 
+
         [HttpGet("categorias")]
         public async Task<ActionResult<List<Category>>> GetCategorias()
         {
             var categorias = await _context.Categories.Where(c => c.IsActive).ToListAsync();
             return Ok(categorias);
         }
+
 
         [HttpGet("reservas")]
         public async Task<ActionResult<List<Reserva>>> GetReservas()
@@ -151,6 +153,23 @@ namespace HoteleriaApp.Controllers.Api
             var result = await _habitacionesService.EliminarHabitacionAsync(id);
             if (!result) return BadRequest(new { message = "No se pudo eliminar la habitación (no existe o tiene reservas activas)." });
             return Ok(new { message = "Habitación eliminada correctamente." });
+
+        }
+
+        public class CambiarEstadoRequest
+        {
+            public int Estado { get; set; }
+        }
+
+        [HttpPatch("{id}/estado")]
+        public async Task<IActionResult> CambiarEstado(Guid id, [FromBody] CambiarEstadoRequest request)
+        {
+            var habitacion = await _context.Habitaciones.FindAsync(id);
+            if (habitacion is null) return NotFound();
+            habitacion.Estado = (HabitacionEstado)request.Estado;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Estado actualizado correctamente." });
+
         }
     }
 }

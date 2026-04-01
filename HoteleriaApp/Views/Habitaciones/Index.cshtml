@@ -4,152 +4,246 @@
 
 <div class="pb-12 px-8 max-w-[1600px] mx-auto space-y-8 pt-8">
 
-    <div class="flex justify-between items-start">
-        <div>
-            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE HABITACIONES</p>
+    
+    <div>
+        <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">
+            GESTIÓN DE INVENTARIO &rsaquo; HABITACIONES
+        </p>
+        <div class="flex justify-between items-center">
             <h1 class="font-headline text-4xl text-primary">Inventario de Habitaciones</h1>
+            <a asp-action="Disponibilidad"
+               class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
+                <span class="material-symbols-outlined text-sm">calendar_month</span>
+                Buscar Disponibilidad
+            </a>
         </div>
-        <a asp-action="Crear" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
-            <span class="material-symbols-outlined text-sm">add</span>
-            Nueva Habitación
-        </a>
     </div>
 
-    <div class="flex items-center gap-3">
-        <a asp-action="Disponibilidad" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
-            <span class="material-symbols-outlined text-sm">search</span>
-            Buscar Disponibilidad
-        </a>
-        <a asp-action="Asignar" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
-            <span class="material-symbols-outlined text-sm">link</span>
-            Asignar
-        </a>
-        <a asp-action="Bloquear" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white border border-outline-variant/30 text-secondary hover:text-[#2E86DE] hover:border-[#2E86DE]/40 transition-all no-underline">
-            <span class="material-symbols-outlined text-sm">block</span>
-            Bloquear
-        </a>
-    </div>
-
-    <div id="loadingState" class="bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
-        <div class="w-12 h-12 rounded-full border-4 border-[#2E86DE]/20 border-t-[#2E86DE] animate-spin mb-4"></div>
-        <p class="text-secondary text-sm">Cargando inventario de habitaciones...</p>
-    </div>
-
-    <div id="errorState" class="hidden bg-white rounded-xl border border-red-200 shadow-sm flex flex-col items-center justify-center py-24 text-center">
-        <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-3xl text-red-500">error</span>
+   
+    <div class="grid grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-1">Total</p>
+            <p class="font-headline text-4xl font-bold text-primary" id="statTotal">—</p>
         </div>
-        <h3 class="font-headline text-2xl text-primary mb-2">Error al cargar datos</h3>
-        <p class="text-secondary text-sm mb-2" id="errorMessage"></p>
-    </div>
-
-    <div id="emptyState" class="hidden bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
-        <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4">
-            <span class="material-symbols-outlined text-3xl text-secondary">hotel</span>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+            <p class="text-xs font-bold tracking-widest uppercase mb-1 text-emerald-600">Disponible</p>
+            <p class="font-headline text-4xl font-bold text-emerald-600" id="statDisponible">—</p>
         </div>
-        <h3 class="font-headline text-2xl text-primary mb-2">Sin habitaciones registradas</h3>
-        <p class="text-secondary text-sm mb-6 max-w-xs">Registra una nueva habitación para comenzar a gestionar tu inventario.</p>
-        <a asp-action="Crear" class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
-            <span class="material-symbols-outlined text-sm">add</span>
-            Nueva Habitación
-        </a>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+            <p class="text-xs font-bold tracking-widest uppercase mb-1 text-amber-500">Ocupada</p>
+            <p class="font-headline text-4xl font-bold text-amber-500" id="statOcupada">—</p>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6">
+            <p class="text-xs font-bold tracking-widest uppercase mb-1 text-secondary">Mantenimiento</p>
+            <p class="font-headline text-4xl font-bold text-secondary" id="statMantenimiento">—</p>
+        </div>
     </div>
 
-    <div id="tableContainer" class="hidden bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
-        <table class="w-full" id="tablaInventario">
+    
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+        <table class="w-full">
             <thead>
                 <tr class="bg-[#002547] text-white">
-                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-24">Número</th>
-                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-20">Piso</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Número</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Piso</th>
                     <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Tipo</th>
-                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Capacidad</th>
-                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-36">Estado</th>
-                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-28">Acciones</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Capacidad</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Estado</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70">Amenities</th>
+                    <th class="text-left px-6 py-4 text-xs font-bold tracking-widest uppercase opacity-70 w-24">Acciones</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-outline-variant/10" id="tablaBody">
+            <tbody class="divide-y divide-outline-variant/10" id="tablaInventario">
+                <tr>
+                    <td colspan="7" class="px-6 py-12 text-center text-secondary text-sm" id="mensajeCarga">
+                        <span class="material-symbols-outlined text-3xl block mb-2 animate-spin">sync</span>
+                        Cargando inventario...
+                    </td>
+                </tr>
             </tbody>
         </table>
+        <div class="px-6 py-4 border-t border-outline-variant/10 flex items-center justify-between">
+            <span class="text-xs text-secondary" id="conteoHabitaciones"></span>
+        </div>
     </div>
 
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="bg-[#002547] rounded-xl p-8 text-white lg:col-span-1">
+            <h3 class="font-headline text-2xl mb-2 italic">¿Necesitas ayuda con el mantenimiento?</h3>
+            <p class="text-blue-100/60 text-sm mb-6 leading-relaxed">
+                Bloquea habitaciones para mantenimiento o eventos especiales desde el panel de bloqueos.
+            </p>
+            <a asp-action="Bloquear"
+               class="text-[#59a6ff] text-sm font-semibold flex items-center gap-1 no-underline hover:gap-2 transition-all">
+                IR A BLOQUEAR HABITACIÓN
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6 flex flex-col gap-3">
+            <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE]">
+                <span class="material-symbols-outlined">history</span>
+            </div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase">Últimos Cambios</p>
+            <p class="text-sm text-on-surface-variant" id="ultimoCambio">Cargando...</p>
+        </div>
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-6 flex flex-col gap-3">
+            <div class="w-10 h-10 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE]">
+                <span class="material-symbols-outlined">print</span>
+            </div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase">Exportar Inventario</p>
+            <p class="text-sm text-on-surface-variant">Descargar reporte detallado en PDF o Excel.</p>
+        </div>
+    </div>
+</div>
+
+<div class="hidden px-8 max-w-[1600px] mx-auto mt-4" id="mensajeError">
+    <div class="flex items-center gap-4 bg-red-50 text-red-800 p-5 rounded-lg border border-red-100/50">
+        <span class="material-symbols-outlined text-red-500" style="font-variation-settings:'FILL' 1;">error</span>
+        <p class="font-medium text-sm" id="mensajeErrorTexto"></p>
+    </div>
 </div>
 
 @section Scripts {
     <script>
         (async function () {
-            const loadingState = document.getElementById('loadingState');
-            const errorState = document.getElementById('errorState');
-            const emptyState = document.getElementById('emptyState');
-            const tableContainer = document.getElementById('tableContainer');
-            const errorMessage = document.getElementById('errorMessage');
-
             try {
                 const res = await fetch('/api/habitaciones');
-                if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
                 const habitaciones = await res.json();
+                const tbody = document.querySelector('#tablaInventario');
 
-                loadingState.classList.add('hidden');
+                const disponibles    = habitaciones.filter(h => h.estado === 0).length;
+                const ocupadas       = habitaciones.filter(h => h.estado === 1).length;
+                const mantenimiento  = habitaciones.filter(h => h.estado === 2).length;
+                document.getElementById('statTotal').textContent          = habitaciones.length;
+                document.getElementById('statDisponible').textContent     = disponibles;
+                document.getElementById('statOcupada').textContent        = ocupadas;
+                document.getElementById('statMantenimiento').textContent  = mantenimiento;
+                document.getElementById('conteoHabitaciones').textContent =
+                    `Mostrando ${habitaciones.length} habitación(es) registrada(s)`;
 
                 if (habitaciones.length === 0) {
-                    emptyState.classList.remove('hidden');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="px-6 py-16 text-center">
+                                <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 mx-auto">
+                                    <span class="material-symbols-outlined text-3xl text-secondary">bed</span>
+                                </div>
+                                <h3 class="font-headline text-2xl text-primary mb-2">Sin habitaciones registradas</h3>
+                                <p class="text-secondary text-sm max-w-xs mx-auto">No hay habitaciones en el inventario todavía.</p>
+                            </td>
+                        </tr>`;
+                    document.getElementById('ultimoCambio').textContent = 'Sin cambios recientes';
                     return;
                 }
 
-                tableContainer.classList.remove('hidden');
-                const tbody = document.getElementById('tablaBody');
+                const estadoConfig = {
+                    0: { label: 'DISPONIBLE',       cls: 'bg-emerald-50 text-emerald-700' },
+                    1: { label: 'OCUPADA',           cls: 'bg-amber-50 text-amber-700' },
+                    2: { label: 'FUERA DE SERVICIO', cls: 'bg-surface-container-low text-secondary' }
+                };
 
-                habitaciones.forEach(h => {
-                    const estadoMap = {
-                        0: { text: 'Disponible', bg: 'bg-green-100', color: 'text-green-700' },
-                        1: { text: 'Ocupada', bg: 'bg-amber-100', color: 'text-amber-700' },
-                        2: { text: 'Fuera de servicio', bg: 'bg-gray-100', color: 'text-gray-600' }
-                    };
-                    const estado = estadoMap[h.estado] || estadoMap[2];
-                    const tipo = h.tipoHabitacion?.nombre || '-';
+                tbody.innerHTML = habitaciones.map(h => {
+                    const amenities = (h.amenities || [])
+                        .filter(a => a.amenity)
+                        .map(a => `<span class="inline-block bg-surface-container-low text-secondary text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wide" title="${a.amenity.nombre}">${a.amenity.nombre}</span>`)
+                        .slice(0, 3)
+                        .join('') || '<span class="text-secondary/40 text-xs">—</span>';
 
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-surface-container-low transition-colors';
-                    tr.innerHTML = `
-                        <td class="px-6 py-5">
-                            <span class="bg-surface-container-low text-[#002547] font-bold px-3 py-1 rounded-full text-sm">${h.numero}</span>
-                        </td>
-                        <td class="px-6 py-5 text-sm text-on-surface-variant">${h.piso}</td>
-                        <td class="px-6 py-5">
-                            <span class="font-bold text-primary">${tipo}</span>
-                        </td>
-                        <td class="px-6 py-5 text-sm text-on-surface-variant">${h.capacidad} persona(s)</td>
-                        <td class="px-6 py-5">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${estado.bg} ${estado.color}">${estado.text}</span>
-                        </td>
-                        <td class="px-6 py-5">
-                            <div class="flex items-center gap-2">
-                                <a href="/Habitaciones/Detalles/${h.id}" class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all" title="Ver detalles">
-                                    <span class="material-symbols-outlined text-sm">visibility</span>
-                                </a>
-                                <button onclick="eliminarHabitacion('${h.id}', '${h.numero}')" class="p-2 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Eliminar">
-                                    <span class="material-symbols-outlined text-sm">delete</span>
+                    const est = estadoConfig[h.estado] ?? estadoConfig[2];
+
+                    let menuOpciones = '';
+                    if (h.estado === 0) {
+                        menuOpciones = `
+                            <a href="/Habitaciones/Bloquear"
+                               class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors w-full">
+                                <span class="material-symbols-outlined text-sm text-amber-500">lock</span>
+                                Bloquear
+                            </a>`;
+                    } else if (h.estado === 2) {
+                        menuOpciones = `
+                            <button onclick="cambiarEstado('${h.id}', 0, this)"
+                               class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors w-full text-left">
+                                <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+                                Marcar Disponible
+                            </button>`;
+                    } else {
+                        menuOpciones = `
+                            <span class="flex items-center gap-2 px-4 py-2 text-sm text-secondary/40 cursor-not-allowed">
+                                <span class="material-symbols-outlined text-sm">block</span>
+                                Sin acciones
+                            </span>`;
+                    }
+
+                    return `
+                        <tr class="hover:bg-surface-container-low transition-colors">
+                            <td class="px-6 py-5"><span class="font-bold text-primary">${h.numero}</span></td>
+                            <td class="px-6 py-5 text-secondary text-sm">Piso ${h.piso}</td>
+                            <td class="px-6 py-5 text-on-surface-variant text-sm">${h.tipoHabitacion?.nombre || '—'}</td>
+                            <td class="px-6 py-5 text-secondary text-sm">
+                                <span class="material-symbols-outlined text-sm align-middle">group</span> ${h.capacidad}
+                            </td>
+                            <td class="px-6 py-5">
+                                <span class="inline-block text-[10px] font-bold px-3 py-1 rounded-full tracking-wide ${est.cls}">
+                                    ${est.label}
+                                </span>
+                            </td>
+                            <td class="px-6 py-5">
+                                <div class="flex flex-wrap gap-1">${amenities}</div>
+                            </td>
+                            <td class="px-6 py-5 relative">
+                                <button onclick="toggleMenu('menu-${h.id}', event)"
+                                        class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all">
+                                    <span class="material-symbols-outlined text-sm">more_vert</span>
                                 </button>
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                                <div id="menu-${h.id}"
+                                     class="hidden absolute right-6 top-12 z-50 bg-white rounded-xl shadow-lg border border-outline-variant/20 min-w-[190px] overflow-hidden">
+                                    ${menuOpciones}
+                                </div>
+                            </td>
+                        </tr>`;
+                }).join('');
+
+                document.getElementById('ultimoCambio').textContent =
+                    `${habitaciones[0].tipoHabitacion?.nombre || 'Habitación'} ${habitaciones[0].numero} · Actualizado recientemente`;
 
             } catch (e) {
-                loadingState.classList.add('hidden');
-                errorState.classList.remove('hidden');
-                errorMessage.textContent = e.message;
+                const errEl = document.getElementById('mensajeError');
+                errEl.classList.remove('hidden');
+                document.getElementById('mensajeErrorTexto').textContent = 'Error al cargar inventario: ' + e.message;
             }
         })();
 
-        async function eliminarHabitacion(id, numero) {
-            if (!confirm(`¿Estás seguro de que deseas eliminar la habitación ${numero}?`)) return;
+        function toggleMenu(id, event) {
+            event.stopPropagation();
+            document.querySelectorAll('[id^="menu-"]').forEach(m => {
+                if (m.id !== id) m.classList.add('hidden');
+            });
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function () {
+            document.querySelectorAll('[id^="menu-"]').forEach(m => m.classList.add('hidden'));
+        });
+
+        async function cambiarEstado(id, nuevoEstado, btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-sm">sync</span> Actualizando...';
             try {
-                const res = await fetch(`/api/habitaciones/${id}`, { method: 'DELETE' });
-                if (!res.ok) throw new Error(`Error ${res.status}`);
-                window.location.reload();
+                const res = await fetch(`/api/habitaciones/${id}/estado`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ estado: nuevoEstado })
+                });
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el estado.');
+                    btn.disabled = false;
+                }
             } catch (e) {
-                alert('Error al eliminar la habitación: ' + e.message);
+                alert('Error: ' + e.message);
+                btn.disabled = false;
             }
         }
     </script>

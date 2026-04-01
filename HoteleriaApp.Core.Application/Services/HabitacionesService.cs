@@ -31,7 +31,11 @@ namespace HoteleriaApp.Core.Application.Services
             DateOnly fechaFin,
             Guid? tipoHabitacionId = null,
             int? capacidadMinima = null,
+<<<<<<< HEAD
             List<Guid>? amenitiesIds = null)  // Cambiado de List<int> a List<Guid>
+=======
+            List<Guid>? amenitiesIds = null)
+>>>>>>> feature/categorias
         {
             var query = _context.Habitaciones
                 .Include(h => h.TipoHabitacion)
@@ -74,7 +78,11 @@ namespace HoteleriaApp.Core.Application.Services
             var reserva = await _context.Reservas
                 .Include(r => r.Habitaciones)
                     .ThenInclude(rh => rh.Habitacion)
+<<<<<<< HEAD
                 .FirstOrDefaultAsync(r => r.Id == reservaId);  // Comparaci�n con Guid
+=======
+                .FirstOrDefaultAsync(r => r.Id == reservaId);
+>>>>>>> feature/categorias
 
             if (reserva is null) return false;
 
@@ -82,7 +90,11 @@ namespace HoteleriaApp.Core.Application.Services
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
                 .Include(h => h.Bloqueos)
+<<<<<<< HEAD
                 .FirstOrDefaultAsync(h => h.Id == habitacionId);  // Comparaci�n con Guid
+=======
+                .FirstOrDefaultAsync(h => h.Id == habitacionId);
+>>>>>>> feature/categorias
 
             if (habitacion is null) return false;
 
@@ -125,7 +137,11 @@ namespace HoteleriaApp.Core.Application.Services
                 .Include(h => h.Bloqueos)
                 .Include(h => h.Reservas)
                     .ThenInclude(rh => rh.Reserva)
+<<<<<<< HEAD
                 .FirstOrDefaultAsync(h => h.Id == habitacionId); // Comparaci�n con Guid
+=======
+                .FirstOrDefaultAsync(h => h.Id == habitacionId);
+>>>>>>> feature/categorias
 
             if (habitacion is null) return null;
 
@@ -147,11 +163,16 @@ namespace HoteleriaApp.Core.Application.Services
             };
 
             habitacion.Bloqueos.Add(bloqueo);
+<<<<<<< HEAD
+=======
+            habitacion.Estado = HabitacionEstado.FueraDeServicio;
+>>>>>>> feature/categorias
 
             await _context.SaveChangesAsync();
 
             return bloqueo;
         }
+<<<<<<< HEAD
 
         public async Task<Habitacion?> ObtenerPorIdAsync(Guid id)
         {
@@ -204,5 +225,7 @@ namespace HoteleriaApp.Core.Application.Services
 
             return true;
         }
+=======
+>>>>>>> feature/categorias
     }
 }

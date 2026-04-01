@@ -14,13 +14,11 @@
         <h1 class="font-headline text-4xl text-primary" id="headerTitle">Detalles de Habitación</h1>
     </div>
 
-    <!-- Loading -->
     <div id="loadingState" class="bg-white rounded-xl border border-outline-variant/20 shadow-sm flex flex-col items-center justify-center py-24 text-center">
         <div class="w-12 h-12 rounded-full border-4 border-[#2E86DE]/20 border-t-[#2E86DE] animate-spin mb-4"></div>
         <p class="text-secondary text-sm">Cargando detalles de la habitación...</p>
     </div>
 
-    <!-- Error -->
     <div id="errorState" class="hidden bg-white rounded-xl border border-red-200 shadow-sm flex flex-col items-center justify-center py-24 text-center">
         <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
             <span class="material-symbols-outlined text-3xl text-red-500">error</span>
@@ -29,10 +27,8 @@
         <p class="text-secondary text-sm" id="errorMessage"></p>
     </div>
 
-    <!-- Content -->
     <div id="contentArea" class="hidden space-y-8">
 
-        <!-- Room Info Card -->
         <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
             <h2 class="font-headline text-2xl text-primary mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined">hotel</span>
@@ -66,7 +62,6 @@
             </div>
         </div>
 
-        <!-- Amenities -->
         <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8" id="amenitiesCard">
             <h2 class="font-headline text-2xl text-primary mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined">star</span>
@@ -77,14 +72,12 @@
             </div>
         </div>
 
-        <!-- Occupancy Calendar -->
         <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
             <h2 class="font-headline text-2xl text-primary mb-6 flex items-center gap-2">
                 <span class="material-symbols-outlined">calendar_month</span>
                 Calendario de Ocupación
             </h2>
 
-            <!-- Calendar Navigation -->
             <div class="flex items-center justify-between mb-6">
                 <button id="prevMonth" class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all">
                     <span class="material-symbols-outlined">chevron_left</span>
@@ -95,7 +88,6 @@
                 </button>
             </div>
 
-            <!-- Day Headers -->
             <div class="grid grid-cols-7 gap-1 mb-1">
                 <div class="text-center text-xs font-bold text-secondary uppercase tracking-wide py-2">Lun</div>
                 <div class="text-center text-xs font-bold text-secondary uppercase tracking-wide py-2">Mar</div>
@@ -106,10 +98,9 @@
                 <div class="text-center text-xs font-bold text-secondary uppercase tracking-wide py-2">Dom</div>
             </div>
 
-            <!-- Calendar Grid -->
+
             <div class="grid grid-cols-7 gap-1" id="calendarGrid"></div>
 
-            <!-- Legend -->
             <div class="flex flex-wrap items-center gap-6 mt-6 pt-6 border-t border-outline-variant/10">
                 <div class="flex items-center gap-2">
                     <div class="w-4 h-4 rounded bg-green-200 border border-green-300"></div>
@@ -134,7 +125,6 @@
 
 </div>
 
-<!-- Tooltip -->
 <div id="tooltip" class="fixed hidden bg-[#002547] text-white text-xs rounded-lg px-3 py-2 shadow-lg z-50 pointer-events-none max-w-xs"></div>
 
 @section Scripts {

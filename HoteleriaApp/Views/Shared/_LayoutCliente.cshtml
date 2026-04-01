@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HOTELERIA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#002547", "secondary": "#455f87",
+                        "surface": "#f6f9fe", "background": "#f6f9fe",
+                        "surface-container": "#ebeef3",
+                        "surface-container-low": "#f1f4f9",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e5e8ed",
+                        "surface-container-highest": "#dfe3e8",
+                        "on-surface": "#181c20", "on-surface-variant": "#43474e",
+                        "outline": "#74777f", "outline-variant": "#c4c6cf",
+                        "on-primary-container": "#59a6ff",
+                        "primary-fixed": "#d3e4ff", "primary-fixed-dim": "#a3c9ff",
+                        "primary-container": "#003a6b",
+                        "secondary-container": "#b5d0fd",
+                    },
+                    fontFamily: {
+                        "headline": ["Newsreader", "serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Newsreader', serif; }
+        .glass-panel { background: rgba(255,255,255,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-sm">
+        <div class="flex justify-between items-center max-w-7xl mx-auto px-8 h-20">
+            <a asp-controller="ClientePortal" asp-action="Index"
+               class="text-2xl font-serif tracking-tight text-primary no-underline">HOTELERIA</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a asp-controller="ClientePortal" asp-action="Index"
+                   class="text-slate-500 font-medium hover:text-primary transition-colors no-underline">Inicio</a>
+                <a asp-controller="ClientePortal" asp-action="Buscar"
+                   class="text-slate-500 font-medium hover:text-primary transition-colors no-underline">Reservar</a>
+                <a asp-controller="ClientePortal" asp-action="MisReservas"
+                   class="text-slate-500 font-medium hover:text-primary transition-colors no-underline">Mis Reservas</a>
+            </div>
+            <div class="flex items-center gap-3">
+                @if (Context.Session.GetString("JwtToken") != null)
+                {
+                    <a asp-controller="ClientesMvc" asp-action="Perfil"
+                       class="flex items-center gap-2 text-sm text-primary font-medium hover:underline no-underline">
+                        <span class="material-symbols-outlined">account_circle</span>
+                        Mi Perfil
+                    </a>
+                    <a asp-controller="ClientesMvc" asp-action="Login"
+                       class="text-sm text-slate-500 hover:text-primary transition-colors no-underline">
+                        Salir
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="ClientesMvc" asp-action="Login"
+                       class="bg-primary text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-all no-underline">
+                        Iniciar Sesión
+                    </a>
+                    <a asp-controller="ClientesMvc" asp-action="Register"
+                       class="text-sm text-secondary hover:text-primary transition-colors no-underline">
+                        Registrarse
+                    </a>
+                }
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full pt-16 pb-8 bg-surface-container-low text-primary">
+        <div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
+            <div>
+                <div class="text-lg font-serif italic text-primary mb-4">HOTELERIA</div>
+                <p class="text-slate-500 leading-relaxed">Definiendo los estándares de la hospitalidad moderna a través de la elegancia y el servicio excepcional.</p>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-widest text-[10px] mb-6 opacity-50">Explorar</h4>
+                <ul class="space-y-4">
+                    <li><a asp-controller="ClientePortal" asp-action="Buscar" class="text-slate-500 hover:text-primary transition-colors no-underline">Habitaciones</a></li>
+                    <li><a asp-controller="ClientePortal" asp-action="MisReservas" class="text-slate-500 hover:text-primary transition-colors no-underline">Mis Reservas</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-widest text-[10px] mb-6 opacity-50">Legal</h4>
+                <ul class="space-y-4">
+                    <li><a href="#" class="text-slate-500 hover:text-primary transition-colors no-underline">Privacidad</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-primary transition-colors no-underline">Términos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold uppercase tracking-widest text-[10px] mb-6 opacity-50">Contacto</h4>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-2 text-slate-500">
+                        <span class="material-symbols-outlined text-sm">location_on</span> Santo Domingo, RD
+                    </li>
+                    <li class="flex items-center gap-2 text-slate-500">
+                        <span class="material-symbols-outlined text-sm">phone</span> +1 (809) 000-0000
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-8 mt-12 pt-8 border-t border-slate-200 text-center">
+            <p class="text-slate-400 text-xs">&copy; 2026 HoteleriaApp &mdash; Programación 3 &mdash; ITLA</p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

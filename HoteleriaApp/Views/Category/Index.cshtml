@@ -6,7 +6,6 @@
 
 <div class="pb-12 px-8 max-w-[1600px] mx-auto space-y-8 pt-8">
 
-    <!-- HEADER -->
     <div class="flex justify-between items-start">
         <div>
             <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">CONFIGURACIÓN DE HABITACIONES</p>
@@ -19,7 +18,7 @@
         </a>
     </div>
 
-    <!-- TABLE -->
+
     <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
         @if (Model.Count == 0)
         {
@@ -106,7 +105,6 @@
         }
     </div>
 
-    <!-- BOTTOM STATS CARD -->
     @if (Model.Count > 0)
     {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">

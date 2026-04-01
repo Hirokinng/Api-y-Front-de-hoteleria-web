@@ -6,7 +6,11 @@ using System.Security.Claims;
 
 namespace HoteleriaApp.Controllers.Api
 {
+
     [ApiController]
+
+    [Authorize(AuthenticationSchemes = "Bearer")]
+
     [Route("api/[controller]")]
     [Authorize]                                    
     public class ReservaApiController : ControllerBase
@@ -18,7 +22,7 @@ namespace HoteleriaApp.Controllers.Api
             _reservaService = reservaService;
         }
 
-        // GET: api/reservaapi
+
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ReservaDto>>> GetAll()
         {
@@ -26,7 +30,7 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(reservas);
         }
 
-        // GET: api/reservaapi/{id}
+
         [HttpGet("{id}")]
         public async Task<ActionResult<ReservaDto>> GetById(Guid id)
         {
@@ -36,7 +40,7 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(reserva);
         }
 
-        // GET: api/reservaapi/disponibilidad
+
         [HttpGet("disponibilidad")]
         public async Task<ActionResult<IReadOnlyList<HabitacionDisponibleDto>>> BuscarDisponibilidad(
             [FromQuery] Guid idCategoria,
@@ -49,7 +53,7 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(disponibles);
         }
 
-        // POST: api/reservaapi
+
         [HttpPost]
         public async Task<ActionResult> Crear([FromBody] CrearReservaDto dto)
         {
@@ -62,7 +66,7 @@ namespace HoteleriaApp.Controllers.Api
                 resultado.Reserva);
         }
 
-        // PUT: api/reservaapi
+
         [HttpPut("{id}")]
         public async Task<ActionResult> Editar(Guid id, [FromBody] EditarReservaDto dto)
         {
@@ -72,7 +76,7 @@ namespace HoteleriaApp.Controllers.Api
             return NoContent();
         }
 
-        // DELETE: api/reservaapi/{id}
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> Cancelar(Guid id)
         {

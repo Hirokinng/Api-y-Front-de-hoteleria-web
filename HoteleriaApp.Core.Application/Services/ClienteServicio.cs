@@ -14,11 +14,18 @@ namespace HoteleriaApp.Core.Application.Services
     public class ClienteServicio : IClienteServicio
     {
         private readonly IClienteRepositorio _repo;
+<<<<<<< HEAD
         private readonly IUsuarioRepositorio _usuarioRepo; // <-- 1. Agregamos el nuevo repo
         private readonly IEmailServicio _email;
         private readonly IConfiguration _configuration;
 
         // 2. Lo inyectamos en el constructor
+=======
+        private readonly IUsuarioRepositorio _usuarioRepo;
+        private readonly IEmailServicio _email;
+        private readonly IConfiguration _configuration;
+
+>>>>>>> feature/categorias
         public ClienteServicio(IClienteRepositorio repo, IUsuarioRepositorio usuarioRepo, IEmailServicio email, IConfiguration configuration)
         {
             _repo = repo;
@@ -56,7 +63,10 @@ namespace HoteleriaApp.Core.Application.Services
             _repo.Crear(cliente);
             _repo.Guardar();
 
+<<<<<<< HEAD
             // Notificación (por ahora tu EmailServicio lo imprime en consola; luego se pone SMTP real)
+=======
+>>>>>>> feature/categorias
             _email.Enviar(cliente.Email, "Bienvenido a SGHR", $"Hola {cliente.Nombre}, tu registro fue exitoso.");
 
             return new ClienteAuthResultDto
@@ -82,7 +92,10 @@ namespace HoteleriaApp.Core.Application.Services
             string rolAsignado = "";
             bool loginExitoso = false;
 
+<<<<<<< HEAD
             // --- PASO 1: ¿ES UN ADMINISTRADOR/EMPLEADO? ---
+=======
+>>>>>>> feature/categorias
             var admin = _usuarioRepo.GetUsuarioPorEmail(email);
             if (admin != null && admin.Activo)
             {
@@ -95,12 +108,19 @@ namespace HoteleriaApp.Core.Application.Services
                     idLogueado = admin.Id;
                     nombreLogueado = admin.Nombre;
                     emailLogueado = admin.Email;
+<<<<<<< HEAD
                     rolAsignado = "Admin"; // <-- ¡El gafete VIP!
+=======
+                    rolAsignado = "Admin";
+>>>>>>> feature/categorias
                     loginExitoso = true;
                 }
             }
 
+<<<<<<< HEAD
             // --- PASO 2: SI NO ES ADMIN, ¿ES UN CLIENTE NORMAL? ---
+=======
+>>>>>>> feature/categorias
             if (!loginExitoso)
             {
                 var cliente = _repo.GetClientePorEmail(email);
@@ -115,17 +135,27 @@ namespace HoteleriaApp.Core.Application.Services
                         idLogueado = cliente.Id;
                         nombreLogueado = cliente.Nombre;
                         emailLogueado = cliente.Email;
+<<<<<<< HEAD
                         rolAsignado = "Cliente"; // <-- Gafete de huésped
+=======
+                        rolAsignado = "Cliente";
+>>>>>>> feature/categorias
                         loginExitoso = true;
                     }
                 }
             }
 
+<<<<<<< HEAD
             // --- PASO 3: SI NO ESTÁ EN NINGUNA TABLA ---
             if (!loginExitoso)
                 return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
 
             // --- PASO 4: GENERAR EL JWT ---
+=======
+            if (!loginExitoso)
+                return new ClienteAuthResultDto { ok = false, message = "Credenciales inválidas." };
+
+>>>>>>> feature/categorias
             var key = _configuration["Jwt:Key"];
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
@@ -138,7 +168,11 @@ namespace HoteleriaApp.Core.Application.Services
         new Claim(ClaimTypes.NameIdentifier, idLogueado.ToString()),
         new Claim(ClaimTypes.Name, nombreLogueado),
         new Claim(ClaimTypes.Email, emailLogueado),
+<<<<<<< HEAD
         new Claim(ClaimTypes.Role, rolAsignado) // <-- ESTO ACTIVA EL [Authorize(Roles="Admin")] EN TU API
+=======
+        new Claim(ClaimTypes.Role, rolAsignado)
+>>>>>>> feature/categorias
     };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

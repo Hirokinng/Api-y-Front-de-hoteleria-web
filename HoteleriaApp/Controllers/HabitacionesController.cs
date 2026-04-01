@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+
     [Authorize(Roles = "Admin")]
+
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Cookies")]
+
     public class HabitacionesController : Controller
     {
       
@@ -31,6 +35,7 @@ namespace HoteleriaApp.Controllers
             return View();
         }
 
+
         public IActionResult Detalles(Guid id)
         {
             ViewData["Title"] = "Detalles de Habitación";
@@ -43,5 +48,6 @@ namespace HoteleriaApp.Controllers
             ViewData["Title"] = "Nueva Habitación";
             return View();
         }
+
     }
 }

@@ -20,10 +20,9 @@ namespace HoteleriaApp.Controllers
         {
             var pisosDb = await _pisoService.GetAllAsync();
 
-            // Si no se selecciona un hotel, mostramos la vista de "Carpetas/Edificios"
             if (string.IsNullOrWhiteSpace(hotel))
             {
-                // Agrupamos los pisos por su Nombre Clave para crear las carpetas
+ 
                 var carpetas = pisosDb
                     .GroupBy(p => string.IsNullOrWhiteSpace(p.NombreClave) ? "Sin Asignar" : p.NombreClave)
                     .ToDictionary(g => g.Key, g => g.Count());
@@ -34,7 +33,6 @@ namespace HoteleriaApp.Controllers
                 return View("~/Views/Piso/Index.cshtml", new List<PisoDto>());
             }
 
-            // Si se hizo clic en un hotel, mostramos la tabla con sus pisos
             var pisosFiltrados = hotel == "Sin Asignar"
                 ? pisosDb.Where(p => string.IsNullOrWhiteSpace(p.NombreClave)).ToList()
                 : pisosDb.Where(p => p.NombreClave == hotel).ToList();
@@ -53,7 +51,7 @@ namespace HoteleriaApp.Controllers
 
             return View("~/Views/Piso/Index.cshtml", pisosDto);
         }
-        // GET: Muestra la pantalla del formulario vacío
+
         public IActionResult Create()
         {
             return View("~/Views/Piso/Create.cshtml");
