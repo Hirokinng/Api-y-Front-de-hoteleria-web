@@ -1,12 +1,27 @@
 ﻿using HoteleriaApp.Core.Application.DTOs.Category;
 using HoteleriaApp.Core.Application.Interfaces;
+<<<<<<< HEAD
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+=======
+<<<<<<< Updated upstream
+=======
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+>>>>>>> Stashed changes
+>>>>>>> 44f431e35b3429349bc6aba03a9186b71c2e0d86
 using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+<<<<<<< HEAD
     [Authorize(Roles = "Admin", AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+=======
+<<<<<<< Updated upstream
+=======
+    [Authorize(Roles = "Admin", AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+>>>>>>> Stashed changes
+>>>>>>> 44f431e35b3429349bc6aba03a9186b71c2e0d86
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
