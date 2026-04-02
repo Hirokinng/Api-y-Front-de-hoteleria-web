@@ -1,4 +1,3 @@
-
 using HoteleriaApp.Core.Application.Interfaces;
 using HoteleriaApp.Core.Application.Services;
 using HoteleriaApp.Core.Domain.Interfaces;
@@ -14,11 +13,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Debe ir aqu�, antes de todo
 builder.Environment.EnvironmentName = "Development";
 
 builder.Services.AddControllersWithViews()
@@ -27,13 +23,18 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Add services to the container.
+
 builder.Services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 builder.Services.AddHttpClient();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
 builder.Services.AddScoped<IPisoService, PisoService>();
 builder.Services.AddScoped<IPisoRepository, PisoRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
@@ -43,24 +44,16 @@ builder.Services.AddScoped<IClienteRepositorio, ClienteRepositorio>();
 builder.Services.AddScoped<IClienteServicio, ClienteServicio>();
 builder.Services.AddSingleton<IEmailServicio, HoteleriaApp.Infrastructure.Shared.Services.EmailServicio>();
 
-
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IApplicationDbContext>(provider =>
     provider.GetRequiredService<ApplicationDbContext>());
 
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "HoteleriaApp API",
-        Version = "v1"
-    });
-
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "HoteleriaApp API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -70,36 +63,33 @@ builder.Services.AddSwaggerGen(c =>
         In = ParameterLocation.Header,
         Description = "Escribe: Bearer {tu token}"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
             },
             Array.Empty<string>()
         }
     });
 });
 
-
 builder.Services.AddAuthentication(options =>
 {
-    // 1. Configuramos las Cookies como el jefe de seguridad por defecto para la web
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
 .AddCookie(options =>
 {
-
     options.LoginPath = "/ClientesMvc/Login";
-
     options.AccessDeniedPath = "/Home/Index";
+})
+.AddCookie("AdminCookie", options =>
+{
+    options.LoginPath = "/AdminAuth/Login";
+    options.AccessDeniedPath = "/AdminAuth/Login";
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
 })
 .AddJwtBearer(options =>
 {
@@ -114,14 +104,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-builder.Services.AddAuthorization();
 
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin")
+              .AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme));
+});
 
 var app = builder.Build();
-
 
 using (var scope = app.Services.CreateScope())
 {
@@ -129,17 +121,16 @@ using (var scope = app.Services.CreateScope())
     await InitialDataSeeder.SeedAsync(dbContext);
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthentication();
@@ -148,8 +139,7 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=ClientePortal}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

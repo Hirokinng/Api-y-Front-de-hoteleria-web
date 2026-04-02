@@ -21,5 +21,9 @@ namespace HoteleriaApp.Core.Application.Interfaces
             DateOnly fechaFin,
             string motivo,
             Core.Domain.Enums.TipoBloqueoHabitacion tipo);
+
+        Task<Habitacion?> ObtenerPorIdAsync(Guid id);
+        Task<Habitacion> CrearHabitacionAsync(string numero, int piso, Guid tipoHabitacionId, int capacidad, Guid idCategoria);
+        Task<bool> EliminarHabitacionAsync(Guid id);
     }
 }

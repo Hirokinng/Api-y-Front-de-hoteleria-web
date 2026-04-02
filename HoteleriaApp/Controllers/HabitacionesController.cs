@@ -3,7 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
+
     [Authorize(Roles = "Admin")]
+
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Cookies")]
+
     public class HabitacionesController : Controller
     {
       
@@ -30,5 +34,20 @@ namespace HoteleriaApp.Controllers
             ViewData["Title"] = "Bloquear Habitación";
             return View();
         }
+
+
+        public IActionResult Detalles(Guid id)
+        {
+            ViewData["Title"] = "Detalles de Habitación";
+            ViewData["HabitacionId"] = id;
+            return View();
+        }
+
+        public IActionResult Crear()
+        {
+            ViewData["Title"] = "Nueva Habitación";
+            return View();
+        }
+
     }
 }

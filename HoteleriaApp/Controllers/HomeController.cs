@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace HoteleriaApp.Controllers
 {
-   
+    [Authorize(Roles = "Admin", AuthenticationSchemes = "Cookies")]
     public class HomeController : Controller
     {
 

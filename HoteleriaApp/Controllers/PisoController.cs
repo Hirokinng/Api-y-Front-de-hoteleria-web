@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HoteleriaApp.Controllers
 {
-    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class PisosController : ControllerBase
@@ -44,7 +43,7 @@ namespace HoteleriaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Piso piso)
         {
-        
+
             await _pisoService.CreateAsync(piso);
             return Ok("Piso creado correctamente");
         }
@@ -62,7 +61,7 @@ namespace HoteleriaApp.Controllers
         {
             try
             {
-                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion, dto.numeroPiso);
+                var updated = await _pisoService.UpdateAsync(id, dto.Nombre, dto.Descripcion, dto.numeroPiso, dto.NombreClave);
 
                 if (!updated)
                     return NotFound();

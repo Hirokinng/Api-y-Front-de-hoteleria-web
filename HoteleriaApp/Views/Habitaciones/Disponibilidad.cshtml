@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Disponibilidad";
+    ViewData["Title"] = "Disponibilidad de Habitaciones";
 }
 
 <div class="pb-12 px-8 max-w-[1100px] mx-auto space-y-8 pt-8">
@@ -96,6 +96,9 @@
 
 @section Scripts {
     <script>
+        const hoy = new Date();
+        document.getElementById('fechaHoy').textContent = hoy.toLocaleDateString('es-DO', { day: 'numeric', month: 'long' });
+
         (async function () {
             try {
                 const res = await fetch('/api/habitaciones/tipos');
@@ -116,9 +119,13 @@
             const tipoId = document.getElementById('tipoHabitacionId').value;
             const capacidad = document.getElementById('capacidadMinima').value;
 
-            let url = `/api/habitaciones/disponibles?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
-            if (tipoId) url += `&tipoHabitacionId=${tipoId}`;
-            if (capacidad) url += `&capacidadMinima=${capacidad}`;
+            const url = `/api/habitaciones/disponibles?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}` +
+                `${tipoId ? `&tipoHabitacionId=${tipoId}` : ''}` +
+                `${capacidad ? `&capacidadMinima=${capacidad}` : ''}`;
+
+            const btn = document.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Buscando...';
 
             try {
                 const res = await fetch(url);
@@ -143,14 +150,14 @@
                             .join(', ') || '-';
 
                         tbody.innerHTML += `
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 font-medium">${h.numero}</td>
-                                <td class="px-6 py-4">${h.piso}</td>
-                                <td class="px-6 py-4">${h.tipoHabitacion?.nombre || '-'}</td>
-                                <td class="px-6 py-4">${h.capacidad}</td>
-                                <td class="px-6 py-4 text-gray-600">${amenities}</td>
-                            </tr>
-                        `;
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4 font-medium">${h.numero}</td>
+                                    <td class="px-6 py-4">${h.piso}</td>
+                                    <td class="px-6 py-4">${h.tipoHabitacion?.nombre || '-'}</td>
+                                    <td class="px-6 py-4">${h.capacidad}</td>
+                                    <td class="px-6 py-4 text-gray-600">${amenities}</td>
+                                </tr>
+                            `;
                     });
                 }
 
@@ -158,6 +165,9 @@
                 const error = document.getElementById('mensajeErrorDisp');
                 error.classList.remove('hidden');
                 error.textContent = 'Error: ' + e.message;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Buscar';
             }
         });
     </script>

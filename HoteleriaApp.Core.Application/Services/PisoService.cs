@@ -35,6 +35,9 @@ namespace HoteleriaApp.Core.Application.Services
 
             if (string.IsNullOrWhiteSpace(piso.Nombre))
                 throw new ArgumentException("El nombre del piso es obligatorio");
+           
+            //if (piso.NumeroPiso < 1)
+                // throw new ArgumentException("El número del piso debe ser mayor que cero");
 
             var existe = await _repository.ExistsByNameAsync(piso.Nombre);
             if (existe)
@@ -54,7 +57,7 @@ namespace HoteleriaApp.Core.Application.Services
             await _repository.DeleteAsync(id);
         }
 
-        public async Task<bool> UpdateAsync(Guid id, string nombre, string descripcion, int numeroPiso)
+        public async Task<bool> UpdateAsync(Guid id, string nombre, string descripcion, int numeroPiso, string nombreClave)
         {
             if (string.IsNullOrWhiteSpace(nombre))
                 throw new ArgumentException("El nombre no puede estar vacío");
@@ -71,9 +74,11 @@ namespace HoteleriaApp.Core.Application.Services
             if (descripcion != null && descripcion.Length > 200)
                 throw new ArgumentException("La descripción no puede exceder 200 caracteres");
 
-            piso.Update(nombre, descripcion, numeroPiso);
+            piso.Update(nombre, descripcion, numeroPiso, nombreClave);
 
             return await _repository.UpdateAsync(piso);
         }
+
+       
     }
   }

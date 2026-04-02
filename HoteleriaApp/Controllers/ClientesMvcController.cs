@@ -32,7 +32,7 @@ public class ClientesMvcController : Controller
         });
         var content = new StringContent(body, Encoding.UTF8, "application/json");
 
-       
+
         var response = await client.PostAsync("https://localhost:7194/api/Clientes/login", content);
 
         if (response.IsSuccessStatusCode)
@@ -40,14 +40,14 @@ public class ClientesMvcController : Controller
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<JsonElement>(json);
             var token = result.GetProperty("token").GetString();
-            var rol = result.TryGetProperty("rol", out var r) ? r.GetString() : "Cliente"; // Leemos el rol
+            var rol = result.TryGetProperty("rol", out var r) ? r.GetString() : "Cliente";
 
             HttpContext.Session.SetString("JwtToken", token!);
 
             var claims = new List<Claim>
 {
-    new Claim(ClaimTypes.Name, Email),
-    new Claim(ClaimTypes.Role, rol!) // <-- ¡Le pasamos el rol a la Cookie!
+            new Claim(ClaimTypes.Name, Email),
+            new Claim(ClaimTypes.Role, rol!)
 };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -56,7 +56,10 @@ public class ClientesMvcController : Controller
                 new ClaimsPrincipal(claimsIdentity));
 
 
-            return RedirectToAction("Perfil");
+            if (rol == "Admin")
+                return RedirectToAction("Index", "Home");
+            else
+                return RedirectToAction("Perfil");
         }
 
         ViewBag.Error = "Credenciales inválidas.";
@@ -75,7 +78,7 @@ public class ClientesMvcController : Controller
             password = Password
         });
         var content = new StringContent(body, Encoding.UTF8, "application/json");
-        var response = await client.PostAsync("https://localhost:7194/api/Usuarios/login", content);
+        var response = await client.PostAsync("https://localhost:7194/api/Clientes/register", content);
 
         if (response.IsSuccessStatusCode)
             return RedirectToAction("Login");

@@ -40,6 +40,15 @@ namespace HoteleriaApp.Controllers.Api
             return Ok(amenities);
         }
 
+
+        [HttpGet("categorias")]
+        public async Task<ActionResult<List<Category>>> GetCategorias()
+        {
+            var categorias = await _context.Categories.Where(c => c.IsActive).ToListAsync();
+            return Ok(categorias);
+        }
+
+
         [HttpGet("reservas")]
         public async Task<ActionResult<List<Reserva>>> GetReservas()
         {
@@ -111,6 +120,56 @@ namespace HoteleriaApp.Controllers.Api
             }
 
             return Ok(bloqueo);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Habitacion>> GetById(Guid id)
+        {
+            var habitacion = await _habitacionesService.ObtenerPorIdAsync(id);
+            if (habitacion is null) return NotFound();
+            return Ok(habitacion);
+        }
+
+        public class CrearHabitacionRequest
+        {
+            public string Numero { get; set; } = null!;
+            public int Piso { get; set; }
+            public Guid TipoHabitacionId { get; set; }
+            public int Capacidad { get; set; }
+            public Guid IdCategoria { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Habitacion>> Crear([FromBody] CrearHabitacionRequest request)
+        {
+            var habitacion = await _habitacionesService.CrearHabitacionAsync(
+                request.Numero, request.Piso, request.TipoHabitacionId, request.Capacidad, request.IdCategoria);
+            return CreatedAtAction(nameof(GetById), new { id = habitacion.Id }, habitacion);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Eliminar(Guid id)
+        {
+            var result = await _habitacionesService.EliminarHabitacionAsync(id);
+            if (!result) return BadRequest(new { message = "No se pudo eliminar la habitación (no existe o tiene reservas activas)." });
+            return Ok(new { message = "Habitación eliminada correctamente." });
+
+        }
+
+        public class CambiarEstadoRequest
+        {
+            public int Estado { get; set; }
+        }
+
+        [HttpPatch("{id}/estado")]
+        public async Task<IActionResult> CambiarEstado(Guid id, [FromBody] CambiarEstadoRequest request)
+        {
+            var habitacion = await _context.Habitaciones.FindAsync(id);
+            if (habitacion is null) return NotFound();
+            habitacion.Estado = (HabitacionEstado)request.Estado;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Estado actualizado correctamente." });
+
         }
     }
 }

@@ -14,11 +14,10 @@ namespace HoteleriaApp.Core.Application.Services
     public class ClienteServicio : IClienteServicio
     {
         private readonly IClienteRepositorio _repo;
-        private readonly IUsuarioRepositorio _usuarioRepo; // <-- 1. Agregamos el nuevo repo
+        private readonly IUsuarioRepositorio _usuarioRepo;
         private readonly IEmailServicio _email;
         private readonly IConfiguration _configuration;
 
-        // 2. Lo inyectamos en el constructor
         public ClienteServicio(IClienteRepositorio repo, IUsuarioRepositorio usuarioRepo, IEmailServicio email, IConfiguration configuration)
         {
             _repo = repo;
@@ -40,7 +39,6 @@ namespace HoteleriaApp.Core.Application.Services
             if (existe != null)
                 return new ClienteAuthResultDto { ok = false, message = "Ese email ya está registrado." };
 
-            
             var hash = BCrypt.Net.BCrypt.HashPassword(password);
 
             var cliente = new Cliente
@@ -56,7 +54,6 @@ namespace HoteleriaApp.Core.Application.Services
             _repo.Crear(cliente);
             _repo.Guardar();
 
-            // Notificación (por ahora tu EmailServicio lo imprime en consola; luego se pone SMTP real)
             _email.Enviar(cliente.Email, "Bienvenido a SGHR", $"Hola {cliente.Nombre}, tu registro fue exitoso.");
 
             return new ClienteAuthResultDto
@@ -95,7 +92,7 @@ namespace HoteleriaApp.Core.Application.Services
                     idLogueado = admin.Id;
                     nombreLogueado = admin.Nombre;
                     emailLogueado = admin.Email;
-                    rolAsignado = "Admin"; // <-- ¡El gafete VIP!
+                    rolAsignado = "Admin";
                     loginExitoso = true;
                 }
             }
@@ -115,7 +112,7 @@ namespace HoteleriaApp.Core.Application.Services
                         idLogueado = cliente.Id;
                         nombreLogueado = cliente.Nombre;
                         emailLogueado = cliente.Email;
-                        rolAsignado = "Cliente"; // <-- Gafete de huésped
+                        rolAsignado = "Cliente";
                         loginExitoso = true;
                     }
                 }
@@ -135,11 +132,11 @@ namespace HoteleriaApp.Core.Application.Services
 
             var claims = new[]
             {
-        new Claim(ClaimTypes.NameIdentifier, idLogueado.ToString()),
-        new Claim(ClaimTypes.Name, nombreLogueado),
-        new Claim(ClaimTypes.Email, emailLogueado),
-        new Claim(ClaimTypes.Role, rolAsignado) // <-- ESTO ACTIVA EL [Authorize(Roles="Admin")] EN TU API
-    };
+                new Claim(ClaimTypes.NameIdentifier, idLogueado.ToString()),
+                new Claim(ClaimTypes.Name, nombreLogueado),
+                new Claim(ClaimTypes.Email, emailLogueado),
+                new Claim(ClaimTypes.Role, rolAsignado) // Activa el [Authorize(Roles="Admin")] en la API
+            };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -161,10 +158,8 @@ namespace HoteleriaApp.Core.Application.Services
                 id_cliente = idLogueado,
                 email = emailLogueado,
                 token = token,
-                rol = rolAsignado 
+                rol = rolAsignado
             };
-
-
         }
 
         public ClienteAuthResultDto ActualizarPerfil(Guid clienteId, ClienteUpdateDto dto)
@@ -262,6 +257,5 @@ namespace HoteleriaApp.Core.Application.Services
                 fecha_registro = cliente.FechaRegistro
             };
         }
-
     }
 }

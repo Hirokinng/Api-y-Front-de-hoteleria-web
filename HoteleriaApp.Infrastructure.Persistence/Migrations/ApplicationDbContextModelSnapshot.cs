@@ -415,12 +415,16 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
                         .HasColumnName("activo");
 
                     b.Property<string>("Descripcion")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("descripcion");
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NombreClave")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -430,8 +434,7 @@ namespace HoteleriaApp.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NumeroPiso")
-                        .IsUnique();
+                    b.HasIndex("NumeroPiso");
 
                     b.ToTable("Piso", (string)null);
                 });

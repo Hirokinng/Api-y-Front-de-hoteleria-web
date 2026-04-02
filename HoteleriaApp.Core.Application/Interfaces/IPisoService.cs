@@ -11,9 +11,9 @@ namespace HoteleriaApp.Core.Domain.Interfaces
     {
         Task<List<Piso>> GetAllAsync();
         Task<Piso?> GetByIdAsync(Guid id);
-        Task CreateAsync(Piso piso);
+        Task CreateAsync( Piso piso);
         Task DeleteAsync(Guid id);
-        Task<bool> UpdateAsync(Guid id, string nombre, string descripcion, int numeroPiso);
+        Task<bool> UpdateAsync(Guid id, string nombre, string descripcion, int numeroPiso, string nombreClave);
 
     }
 }
