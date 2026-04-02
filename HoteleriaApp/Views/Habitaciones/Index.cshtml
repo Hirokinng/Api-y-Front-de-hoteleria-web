@@ -2,29 +2,58 @@
     ViewData["Title"] = "Inventario de Habitaciones";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Inventario de Habitaciones</h2>
-    <a asp-action="Disponibilidad" class="btn btn-outline-primary">Buscar Disponibilidad</a>
-</div>
+<div class="pb-12 px-8 max-w-[1100px] mx-auto space-y-8 pt-8">
 
-<div class="table-responsive">
-    <table class="table table-hover" id="tablaInventario">
-        <thead class="table-light">
-            <tr>
-                <th>Número</th>
-                <th>Piso</th>
-                <th>Tipo</th>
-                <th>Capacidad</th>
-                <th>Estado</th>
-                <th>Amenities</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
+    <!-- HEADER -->
+    <div class="flex justify-between items-center">
+        <div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">
+                GESTIÓN HOTELERA
+            </p>
+            <h1 class="font-headline text-4xl text-primary">
+                Inventario de Habitaciones
+            </h1>
+        </div>
 
-<div class="text-muted small" id="mensajeCarga">Cargando inventario...</div>
-<div class="alert alert-danger d-none" id="mensajeError" role="alert"></div>
+        <a asp-action="Disponibilidad"
+           class="bg-[#2E86DE] hover:bg-[#1B4F72] text-white px-5 py-2 rounded-lg text-sm font-medium no-underline">
+            Buscar Disponibilidad
+        </a>
+    </div>
+
+    <!-- CARD TABLE -->
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm" id="tablaInventario">
+
+                <thead class="bg-gray-100 text-left text-xs uppercase text-gray-600">
+                    <tr>
+                        <th class="px-6 py-4">Número</th>
+                        <th class="px-6 py-4">Piso</th>
+                        <th class="px-6 py-4">Tipo</th>
+                        <th class="px-6 py-4">Capacidad</th>
+                        <th class="px-6 py-4">Estado</th>
+                        <th class="px-6 py-4">Amenities</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y" id="tbodyInventario">
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+    <!-- MENSAJES -->
+    <div class="text-gray-500 text-sm" id="mensajeCarga">
+        Cargando inventario...
+    </div>
+
+    <div class="bg-red-100 text-red-600 px-4 py-3 rounded-lg text-sm hidden" id="mensajeError"></div>
+
+</div>
 
 @section Scripts {
     <script>
@@ -32,25 +61,49 @@
             try {
                 const res = await fetch('/api/habitaciones');
                 const habitaciones = await res.json();
-                const tbody = document.querySelector('#tablaInventario tbody');
+
+                const tbody = document.getElementById('tbodyInventario');
                 const msg = document.getElementById('mensajeCarga');
+
                 msg.textContent = habitaciones.length === 0 ? 'No hay habitaciones registradas.' : '';
 
                 habitaciones.forEach(h => {
-                    const amenities = (h.amenities || []).map(a => a.amenity?.nombre || '').filter(Boolean).join(', ') || '-';
-                    const estado = h.estado === 0 ? 'Disponible' : h.estado === 1 ? 'Ocupada' : 'Fuera de servicio';
-                    tbody.innerHTML += `<tr>
-                        <td>${h.numero}</td>
-                        <td>${h.piso}</td>
-                        <td>${h.tipoHabitacion?.nombre || '-'}</td>
-                        <td>${h.capacidad}</td>
-                        <td><span class="badge bg-${h.estado === 0 ? 'success' : h.estado === 1 ? 'warning' : 'secondary'}">${estado}</span></td>
-                        <td>${amenities}</td>
-                    </tr>`;
+                    const amenities = (h.amenities || [])
+                        .map(a => a.amenity?.nombre || '')
+                        .filter(Boolean)
+                        .join(', ') || '-';
+
+                    const estadoTexto =
+                        h.estado === 0 ? 'Disponible' :
+                            h.estado === 1 ? 'Ocupada' :
+                                'Fuera de servicio';
+
+                    const estadoClase =
+                        h.estado === 0 ? 'bg-green-100 text-green-600' :
+                            h.estado === 1 ? 'bg-yellow-100 text-yellow-600' :
+                                'bg-gray-200 text-gray-600';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 font-medium">${h.numero}</td>
+                            <td class="px-6 py-4">${h.piso}</td>
+                            <td class="px-6 py-4">${h.tipoHabitacion?.nombre || '-'}</td>
+                            <td class="px-6 py-4">${h.capacidad}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold ${estadoClase}">
+                                    ${estadoTexto}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-600">${amenities}</td>
+                        </tr>
+                    `;
                 });
+
             } catch (e) {
-                document.getElementById('mensajeError').classList.remove('d-none');
-                document.getElementById('mensajeError').textContent = 'Error al cargar inventario: ' + e.message;
+                const error = document.getElementById('mensajeError');
+                error.classList.remove('hidden');
+                error.textContent = 'Error al cargar inventario: ' + e.message;
+
                 document.getElementById('mensajeCarga').textContent = '';
             }
         })();

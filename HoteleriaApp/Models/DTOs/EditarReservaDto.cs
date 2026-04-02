@@ -6,7 +6,7 @@ namespace HoteleriaApp.Models.DTOs
 {
     public class EditarReservaDto
     {
-        public int Id { get; set; } // Mantener Id para identificar la reserva a editar
+        public int Guid { get; set; } // Mantener Id para identificar la reserva a editar
 
         [Required(ErrorMessage = "La fecha de entrada es obligatoria")]
         [Display(Name = "Fecha de entrada")]

@@ -7,13 +7,13 @@ namespace HoteleriaApp.Models.DTOs
     public class CrearReservaDto
     {
         [Required]
-        public int IdCliente { get; set; }
+        public Guid IdCliente { get; set; }
 
         [Required]
-        public int IdCategoria { get; set; }
+        public Guid IdCategoria { get; set; }
 
         [Required]
-        public int IdHabitacion { get; set; }
+        public Guid IdHabitacion { get; set; }
 
         [Required]
         public DateOnly FechaEntrada { get; set; }

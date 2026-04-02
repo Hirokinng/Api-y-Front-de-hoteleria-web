@@ -1,0 +1,142 @@
+﻿@model IEnumerable<HoteleriaApp.Core.Application.DTOs.Reservas.ReservaDto>
+
+    @{
+    ViewData["Title"] = "Gestión de Reservas";
+    }
+
+    <div class="pb-12 px-8 max-w-[1600px] mx-auto space-y-8 pt-8">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE RESERVAS</p>
+                <h1 class="font-headline text-4xl text-primary">Mis Reservas</h1>
+            </div>
+            <a asp-controller="Reservas" asp-action="Create"
+               class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline shadow-lg shadow-blue-500/20">
+                <span class="material-symbols-outlined text-sm">add</span>
+                Nueva Reserva
+            </a>
+        </div>
+
+        <!-- TABLE -->
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+
+            @if (!Model.Any())
+        {
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+                <div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-3xl text-secondary">calendar_month</span>
+                </div>
+                <h3 class="font-headline text-2xl text-primary mb-2">Sin reservas registradas</h3>
+                <p class="text-secondary text-sm mb-6 max-w-xs">
+                    Aún no tienes reservas. Crea tu primera reserva para comenzar.
+                </p>
+                <a asp-action="Disponibilidad"
+                   class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    Crear Reserva
+                </a>
+            </div>
+        }
+        else
+        {
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-[#002547] text-white">
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">#</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Categoría</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Habitación</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Entrada</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Salida</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Total</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Estado</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-outline-variant/10">
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var reserva in Model)
+                    {
+                    <tr class="hover:bg-surface-container-low transition-colors">
+
+                        <td class="px-6 py-5 text-secondary text-sm font-medium">
+                            @(index++.ToString("D2"))
+                        </td>
+
+                        <td class="px-6 py-5 font-bold text-primary">
+                            @reserva.NombreCategoria
+                        </td>
+
+                        <td class="px-6 py-5 text-on-surface-variant">
+                            Hab. @reserva.NumeroHabitacion
+                        </td>
+
+                        <td class="px-6 py-5 text-sm">
+                            @reserva.FechaEntrada.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td class="px-6 py-5 text-sm">
+                            @reserva.FechaSalida.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td class="px-6 py-5">
+                            <span class="text-[#2E86DE] font-bold font-headline text-lg">
+                                RD$@reserva.Total.ToString("N2")
+                            </span>
+                        </td>
+
+                        <td class="px-6 py-5">
+                            <span class="px-3 py-1 text-xs font-bold rounded-full
+                                    @(reserva.Estado == "Activa" ? "bg-green-100 text-green-600" :
+                                      reserva.Estado == "Cancelada" ? "bg-red-100 text-red-600" :
+                                      "bg-gray-100 text-gray-600")">
+                                @reserva.Estado
+                            </span>
+                        </td>
+
+                        <td class="px-6 py-5">
+                            <div class="flex gap-2">
+
+                                <a asp-controller="Reservas" asp-action="Detalle" asp-route-id="@reserva.Id"
+                                   class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all">
+                                    <span class="material-symbols-outlined text-sm">visibility</span>
+                                </a>
+
+                                <a asp-controller="Reservas" asp-action="Edit" asp-route-id="@reserva.Id"
+                                   class="p-2 text-secondary hover:text-[#2E86DE] hover:bg-surface-container-low rounded-lg transition-all">
+                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                </a>
+
+                                @if (reserva.Estado != "Cancelada")
+                                    {
+                                <form asp-action="Delete" method="post">
+                                    <input type="hidden" name="id" value="@reserva.Id" />
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="p-2 text-secondary hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                            onclick="return confirm('¿Cancelar esta reserva?')">
+                                        <span class="material-symbols-outlined text-sm">cancel</span>
+                                    </button>
+                                </form>
+                                    }
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="px-6 py-4 border-t border-outline-variant/10">
+                <span class="text-xs text-secondary">
+                    Mostrando @Model.Count() reserva(s)
+                </span>
+            </div>
+        }
+        </div>
+    </div>
