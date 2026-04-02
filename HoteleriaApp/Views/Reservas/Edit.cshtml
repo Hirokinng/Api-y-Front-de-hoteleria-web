@@ -1,0 +1,79 @@
+﻿@model HoteleriaApp.Core.Application.DTOs.Reservas.EditarReservaDto
+
+@{
+    ViewData["Title"] = "Editar Reserva";
+}
+
+<div class="pb-12 px-8 max-w-[900px] mx-auto space-y-8 pt-8">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE RESERVAS</p>
+            <h1 class="font-headline text-4xl text-primary">Editar Reserva</h1>
+        </div>
+        <a asp-action="Index"
+           class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded-lg text-sm font-medium transition-all no-underline">
+            ← Volver
+        </a>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="id" value="@ViewBag.Id" />
+
+            <div asp-validation-summary="All" class="text-red-500 mb-6 text-sm"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Fecha Entrada -->
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">
+                        Fecha de Entrada
+                    </label>
+                    <input asp-for="FechaEntrada" type="date"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                </div>
+
+                <!-- Fecha Salida -->
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">
+                        Fecha de Salida
+                    </label>
+                    <input asp-for="FechaSalida" type="date"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                </div>
+
+                <!-- Número de Huéspedes -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-secondary mb-2">
+                        Número de Huéspedes
+                    </label>
+                    <input asp-for="NumeroHuespedes"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="flex justify-end gap-3 mt-8">
+
+                <a asp-action="Index"
+                   class="px-6 py-3 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium transition-all no-underline">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all shadow-lg shadow-blue-500/20">
+                    Guardar Cambios
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>

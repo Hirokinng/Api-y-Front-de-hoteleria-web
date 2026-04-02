@@ -1,0 +1,149 @@
+﻿@model List<HabitacionDisponibleDto>
+
+    @{
+    ViewData["Title"] = "Consultar Disponibilidad";
+    }
+
+    <div class="pb-12 px-8 max-w-[1400px] mx-auto space-y-8 pt-8">
+
+        <!-- HEADER -->
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">GESTIÓN DE RESERVAS</p>
+                <h1 class="font-headline text-4xl text-primary">Consultar Disponibilidad</h1>
+            </div>
+            <a asp-action="Index"
+               class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded-lg text-sm font-medium transition-all no-underline">
+                ← Volver
+            </a>
+        </div>
+
+        <!-- FORM CARD -->
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
+
+            <form asp-action="Disponibilidad" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+
+                    <!-- Categoría -->
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">
+                            ID Categoría
+                        </label>
+                        <input type="number" name="idCategoria" required
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                    </div>
+
+                    <!-- Fecha Entrada -->
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">
+                            Fecha Entrada
+                        </label>
+                        <input type="date" name="fechaEntrada" required
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                    </div>
+
+                    <!-- Fecha Salida -->
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">
+                            Fecha Salida
+                        </label>
+                        <input type="date" name="fechaSalida" required
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                    </div>
+
+                    <!-- Huéspedes -->
+                    <div>
+                        <label class="block text-sm font-medium text-secondary mb-2">
+                            Huéspedes
+                        </label>
+                        <input type="number" name="numHuespedes" min="1" required
+                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                    </div>
+
+                </div>
+
+                <!-- ACTION -->
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="submit"
+                            class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-6 py-3 rounded-lg font-medium transition-all shadow-lg shadow-blue-500/20">
+                        Buscar Disponibilidad
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- RESULTADOS -->
+        @if (Model != null)
+    {
+        if (!Model.Any())
+        {
+        <div class="bg-yellow-50 border border-yellow-200 text-yellow-700 px-6 py-5 rounded-xl">
+            No hay habitaciones disponibles para los criterios seleccionados.
+        </div>
+        }
+        else
+        {
+        <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden">
+
+            <div class="px-6 py-4 border-b border-outline-variant/10">
+                <h3 class="font-headline text-xl text-primary">
+                    Habitaciones Disponibles
+                </h3>
+            </div>
+
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-[#002547] text-white">
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase">Habitación</th>
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase">Categoría</th>
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase">Piso</th>
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase">Capacidad</th>
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase">Precio</th>
+                        <th class="text-left px-6 py-4 text-xs font-bold uppercase"></th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100">
+                    @foreach (var habitacion in Model)
+                        {
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="px-6 py-4 font-bold text-primary">
+                            @habitacion.NumeroHabitacion
+                        </td>
+                        <td class="px-6 py-4 text-secondary">
+                            @habitacion.NombreCategoria
+                        </td>
+                        <td class="px-6 py-4 text-secondary">
+                            Piso @habitacion.NumeroPiso
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="bg-gray-100 text-secondary text-xs px-3 py-1 rounded-full">
+                                @habitacion.CapacidadMax personas
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-[#2E86DE] font-bold text-lg">
+                                RD$@habitacion.PrecioNoche.ToString("N2")
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <a asp-action="Crear" asp-route-idHabitacion="@habitacion.Id"
+                               class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-4 py-2 rounded-lg text-sm font-medium transition-all no-underline">
+                                Reservar
+                            </a>
+                        </td>
+                    </tr>
+                        }
+                </tbody>
+            </table>
+
+            <div class="px-6 py-4 border-t border-outline-variant/10 text-xs text-secondary">
+                Mostrando @Model.Count habitación(es) disponible(s)
+            </div>
+
+        </div>
+        }
+    }
+    </div>

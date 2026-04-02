@@ -1,8 +1,136 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard General";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="pt-12 pb-12 px-8 max-w-[1600px] mx-auto space-y-10">
+
+    <section class="relative rounded-xl overflow-hidden bg-[#002547] min-h-[320px] flex flex-col justify-center px-12 text-white">
+        <div class="absolute inset-0 opacity-10 bg-gradient-to-br from-blue-400 to-transparent"></div>
+        <div class="relative z-10 max-w-2xl">
+            <span class="inline-block text-on-primary-container text-xs font-bold tracking-[0.2em] uppercase mb-4">Sistema de Gestión Hotelera</span>
+            <h1 class="font-headline text-5xl md:text-6xl mb-6 leading-tight">
+                Gestiona tu Hotel con <span class="serif-italic">Elegancia</span>
+            </h1>
+            <p class="text-blue-100/80 text-lg mb-8 font-light leading-relaxed">
+                Control total sobre tus operaciones diarias. Administra reservas, habitaciones, categorías y clientes desde un solo lugar.
+            </p>
+            <div class="flex gap-4">
+                <a asp-controller="Category" asp-action="Index"
+                   class="bg-[#2E86DE] hover:bg-[#2575c0] text-white px-8 py-3 rounded-lg font-medium transition-all flex items-center gap-2 no-underline">
+                    <span class="material-symbols-outlined text-sm">category</span>
+                    Ver Categorías
+                </a>
+                <a asp-controller="Habitaciones" asp-action="Disponibilidad"
+                   class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white px-8 py-3 rounded-lg font-medium transition-all no-underline">
+                    Buscar Disponibilidad
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="flex justify-between items-end mb-8">
+            <div>
+                <h3 class="font-headline text-3xl text-primary">Módulos de Gestión</h3>
+                <p class="text-secondary text-sm mt-1">Acceso rápido a las funciones principales del sistema</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <a asp-controller="Category" asp-action="Index"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">category</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Categorías</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Administra los tipos de habitación con tarifas, características y disponibilidad.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Gestionar categorías</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+            <a asp-controller="Piso" asp-action="Index"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">layers</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Pisos</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Organiza los pisos del hotel y gestiona la distribución de habitaciones por nivel.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Gestionar pisos</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+            <a asp-controller="Habitaciones" asp-action="Index"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">bed</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Habitaciones</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Control de inventario, asignación de habitaciones y gestión de bloqueos.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Gestionar habitaciones</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+            <a asp-controller="Reservas" asp-action="Index"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">calendar_month</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Reservas</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Gestiona reservas, verifica disponibilidad y controla check-ins y check-outs.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Gestionar reservas</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+            <a asp-controller="ClientesMvc" asp-action="Login"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">person_check</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Clientes</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Registro, autenticación y gestión de perfiles de clientes del hotel.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Gestionar clientes</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+            <a asp-controller="Reserva" asp-action="Disponibilidad"
+               class="group bg-white p-8 rounded-xl border border-[#2E86DE]/20 hover:border-[#2E86DE] transition-all duration-300 shadow-sm hover:shadow-lg no-underline">
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low flex items-center justify-center text-[#2E86DE] mb-6 group-hover:bg-[#2E86DE] group-hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <h4 class="text-xl font-headline font-bold text-primary mb-2">Disponibilidad</h4>
+                <p class="text-on-surface-variant text-sm leading-relaxed mb-6">Busca habitaciones disponibles por fechas, categoría y número de huéspedes.</p>
+                <div class="flex justify-between items-center text-xs text-secondary font-medium">
+                    <span>Buscar disponibilidad</span>
+                    <span class="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all">arrow_forward</span>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
 </div>
+
+<footer class="bg-surface-container px-8 py-8 mt-4">
+    <div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-8">
+            <span class="font-headline font-bold text-primary">HOTELERIA</span>
+            <nav class="flex gap-6 text-xs font-medium text-secondary">
+                <a class="hover:text-primary transition-colors" href="#">Políticas</a>
+                <a class="hover:text-primary transition-colors" href="#">Soporte</a>
+            </nav>
+        </div>
+        <div class="text-xs text-outline">
+            &copy; 2026 HoteleriaApp &mdash; Programación 3 &mdash; ITLA
+        </div>
+    </div>
+</footer>

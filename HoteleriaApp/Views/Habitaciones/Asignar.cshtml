@@ -1,0 +1,78 @@
+@{
+    ViewData["Title"] = "Asignar Habitación a Reserva";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Asignar Habitación a Reserva</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al Inventario</a>
+</div>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <form id="frmAsignar">
+            <div class="mb-3">
+                <label class="form-label">Reserva</label>
+                <select class="form-select" id="reservaId" required></select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Habitación</label>
+                <select class="form-select" id="habitacionId" required></select>
+            </div>
+            <button type="submit" class="btn btn-primary">Asignar</button>
+        </form>
+    </div>
+</div>
+
+<div class="alert alert-success d-none mt-3" id="mensajeOk" role="alert"></div>
+<div class="alert alert-danger d-none mt-3" id="mensajeErr" role="alert"></div>
+
+@section Scripts {
+    <script>
+        (async function () {
+            try {
+                const [reservas, habitaciones] = await Promise.all([
+                    fetch('/api/habitaciones/reservas').then(r => r.json()),
+                    fetch('/api/habitaciones').then(r => r.json())
+                ]);
+                const selRes = document.getElementById('reservaId');
+                const selHab = document.getElementById('habitacionId');
+                reservas.forEach(r => {
+                    selRes.innerHTML += `<option value="${r.id}">Reserva #${r.numeroReserva} - ${r.numeroHuespedes} personas (${r.totalNoches} noches)</option>`;
+                });
+                habitaciones.forEach(h => {
+                    selHab.innerHTML += `<option value="${h.id}">${h.numero} - ${h.tipoHabitacion?.nombre || '-'} (Cap: ${h.capacidad})</option>`;
+                });
+            } catch (e) {
+                document.getElementById('mensajeErr').classList.remove('d-none');
+                document.getElementById('mensajeErr').textContent = 'Error al cargar datos: ' + e.message;
+            }
+        })();
+
+        document.getElementById('frmAsignar').addEventListener('submit', async e => {
+            e.preventDefault();
+            const reservaId = document.getElementById('reservaId').value;
+            const habitacionId = document.getElementById('habitacionId').value;
+            document.getElementById('mensajeOk').classList.add('d-none');
+            document.getElementById('mensajeErr').classList.add('d-none');
+
+            try {
+                const res = await fetch('/api/habitaciones/asignar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reservaId, habitacionId })
+                });
+                const data = await res.json().catch(() => ({}));
+                if (res.ok) {
+                    document.getElementById('mensajeOk').classList.remove('d-none');
+                    document.getElementById('mensajeOk').textContent = data.message || 'Habitación asignada correctamente.';
+                } else {
+                    document.getElementById('mensajeErr').classList.remove('d-none');
+                    document.getElementById('mensajeErr').textContent = typeof data === 'string' ? data : (data.message || data.detail || data.title || 'Error al asignar.');
+                }
+            } catch (e) {
+                document.getElementById('mensajeErr').classList.remove('d-none');
+                document.getElementById('mensajeErr').textContent = 'Error: ' + e.message;
+            }
+        });
+    </script>
+}

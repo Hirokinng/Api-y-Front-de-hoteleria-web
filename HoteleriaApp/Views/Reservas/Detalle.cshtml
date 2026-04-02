@@ -1,0 +1,133 @@
+﻿@model HoteleriaApp.Core.Application.DTOs.Reservas.ReservaDto
+
+@{
+    ViewData["Title"] = "Detalle de Reserva";
+}
+
+<div class="pb-12 px-8 max-w-[900px] mx-auto space-y-8 pt-8">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-start">
+        <div>
+            <p class="text-xs font-bold text-secondary tracking-widest uppercase mb-2">
+                GESTIÓN DE RESERVAS
+            </p>
+            <h1 class="font-headline text-4xl text-primary">
+                Detalle de Reserva
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+                Código: @Model.NumeroReserva
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-5 py-2 rounded-lg text-sm font-medium no-underline">
+            ← Volver
+        </a>
+    </div>
+
+    <!-- CARD -->
+    <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8 space-y-8">
+
+        <!-- INFO GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Categoría</p>
+                <p class="font-bold text-primary">@Model.NombreCategoria</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Habitación</p>
+                <p class="font-bold text-primary">@Model.NumeroHabitacion</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Huéspedes</p>
+                <p class="font-medium">@Model.NumeroHuespedes</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Estado</p>
+                <span class="px-3 py-1 rounded-full text-xs font-bold
+                    @(Model.Estado == "Activa" ? "bg-green-100 text-green-600" :
+                      Model.Estado == "Cancelada" ? "bg-red-100 text-red-600" :
+                      "bg-yellow-100 text-yellow-600")">
+                    @Model.Estado
+                </span>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Fecha Entrada</p>
+                <p class="font-medium">@Model.FechaEntrada.ToString("dd/MM/yyyy")</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Fecha Salida</p>
+                <p class="font-medium">@Model.FechaSalida.ToString("dd/MM/yyyy")</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Noches</p>
+                <p class="font-medium">@Model.TotalNoches</p>
+            </div>
+
+            <div>
+                <p class="text-xs text-secondary uppercase">Fecha Creación</p>
+                <p class="font-medium">@Model.FechaCreacion.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+
+        </div>
+
+        <!-- SERVICIOS -->
+        @if (Model.Servicios != null && Model.Servicios.Any())
+        {
+        <div>
+            <p class="text-xs text-secondary uppercase mb-2">Servicios</p>
+            <div class="flex flex-wrap gap-2">
+                @foreach (var servicio in Model.Servicios)
+                    {
+                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-medium">
+                    @servicio
+                </span>
+                    }
+            </div>
+        </div>
+        }
+
+        <!-- TOTAL -->
+        <div class="border-t pt-6 flex justify-between items-center">
+            <p class="text-sm text-gray-500">Total de la reserva</p>
+            <p class="text-2xl font-bold text-[#2E86DE]">
+                RD$ @Model.Total.ToString("N2")
+            </p>
+        </div>
+
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="flex gap-3">
+
+        @if (Model.Estado != "Cancelada" && Model.Estado != "CheckOut")
+        {
+        <a asp-action="Editar"
+           asp-route-id="@Model.Id"
+           class="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg text-sm font-medium no-underline">
+            Editar
+        </a>
+
+        <form asp-action="Cancelar" method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg text-sm font-medium"
+                    onclick="return confirm('¿Estás seguro de cancelar esta reserva?')">
+                Cancelar
+            </button>
+        </form>
+        }
+
+    </div>
+
+</div>
