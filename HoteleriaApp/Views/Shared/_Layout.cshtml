@@ -1,143 +1,50 @@
-<!DOCTYPE html>
-<html lang="es">
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HOTELERIA</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-secondary-container": "#3e5980",
-                        "background": "#f6f9fe",
-                        "surface-tint": "#0060aa",
-                        "on-background": "#181c20",
-                        "surface-container-highest": "#dfe3e8",
-                        "surface-container-low": "#f1f4f9",
-                        "on-surface": "#181c20",
-                        "surface-container": "#ebeef3",
-                        "secondary": "#455f87",
-                        "primary": "#002547",
-                        "secondary-container": "#b5d0fd",
-                        "on-surface-variant": "#43474e",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-variant": "#dfe3e8",
-                        "primary-container": "#003a6b",
-                        "surface-container-high": "#e5e8ed",
-                        "on-secondary": "#ffffff",
-                        "on-primary-container": "#59a6ff",
-                        "outline-variant": "#c4c6cf",
-                        "outline": "#74777f",
-                        "on-primary": "#ffffff",
-                        "surface": "#f6f9fe",
-                        "surface-bright": "#f6f9fe",
-                    },
-                    fontFamily: {
-                        "headline": ["Newsreader", "serif"],
-                        "body": ["Inter", "sans-serif"],
-                    },
-                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
-                },
-            },
-        }
-    </script>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-        }
-        .serif-italic { font-style: italic; }
-        body { background-color: #f6f9fe; }
-    </style>
+    <title>@ViewData["Title"] - HoteleriaApp</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/HoteleriaApp.styles.css" asp-append-version="true" />
 </head>
-<body class="font-body text-on-surface antialiased">
-
-    <aside class="h-screen w-64 fixed left-0 top-0 bg-[#002547] flex flex-col py-6 z-40 hidden md:flex">
-        <div class="px-6 mb-10">
-            <h1 class="font-headline text-xl text-white tracking-tight uppercase">HOTELERIA</h1>
-            <p class="text-on-primary-container text-[10px] tracking-widest uppercase mt-1 opacity-70">Digital Concierge</p>
-        </div>
-        <nav class="flex-1 flex flex-col gap-1 px-2">
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="Home" asp-action="Index">
-                <span class="material-symbols-outlined">dashboard</span>
-                <span class="text-sm font-medium">Inicio</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="Category" asp-action="Index">
-                <span class="material-symbols-outlined">category</span>
-                <span class="text-sm font-medium">Categor�as</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="Piso" asp-action="Index">
-                <span class="material-symbols-outlined">layers</span>
-                <span class="text-sm font-medium">Pisos</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="Habitaciones" asp-action="Index">
-                <span class="material-symbols-outlined">bed</span>
-                <span class="text-sm font-medium">Habitaciones</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="Reservas" asp-action="Index">
-                <span class="material-symbols-outlined">calendar_month</span>
-                <span class="text-sm font-medium">Reservas</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               asp-controller="ClientesMvc" asp-action="Login">
-                <span class="material-symbols-outlined">person_check</span>
-                <span class="text-sm font-medium">Clientes</span>
-            </a>
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg"
-               href="/swagger" target="_blank">
-                <span class="material-symbols-outlined">api</span>
-                <span class="text-sm font-medium">API</span>
-            </a>
-        </nav>
-        <div class="mt-auto px-4 flex flex-col gap-1">
-            <a class="text-slate-300 hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/10 transition-all rounded-lg" href="#">
-                <span class="material-symbols-outlined">help</span>
-                <span class="text-sm font-medium">Ayuda</span>
-            </a>
-        </div>
-    </aside>
-
-    <main class="md:ml-64 min-h-screen">
-
-        <header class="fixed top-0 right-0 left-0 md:left-64 z-30 bg-white/80 backdrop-blur-xl">
-            <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1920px] mx-auto">
-                <div class="flex items-center gap-4">
-                    <h2 class="font-headline text-lg font-bold text-primary tracking-tight">@(ViewData["Title"] ?? "Dashboard")</h2>
-                </div>
-                <div class="flex items-center gap-4">
-                    <a href="/swagger" target="_blank" class="hidden sm:flex items-center gap-2 text-sm text-secondary hover:text-primary transition-colors">
-                        <span class="material-symbols-outlined text-sm">api</span> Swagger
-                    </a>
-                    <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-                        <span class="material-symbols-outlined">notifications</span>
-                    </button>
-                    <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                    <div class="h-8 w-8 rounded-full bg-[#002547] flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white text-sm">person</span>
-                    </div>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HoteleriaApp</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="bg-slate-100 h-[1px] w-full"></div>
-        </header>
-
-        <div class="pt-[73px]">
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
             @RenderBody()
-        </div>
-    </main>
+        </main>
+    </div>
 
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - HoteleriaApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
