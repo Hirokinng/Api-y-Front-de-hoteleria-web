@@ -49,6 +49,7 @@
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Habitación</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Entrada</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Salida</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Huéspedes</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Total</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Estado</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase opacity-70">Acciones</th>
@@ -81,6 +82,10 @@
 
                         <td class="px-6 py-5 text-sm">
                             @reserva.FechaSalida.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td class="px-6 py-5 text-sm font-medium">
+                            @reserva.NumeroHuespedes
                         </td>
 
                         <td class="px-6 py-5">
