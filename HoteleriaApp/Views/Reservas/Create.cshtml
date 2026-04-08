@@ -1,4 +1,4 @@
-﻿@model HoteleriaApp.Models.DTOs.CrearReservaDto
+﻿@model HoteleriaApp.Core.Application.DTOs.Reservas.CrearReservaDto
 
 @{
     ViewData["Title"] = "Nueva Reserva";
@@ -21,7 +21,7 @@
     <!-- FORM CARD -->
     <div class="bg-white rounded-xl border border-outline-variant/20 shadow-sm p-8">
 
-        <form asp-action="Crear" method="post">
+        <form asp-action="Create" method="post">
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="All" class="text-red-500 mb-6 text-sm"></div>
@@ -29,13 +29,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <!-- Cliente -->
-                <div>
-                    <label class="block text-sm font-medium text-secondary mb-2">
-                        ID Cliente
-                    </label>
-                    <input asp-for="IdCliente"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
-                </div>
+                
 
                 <!-- Categoría -->
                 <div>

@@ -17,5 +17,7 @@ namespace HoteleriaApp.Core.Application.DTOs.Reservas
         public decimal Total { get; set; }
         public DateTime FechaCreacion { get; set; }
         public List<string> Servicios { get; set; } = [];
+        public Guid IdCategoria { get; set; }
+        public Guid IdHabitacion { get; set; }
     }
 }

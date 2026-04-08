@@ -13,5 +13,6 @@ namespace HoteleriaApp.Core.Application.Interfaces
         Task<(bool Ok, string? Error, ReservaDto? Reserva)> CrearAsync(CrearReservaDto dto, Guid idCliente);
         Task<(bool Ok, string? Error)> EditarAsync(Guid id, EditarReservaDto dto);
         Task<(bool Ok, string? Error)> CancelarAsync(Guid id);
+        Task<EditarReservaDto> GetEditarByIdAsync(Guid id);
     }
 }

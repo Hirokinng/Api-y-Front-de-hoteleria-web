@@ -2,6 +2,7 @@
 using HoteleriaApp.Core.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -13,10 +14,16 @@ namespace HoteleriaApp.Controllers
     public class ReservasController : Controller
     {
         private readonly IReservaService _reservaService;
+        private readonly ICategoryService _categoriaService;
+        private readonly IHabitacionesService _habitacionService;
 
-        public ReservasController(IReservaService reservaService)
+        public ReservasController(IReservaService reservaService, ICategoryService categoriaService,
+    IHabitacionesService habitacionService)
         {
             _reservaService = reservaService;
+            _categoriaService = categoriaService;
+            _habitacionService = habitacionService;
+
         }
 
         // LISTAR
@@ -27,6 +34,7 @@ namespace HoteleriaApp.Controllers
         }
 
         // CREAR (GET)
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -36,56 +44,70 @@ namespace HoteleriaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CrearReservaDto dto)
         {
-            if (!ModelState.IsValid) return View(dto);
+            // 1. Validación del modelo
+            if (!ModelState.IsValid)
+                return View(dto);
 
-            var idCliente = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            // 2. Cliente fijo (SOLO PARA PRUEBAS)
+            var idCliente = Guid.Parse("86913BFC-3AF8-4C4F-FEE7-08DE8AC649EB");
 
+            // 3. Llamar al servicio
             var resultado = await _reservaService.CrearAsync(dto, idCliente);
 
+            // 4. Validar resultado del servicio
             if (!resultado.Ok)
             {
                 ModelState.AddModelError("", resultado.Error!);
                 return View(dto);
             }
 
-            return RedirectToAction("Index");
+            // 5. Redirección después de crear
+            return RedirectToAction("Index"); 
         }
 
         // EDITAR (GET)
         public async Task<IActionResult> Edit(Guid id)
         {
-            var reserva = await _reservaService.GetByIdAsync(id);
-
-            if (reserva == null) return NotFound();
+            var dto = await _reservaService.GetEditarByIdAsync(id);
+            if (dto == null) return NotFound();
 
             ViewBag.Id = id;
-
-            var dto = new EditarReservaDto
-            {
-                FechaEntrada = reserva.FechaEntrada,
-                FechaSalida = reserva.FechaSalida,
-                NumeroHuespedes = reserva.NumeroHuespedes,
-                IdsServicios = new List<Guid>()
-            };
-
+            await CargarCombos();
             return View(dto);
+
         }
 
         // EDITAR (POST)
         [HttpPost]
         public async Task<IActionResult> Edit(Guid id, EditarReservaDto dto)
         {
-            if (!ModelState.IsValid) return View(dto);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Id = id;
+                await CargarCombos(); // 🔥
+                return View(dto);
+            }
 
             var resultado = await _reservaService.EditarAsync(id, dto);
 
             if (!resultado.Ok)
             {
                 ModelState.AddModelError("", resultado.Error!);
+                ViewBag.Id = id;
+                await CargarCombos(); // 🔥
                 return View(dto);
             }
 
             return RedirectToAction("Index");
+        }
+
+        private async Task CargarCombos()
+        {
+            var categorias = await _categoriaService.GetAllAsync();
+            var habitaciones = await _habitacionService.ObtenerInventarioAsync();
+
+            ViewBag.Categorias = new SelectList(categorias ?? Enumerable.Empty<object>(), "Id", "Name");
+            ViewBag.Habitaciones = new SelectList(habitaciones ?? Enumerable.Empty<object>(), "Id", "Numero");
         }
 
         // ELIMINAR

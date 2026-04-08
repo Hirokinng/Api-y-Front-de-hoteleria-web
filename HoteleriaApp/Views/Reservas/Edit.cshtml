@@ -30,13 +30,35 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                <!-- 🔥 CATEGORÍA -->
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">
+                        Categoría
+                    </label>
+                    <select asp-for="IdCategoria" asp-items="ViewBag.Categorias"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        <option value="">Seleccione una categoría</option>
+                    </select>
+                </div>
+
+                <!-- 🔥 HABITACIÓN -->
+                <div>
+                    <label class="block text-sm font-medium text-secondary mb-2">
+                        Habitación
+                    </label>
+                    <select asp-for="IdHabitacion" asp-items="ViewBag.Habitaciones"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                        <option value="">Seleccione una habitación</option>
+                    </select>
+                </div>
+
                 <!-- Fecha Entrada -->
                 <div>
                     <label class="block text-sm font-medium text-secondary mb-2">
                         Fecha de Entrada
                     </label>
                     <input asp-for="FechaEntrada" type="date"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2" />
                 </div>
 
                 <!-- Fecha Salida -->
@@ -45,7 +67,7 @@
                         Fecha de Salida
                     </label>
                     <input asp-for="FechaSalida" type="date"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2" />
                 </div>
 
                 <!-- Número de Huéspedes -->
@@ -54,7 +76,7 @@
                         Número de Huéspedes
                     </label>
                     <input asp-for="NumeroHuespedes"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-[#2E86DE] outline-none" />
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2" />
                 </div>
 
             </div>
